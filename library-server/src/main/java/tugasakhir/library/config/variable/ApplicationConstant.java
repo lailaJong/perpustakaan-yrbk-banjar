@@ -8,4 +8,5 @@ public class ApplicationConstant {
     public static final String APP_NAME = "Books Management";
     public static final String APP_VERSION = "v1";
     public static final String BEAN_DS = "ds-postgres";
+    public static final String BEAN_JDBC_POSTGRES = "jdbc-postgres-library";
 }

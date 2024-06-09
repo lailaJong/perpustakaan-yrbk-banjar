@@ -1,5 +1,7 @@
 package tugasakhir.library.config.jdbc;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,4 +21,10 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
+
+    @Bean(name = ApplicationConstant.BEAN_JDBC_POSTGRES)
+    public NamedParameterJdbcTemplate jdbcTemplate(@Qualifier(ApplicationConstant.BEAN_DS) DataSource datasource) {
+        return new NamedParameterJdbcTemplate(datasource);
+    }
+
 }
