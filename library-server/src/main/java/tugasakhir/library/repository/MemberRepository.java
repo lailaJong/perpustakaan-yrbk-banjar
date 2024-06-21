@@ -1,5 +1,6 @@
 package tugasakhir.library.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.entity.Member;
 
@@ -21,18 +23,24 @@ import java.util.List;
  */
 
 @Repository
+@Slf4j
 public class MemberRepository {
     @Autowired
     @Qualifier(ApplicationConstant.BEAN_DS)
     protected NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Qualifier
+    protected ApplicationProperties applicationProperties;
+
     private static final class MemberRowMapper implements RowMapper<Member> {
         @Override
         public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
             Member member = new Member();
-            member.setMemberId(rs.getInt("member_id"));
-            member.setUserId(rs.getInt("user_id"));
-            member.setMemberStatusId(rs.getInt("member_status_id"));
-            member.setScoreDetailId(rs.getInt("score_detail_id"));
+            member.setMemberId(rs.getString("member_id"));
+            member.setUserId(rs.getString("user_id"));
+            member.setMemberStatusId(rs.getString("member_status_id"));
+            member.setScoreDetailId(rs.getString("score_detail_id"));
             member.setName(rs.getString("name"));
             member.setGender(rs.getString("gender"));
             member.setPhoneNumber(rs.getString("phone_number"));
@@ -45,39 +53,75 @@ public class MemberRepository {
 
     // Add a member
     public void addMember(Member member) {
-        String sql = "INSERT INTO member (member_id, user_id, member_status_id, score_detail_id, name, gender, phone_number, place_of_birth, date_of_birth, address) " +
-                "VALUES (:memberId, :userId, :memberStatusId, :scoreDetailId, :name, :gender, :phoneNumber, :placeOfBirth, :dateOfBirth, :address)";
-
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(member);
-        jdbcTemplate.update(sql, paramSource);
+        try{
+            log.info("[ADD MEMBER][{}]", applicationProperties.getINSERT_MEMBER());
+            SqlParameterSource paramSource = new BeanPropertySqlParameterSource(member);
+            jdbcTemplate.update(applicationProperties.getINSERT_MEMBER(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Get a member by ID
-    public Member getMemberById(int memberId) {
-        String sql = "SELECT * FROM member WHERE member_id = :memberId";
-        SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
-        return jdbcTemplate.queryForObject(sql, paramSource, new MemberRowMapper());
+    public Member getMemberById(String memberId) {
+        try{
+            log.info("[GET MEMBER BY ID][{}][{}]", memberId, applicationProperties.getGET_MEMBER_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_BY_ID(), paramSource, new MemberRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public Member getMemberByName(String memberName) {
+        try{
+            log.info("[GET MEMBER BY NAME][{}][{}]", memberName, applicationProperties.getGET_MEMBER_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("memberName", memberName);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_BY_NAME(), paramSource, new MemberRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
     // Update a member
     public void updateMember(Member member) {
-        String sql = "UPDATE member SET user_id = :userId, member_status_id = :memberStatusId, score_detail_id = :scoreDetailId, name = :name, gender = :gender, " +
-                "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address WHERE member_id = :memberId";
+        try{
+            log.info("[UPDATE MEMBER BY ID][{}][{}]", member.getMemberId(), applicationProperties.getUPDATE_MEMBER_BY_ID());
+            SqlParameterSource paramSource = new BeanPropertySqlParameterSource(member);
+            jdbcTemplate.update(applicationProperties.getUPDATE_MEMBER_BY_ID(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
 
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(member);
-        jdbcTemplate.update(sql, paramSource);
     }
 
     // Delete a member
-    public void deleteMember(int memberId) {
-        String sql = "DELETE FROM member WHERE member_id = :memberId";
-        SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
-        jdbcTemplate.update(sql, paramSource);
+    public void deleteMember(String memberId) {
+        try{
+            log.info("[DELETE MEMBER BY ID][{}][{}]", memberId, applicationProperties.getDELETE_MEMBER_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
+            jdbcTemplate.update(applicationProperties.getDELETE_MEMBER_BY_ID(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Get all members
     public List<Member> getAllMembers() {
-        String sql = "SELECT * FROM member";
-        return jdbcTemplate.query(sql, new MemberRowMapper());
+        try{
+            log.info("[GET ALL MEMBER][{}]", applicationProperties.getGET_ALL_MEMBER());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER(), new MemberRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public String generateMemberId() {
+        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
+        int suffix = count + 1;
+        return String.format("MBR%03d", suffix);
     }
 }

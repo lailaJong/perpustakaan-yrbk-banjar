@@ -13,8 +13,8 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class ScoreDetail {
-    private int scoreDetailId;
-    private int point;
+    private String scoreDetailId;
+//    private int point;
     private int extraBorrowTime;
     private int extraBooksQuota;
 }

@@ -13,6 +13,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class Role {
-    private int roleId;
-    private String roleName;
+    private String roleId;
+    private String roleName; //default member dan officer, yang ditampilkan di fe hanya untuk member, karna acc officer hanya 1
 }

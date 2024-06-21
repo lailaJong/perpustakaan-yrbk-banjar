@@ -1,0 +1,73 @@
+package tugasakhir.library.utils.scoredetail;
+
+import tugasakhir.library.model.entity.Author;
+import tugasakhir.library.model.entity.ScoreDetail;
+import tugasakhir.library.model.request.author.AuthorRq;
+import tugasakhir.library.model.request.author.UpdateAuthorRq;
+import tugasakhir.library.model.request.scoredetail.ScoreDetailRq;
+import tugasakhir.library.model.request.scoredetail.UpdateScoreDetailRq;
+
+/**
+ * @author Putri Mele
+ * on 18/06/2024
+ */
+public class ScoreDetailMapperImpl implements ScoreDetailMapper {
+    @Override
+    public ScoreDetail toScoreDetail(ScoreDetailRq scoreDetailRq) {
+        if (scoreDetailRq == null) {
+            return null;
+        }
+        ScoreDetail scoreDetail = new ScoreDetail();
+        scoreDetail.setScoreDetailId(scoreDetailRq.getScoreDetailId());
+//        scoreDetail.setPoint(scoreDetailRq.getPoint());
+        scoreDetail.setExtraBorrowTime(scoreDetailRq.getExtraBorrowTime());
+        scoreDetail.setExtraBooksQuota(scoreDetailRq.getExtraBooksQuota());
+        return scoreDetail;
+    }
+
+    @Override
+    public void updateScoreDetailFromUpdateScoreDetailRq(UpdateScoreDetailRq updateScoreDetailRq, ScoreDetail scoreDetail) {
+        if ( updateScoreDetailRq == null ) {
+            return;
+        }
+
+//        if ( updateScoreDetailRq.getPoint() != -1 ) {
+//            scoreDetail.setPoint( updateScoreDetailRq.getPoint() );
+//        }
+        if ( updateScoreDetailRq.getExtraBorrowTime() != -1 ) {
+            scoreDetail.setExtraBorrowTime( updateScoreDetailRq.getExtraBorrowTime() );
+        }
+        if ( updateScoreDetailRq.getExtraBooksQuota() != -1 ) {
+            scoreDetail.setExtraBooksQuota( updateScoreDetailRq.getExtraBooksQuota() );
+        }
+    }
+
+    @Override
+    public String getScoreDetailId(int point){
+        String scoreDetailId;
+        if (point > 10 && point <= 20){
+            scoreDetailId = "SCR01";
+        } else if (point <= 40) {
+            scoreDetailId = "SCR02";
+        } else if (point <= 60) {
+            scoreDetailId = "SCR03";
+        } else if (point <= 90) {
+            scoreDetailId = "SCR04";
+        } else if (point <= 110) {
+            scoreDetailId = "SCR05";
+        } else if (point <= 130) {
+            scoreDetailId = "SCR06";
+        } else if (point <= 150) {
+            scoreDetailId = "SCR07";
+        } else if (point <= 170) {
+            scoreDetailId = "SCR08";
+        } else if (point <= 200) {
+            scoreDetailId = "SCR09";
+        } else if (point > 200){
+            scoreDetailId = "SCR10";
+        } else {
+            scoreDetailId = null;
+        }
+        return scoreDetailId;
+    }
+}

@@ -13,6 +13,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class Category {
-    private int categoryId;
+    private String categoryId;
     private String categoryName;
 }

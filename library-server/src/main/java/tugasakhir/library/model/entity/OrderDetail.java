@@ -15,9 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class OrderDetail {
-    private int orderId;
-    private int userId;
-    private int bookId;
+    private String orderId;
+    private String userId;
+    private String bookId;
     private Date orderDate;
     private String status;
 }

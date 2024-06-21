@@ -1,5 +1,6 @@
 package tugasakhir.library.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.entity.Book;
 
@@ -21,20 +23,25 @@ import java.util.List;
  */
 
 @Repository
+@Slf4j
 public class BookRepository {
     @Autowired
     @Qualifier(ApplicationConstant.BEAN_DS)
     protected NamedParameterJdbcTemplate jdbcTemplate;
 
+    @Autowired
+    @Qualifier
+    protected ApplicationProperties applicationProperties;
+
     private static final class BookRowMapper implements RowMapper<Book> {
         @Override
         public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
             Book book = new Book();
-            book.setBookId(rs.getInt("book_id"));
+            book.setBookId(rs.getString("book_id"));
             book.setBookTitle(rs.getString("book_title"));
-            book.setCategoryId(rs.getInt("category_id"));
-            book.setPublisherId(rs.getInt("publisher_id"));
-            book.setAuthorId(rs.getInt("author_id"));
+            book.setCategoryId(rs.getString("category_id"));
+            book.setPublisherId(rs.getString("publisher_id"));
+            book.setAuthorId(rs.getString("author_id"));
             book.setLanguage(rs.getString("language"));
             book.setIsbn(rs.getString("isbn"));
             book.setNumberOfPages(rs.getInt("number_of_pages"));
@@ -46,40 +53,87 @@ public class BookRepository {
 
     // Add a book
     public void addBook(Book book) {
-        String sql = "INSERT INTO book (book_id, book_title, category_id, publisher_id, author_id, language, isbn, number_of_pages, publication_year, synopsis) " +
-                "VALUES (:bookId, :bookTitle, :categoryId, :publisherId, :authorId, :language, :isbn, :numberOfPages, :publicationYear, :synopsis)";
-
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(book);
-        jdbcTemplate.update(sql, paramSource);
+        try{
+            log.info("[ADD BOOK][{}]", applicationProperties.getINSERT_BOOK());
+            SqlParameterSource paramSource = new BeanPropertySqlParameterSource(book);
+            jdbcTemplate.update(applicationProperties.getINSERT_BOOK(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Get a book by ID
-    public Book getBookById(int bookId) {
-        String sql = "SELECT * FROM book WHERE book_id = :bookId";
-        SqlParameterSource paramSource = new MapSqlParameterSource("bookId", bookId);
-        return jdbcTemplate.queryForObject(sql, paramSource, new BookRowMapper());
+    public Book getBookById(String bookId) {
+        try{
+            log.info("[GET BOOK BY ID][{}][{}]", bookId, applicationProperties.getGET_BOOK_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookId", bookId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_BY_ID(), paramSource, new BookRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public Book getBookByBookTitle(String bookTitle) {
+        try{
+            log.info("[GET BOOK BY TITLE][{}][{}]", bookTitle, applicationProperties.getGET_BOOK_BY_TITLE());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookTitle", bookTitle);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_BY_TITLE(), paramSource, new BookRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
     // Update a book
     public void updateBook(Book book) {
-        String sql = "UPDATE book SET book_title = :bookTitle, category_id = :categoryId, publisher_id = :publisherId, author_id = :authorId, language = :language, " +
-                "isbn = :isbn, number_of_pages = :numberOfPages, publication_year = :publicationYear, synopsis = :synopsis WHERE book_id = :bookId";
-
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(book);
-        jdbcTemplate.update(sql, paramSource);
+        try{
+            log.info("[UPDATE BOOK BY ID][{}][{}]", book.getBookId(), applicationProperties.getUPDATE_BOOK_BY_ID());
+            SqlParameterSource paramSource = new BeanPropertySqlParameterSource(book);
+            jdbcTemplate.update(applicationProperties.getUPDATE_BOOK_BY_ID(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Delete a book
-    public void deleteBook(int bookId) {
-        String sql = "DELETE FROM book WHERE book_id = :bookId";
-        SqlParameterSource paramSource = new MapSqlParameterSource("bookId", bookId);
-        jdbcTemplate.update(sql, paramSource);
+    public void deleteBook(String bookId) {
+        try{
+            log.info("[DELETE BOOK BY ID][{}][{}]", bookId, applicationProperties.getDELETE_BOOK_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookId", bookId);
+            jdbcTemplate.update(applicationProperties.getDELETE_BOOK_BY_ID(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Get all books
     public List<Book> getAllBooks() {
-        String sql = "SELECT * FROM book";
-        return jdbcTemplate.query(sql, new BookRowMapper());
+        try{
+            log.info("[GET ALL BOOK][{}]", applicationProperties.getGET_ALL_BOOK());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK(), new BookRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    //Get all books with status (available, ordered, borrowed)
+    public List<Book> getAllBooks(String status) {
+        try{
+            log.info("[GET ALL BOOK][{}][{}]", applicationProperties.getGET_ALL_BOOK_BY_STATUS(), status);
+            SqlParameterSource paramSource = new MapSqlParameterSource("status", status);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_BY_STATUS(), paramSource, new BookRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public String generateBookId() {
+        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BOOK(), (SqlParameterSource) null, Integer.class);
+        int suffix = count + 1;
+        return String.format("BUK%03d", suffix);
     }
 }
 

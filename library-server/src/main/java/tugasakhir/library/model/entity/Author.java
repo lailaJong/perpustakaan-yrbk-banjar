@@ -13,6 +13,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class Author {
-    private int authorId;
+    private String authorId;
     private String authorName;
 }

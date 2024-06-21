@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class BookPlacement {
-    private int bookPlacementId;
-    private int bookShelfId;
-    private int bookId;
+    private String bookPlacementId;
+    private String bookShelfId;
+    private String bookId;
 }

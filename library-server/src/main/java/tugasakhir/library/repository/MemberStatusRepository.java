@@ -1,5 +1,6 @@
 package tugasakhir.library.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.entity.MemberStatus;
 
@@ -21,15 +23,21 @@ import java.util.List;
  */
 
 @Repository
+@Slf4j
 public class MemberStatusRepository {
     @Autowired
     @Qualifier(ApplicationConstant.BEAN_DS)
     protected NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Qualifier
+    protected ApplicationProperties applicationProperties;
+
     private static final class MemberStatusRowMapper implements RowMapper<MemberStatus> {
         @Override
         public MemberStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
             MemberStatus memberStatus = new MemberStatus();
-            memberStatus.setMemberStatusId(rs.getInt("member_status_id"));
+            memberStatus.setMemberStatusId(rs.getString("member_status_id"));
             memberStatus.setStatus(rs.getString("status"));
             return memberStatus;
         }
@@ -37,37 +45,74 @@ public class MemberStatusRepository {
 
     // Add a member status
     public void addMemberStatus(MemberStatus memberStatus) {
-        String sql = "INSERT INTO member_status (member_status_id, status) VALUES (:memberStatusId, :status)";
-
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(memberStatus);
-        jdbcTemplate.update(sql, paramSource);
+        try{
+            log.info("[ADD MEMBER STATUS][{}]", applicationProperties.getINSERT_MEMBER_STATUS());
+            SqlParameterSource paramSource = new BeanPropertySqlParameterSource(memberStatus);
+            jdbcTemplate.update(applicationProperties.getINSERT_MEMBER_STATUS(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Get a member status by ID
-    public MemberStatus getMemberStatusById(int memberStatusId) {
-        String sql = "SELECT * FROM member_status WHERE member_status_id = :memberStatusId";
-        SqlParameterSource paramSource = new MapSqlParameterSource("memberStatusId", memberStatusId);
-        return jdbcTemplate.queryForObject(sql, paramSource, new MemberStatusRowMapper());
+    public MemberStatus getMemberStatusById(String memberStatusId) {
+        try{
+            log.info("[GET MEMBER STATUS BY ID][{}][{}}]", memberStatusId, applicationProperties.getGET_MEMBER_STATUS_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("memberStatusId", memberStatusId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_STATUS_BY_ID(), paramSource, new MemberStatusRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public MemberStatus getMemberStatusByStatus(String status) {
+        try{
+            log.info("[GET MEMBER STATUS BY STATUS][{}][{}}]", status, applicationProperties.getGET_MEMBER_STATUS_BY_STATUS());
+            SqlParameterSource paramSource = new MapSqlParameterSource("status", status);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_STATUS_BY_STATUS(), paramSource, new MemberStatusRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
     // Update a member status
     public void updateMemberStatus(MemberStatus memberStatus) {
-        String sql = "UPDATE member_status SET status = :status WHERE member_status_id = :memberStatusId";
-
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(memberStatus);
-        jdbcTemplate.update(sql, paramSource);
+        try{
+            log.info("[UPDATE MEMBER STATUS BY ID][{}][{}]", memberStatus.getMemberStatusId(), applicationProperties.getUPDATE_MEMBER_STATUS_BY_ID());
+            SqlParameterSource paramSource = new BeanPropertySqlParameterSource(memberStatus);
+            jdbcTemplate.update(applicationProperties.getUPDATE_MEMBER_STATUS_BY_ID(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Delete a member status
-    public void deleteMemberStatus(int memberStatusId) {
-        String sql = "DELETE FROM member_status WHERE member_status_id = :memberStatusId";
-        SqlParameterSource paramSource = new MapSqlParameterSource("memberStatusId", memberStatusId);
-        jdbcTemplate.update(sql, paramSource);
+    public void deleteMemberStatus(String memberStatusId) {
+        try{
+            log.info("[DELETE MEMBER STATUS BY ID][{}][{}]", memberStatusId, applicationProperties.getDELETE_MEMBER_STATUS_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("memberStatusId", memberStatusId);
+            jdbcTemplate.update(applicationProperties.getDELETE_MEMBER_STATUS_BY_ID(), paramSource);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     // Get all member statuses
     public List<MemberStatus> getAllMemberStatuses() {
-        String sql = "SELECT * FROM member_status";
-        return jdbcTemplate.query(sql, new MemberStatusRowMapper());
+        try{
+            log.info("[GET ALL MEMBER STATUS][{}]", applicationProperties.getGET_ALL_MEMBER_STATUS());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER_STATUS(), new MemberStatusRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public String generateMemberStatusId() {
+        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER_STATUS(), (SqlParameterSource) null, Integer.class);
+        int suffix = count + 1;
+        return String.format("MST%03d", suffix);
     }
 }

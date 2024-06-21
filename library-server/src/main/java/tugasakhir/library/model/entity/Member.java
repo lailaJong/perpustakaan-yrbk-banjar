@@ -15,14 +15,15 @@ import java.util.Date;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class Member {
-    private int memberId;
-    private int userId;
-    private int memberStatusId;
-    private int scoreDetailId;
+    private String memberId;
+    private String userId;
+    private String memberStatusId;
+    private String scoreDetailId;
     private String name;
     private String gender;
     private String phoneNumber;
     private String placeOfBirth;
     private Date dateOfBirth;
     private String address;
+    private int point;
 }

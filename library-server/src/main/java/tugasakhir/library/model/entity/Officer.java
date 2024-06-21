@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class Officer {
-    private int officerId;
-    private int userId;
+    private String officerId;
+    private String userId;
     private String name;
 }

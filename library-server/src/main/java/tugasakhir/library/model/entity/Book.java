@@ -1,8 +1,10 @@
 package tugasakhir.library.model.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import tugasakhir.library.utils.validation.StatusConstraint;
 
 /**
  * @author Putri Mele
@@ -10,16 +12,19 @@ import lombok.experimental.Accessors;
  */
 @Data
 @NoArgsConstructor
+@NotNull
 @Accessors(chain = true)
 public class Book {
-        private int bookId;
+        private String bookId;
         private String bookTitle;
-        private int categoryId;
-        private int publisherId;
-        private int authorId;
+        private String categoryId;
+        private String publisherId;
+        private String authorId;
         private String language;
         private String isbn;
         private int numberOfPages;
         private String publicationYear;
         private String synopsis;
+        @StatusConstraint
+        private String status;
 }

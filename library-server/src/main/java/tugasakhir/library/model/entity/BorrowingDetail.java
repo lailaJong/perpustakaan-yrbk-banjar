@@ -15,9 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Accessors (chain = true)
 public class BorrowingDetail {
-    private int borrowingId;
-    private int userId;
-    private int bookId;
+    private String borrowingId;
+    private String userId;
+    private String bookId;
     private Date borrowingDate;
     private Date returnDate;
     private Date actualReturnDate;
