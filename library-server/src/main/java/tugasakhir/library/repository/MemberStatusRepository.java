@@ -66,6 +66,17 @@ public class MemberStatusRepository {
         }
     }
 
+    public String getStatusByMemberStatusId(String memberStatusId) {
+        try{
+            log.info("[GET STATUS BY MEMBER STATUS ID][{}][{}}]", memberStatusId, applicationProperties.getGET_STATUS_BY_MEMBER_STATUS_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("memberStatusId", memberStatusId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_STATUS_BY_MEMBER_STATUS_ID(), paramSource, String.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
     public MemberStatus getMemberStatusByStatus(String status) {
         try{
             log.info("[GET MEMBER STATUS BY STATUS][{}][{}}]", status, applicationProperties.getGET_MEMBER_STATUS_BY_STATUS());

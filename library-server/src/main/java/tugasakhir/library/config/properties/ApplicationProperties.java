@@ -20,13 +20,14 @@ public class ApplicationProperties {
     private String DELETE_AUTHOR_BY_ID = "DELETE FROM author WHERE author_id = :authorId";
     private String GET_COUNT_ALL_AUTHOR = "SELECT COUNT(*) FROM author";
     //MEMBER
-    private String INSERT_MEMBER = "INSERT INTO member (member_id, user_id, member_status_id, score_detail_id, name, gender, phone_number, place_of_birth, date_of_birth, address) " +
-            "VALUES (:memberId, :userId, :memberStatusId, :scoreDetailId, :name, :gender, :phoneNumber, :placeOfBirth, :dateOfBirth, :address)";
+    private String INSERT_MEMBER = "INSERT INTO member (member_id, user_id, member_status_id, score_detail_id, name, gender, phone_number, place_of_birth, date_of_birth, address, point, registration_date) " +
+            "VALUES (:memberId, :userId, :memberStatusId, :scoreDetailId, :name, :gender, :phoneNumber, :placeOfBirth, :dateOfBirth, :address, point, registrationDate)";
     private String GET_ALL_MEMBER = "SELECT * FROM member";
     private String GET_MEMBER_BY_ID = "SELECT * FROM member WHERE member_id = :memberId";
-    private String GET_MEMBER_BY_NAME = "SELECT * FROM member WHERE member_name = :memberName";
+    private String GET_MEMBER_BY_USER_ID = "SELECT * FROM member WHERE user_id = :userId";
+    private String GET_MEMBER_BY_NAME = "SELECT * FROM member WHERE name = :name";
     private String UPDATE_MEMBER_BY_ID = "UPDATE member SET user_id = :userId, member_status_id = :memberStatusId, score_detail_id = :scoreDetailId, name = :name, gender = :gender, " +
-            "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address WHERE member_id = :memberId";
+            "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address, point = :point, registration_date = :registrationDate WHERE member_id = :memberId";
     private String DELETE_MEMBER_BY_ID = "DELETE FROM member WHERE member_id = :memberId";
     private String GET_COUNT_ALL_MEMBER = "SELECT COUNT(*) FROM member";
     //BOOK PLACEMENT
@@ -67,6 +68,8 @@ public class ApplicationProperties {
     private String INSERT_BORROWING_DETAIL = "INSERT INTO borrowing_detail (borrowing_id, user_id, book_id, borrowing_date, return_date, actual_return_date, status) " +
             "VALUES (:borrowingId, :userId, :bookId, :borrowingDate, :returnDate, :actualReturnDate, :status)";
     private String GET_BORROWING_DETAIL_BY_ID = "SELECT * FROM borrowing_detail WHERE borrowing_id = :borrowingId";
+    private String GET_COUNT_RETURN_STATUS_BY_USER_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE user_id = :userId AND status = :returnStatus";
+    private String GET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE user_id = :userId AND status = :borrowingStatus OR status = :lateStatus";
     private String UPDATE_BORROWING_DETAIL_BY_ID = "UPDATE borrowing_detail SET user_id = :userId, book_id = :bookId, borrowing_date = :borrowingDate, " +
             "return_date = :returnDate, actual_return_date = :actualReturnDate, status = :status " +
             "WHERE borrowing_id = :borrowingId";
@@ -83,6 +86,7 @@ public class ApplicationProperties {
     //MEMBER STATUS
     private String INSERT_MEMBER_STATUS = "INSERT INTO member_status (member_status_id, status) VALUES (:memberStatusId, :status)";
     private String GET_MEMBER_STATUS_BY_ID = "SELECT * FROM member_status WHERE member_status_id = :memberStatusId";
+    private String GET_STATUS_BY_MEMBER_STATUS_ID = "SELECT status FROM member_status WHERE member_status_id = :memberStatusId";
     private String GET_MEMBER_STATUS_BY_STATUS = "SELECT * FROM member_status WHERE status = :status";
     private String UPDATE_MEMBER_STATUS_BY_ID = "UPDATE member_status SET status = :status WHERE member_status_id = :memberStatusId";
     private String DELETE_MEMBER_STATUS_BY_ID = "DELETE FROM member_status WHERE member_status_id = :memberStatusId";
@@ -100,6 +104,7 @@ public class ApplicationProperties {
     private String GET_ORDER_DETAIL_BY_ID = "SELECT * FROM order_detail WHERE order_id = :orderId";
     private String UPDATE_ORDER_DETAIL_BY_ID = "UPDATE order_detail SET user_id = :userId, book_id = :bookId, order_date = :orderDate, status = :status WHERE order_id = :orderId";
     private String DELETE_ORDER_DETAIL_BY_ID = "DELETE FROM order_detail WHERE order_id = :orderId";
+    private String GET_COUNT_ORDER_DETAIL_BY_USER_ID = "SELECT COUNT(*) FROM order_detail WHERE user_id = :user_id AND status = :orderStatus";
     private String GET_ALL_ORDER_DETAIL = "SELECT * FROM order_detail";
     private String GET_COUNT_ALL_ORDER_DETAIL = "SELECT COUNT(*) FROM order_detail";
     //PUBLISHER
@@ -125,12 +130,19 @@ public class ApplicationProperties {
     private String GET_ALL_SCORE_DETAIL = "SELECT * FROM score_detail";
     private String GET_COUNT_ALL_SCORE_DETAIL = "SELECT COUNT(*) FROM score_detail";
     //USER
-    private String INSERT_USER = "INSERT INTO user (user_id, role_id, username, password, email) VALUES (:userId, :roleId, :username, :password, :email)";
+    private String INSERT_USER = "INSERT INTO user (user_id, role_id, username, password) VALUES (:userId, :roleId, :username, :password)";
     private String GET_USER_BY_ID = "SELECT * FROM user WHERE user_id = :userId";
     private String GET_USER_BY_USERNAME = "SELECT * FROM user WHERE username = :username";
-    private String UPDATE_USER_BY_ID = "UPDATE user SET role_id = :roleId, username = :username, password = :password, email = :email WHERE user_id = :userId";
+    private String UPDATE_USER_BY_ID = "UPDATE user SET role_id = :roleId, username = :username, password = :password WHERE user_id = :userId";
     private String DELETE_USER_BY_ID = "DELETE FROM user WHERE user_id = :userId";
     private String GET_ALL_USER = "SELECT * FROM user";
     private String GET_COUNT_ALL_USER = "SELECT COUNT(*) FROM user";
-
+    private String GET_EXIST_USERNAME = "SELECT COUNT(*) FROM user WHERE username = :username";
+    //OTHERS
+    private String borrowedStatus = "Dipinjam";
+    private String lateStatus = "Telat";
+    private String returnedStatus = "Dikembalikan";
+    private String orderedStatus = "Dipesan";
+    private String cancelledStatus = "Dibatalkan";
+    private String completedStatus = "Selesai";
 }

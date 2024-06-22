@@ -70,6 +70,19 @@ public class OrderDetailRepository {
         }
     }
 
+    public int getCountOrderDetailByUserId(String userId, String orderStatus) {
+        try{
+            log.info("[GET COUNT ORDER DETAIL BY USER ID][{}][{}}]", userId, applicationProperties.getGET_COUNT_ORDER_DETAIL_BY_USER_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("orderStatus", orderStatus);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ORDER_DETAIL_BY_USER_ID(), paramSource, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
     // Update an order detail
     public void updateOrderDetail(OrderDetail orderDetail) {
         try{

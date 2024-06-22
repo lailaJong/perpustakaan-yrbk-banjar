@@ -45,6 +45,19 @@ public class MemberStatusController {
                 .body(responseInfo.getBody());
     }
 
+    //get member status by member status id for status anggota in dashboard member
+    @GetMapping("/id")
+    ResponseEntity<Object> getStatusByMemberStatusId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                               @RequestParam(value = "memberStatusId") String memberStatusId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<String> responseInfo;
+        log.info("[REQUEST RECEIVED - GET MEMBER STATUS BY ID][{}][{}]", memberStatusId, requestId);
+        responseInfo = memberStatusUsecase.getStatusByMemberStatusId(memberStatusId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createMemberStatus(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid MemberStatusRq memberStatusRq) {

@@ -71,6 +71,35 @@ public class BorrowingDetailRepository {
         }
     }
 
+    public int getCountBorrowingAndLateStatusByUserId(String userId, String borrowingStatus, String lateStatus) {
+        try{
+
+            log.info("[GET COUNT BORROWING DETAIL BY USER ID AND STATUS][{}][{}][{}][{}}]", userId, borrowingStatus, lateStatus, applicationProperties.getGET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("borrowingStatus", borrowingStatus)
+                    .addValue("lateStatus", lateStatus);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID(), paramSource, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    public int getCountReturnStatusByUserId(String userId, String returnStatus) {
+        try{
+
+            log.info("[GET COUNT RETURN STATUS BY USER ID][{}][{}}]", userId, applicationProperties.getGET_COUNT_RETURN_STATUS_BY_USER_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("returnStatus", returnStatus);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_RETURN_STATUS_BY_USER_ID(), paramSource, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
     // Update a borrowing detail
     public void updateBorrowingDetail(BorrowingDetail borrowingDetail) {
         try{

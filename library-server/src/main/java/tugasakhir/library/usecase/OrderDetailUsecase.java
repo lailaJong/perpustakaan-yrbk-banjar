@@ -3,6 +3,7 @@ package tugasakhir.library.usecase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.entity.OrderDetail;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.orderdetail.OrderDetailRq;
@@ -18,6 +19,8 @@ import java.util.List;
 public class OrderDetailUsecase {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     public ResponseInfo<List<OrderDetail>> getAllOrderDetails() {
         ResponseInfo<List<OrderDetail>> responseInfo = new ResponseInfo<>();
@@ -35,7 +38,7 @@ public class OrderDetailUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<OrderDetail> getOrderDetailyId(String orderId) {
+    public ResponseInfo<OrderDetail> getOrderDetailById(String orderId) {
         ResponseInfo<OrderDetail> responseInfo = new ResponseInfo<>();
 
         try {
@@ -45,6 +48,22 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ORDER DETAIL][ID: {}]", getClass().getSimpleName(), orderId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ORDER DETAIL][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), orderId, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<Integer> getCountOrderDetailByUserId(String userId) {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            String orderStatus = applicationProperties.getOrderedStatus();
+            count = orderDetailRepository.getCountOrderDetailByUserId(userId, orderStatus);
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT ORDER DETAIL][USER ID: {}]", getClass().getSimpleName(), userId);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT ORDER DETAIL][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;

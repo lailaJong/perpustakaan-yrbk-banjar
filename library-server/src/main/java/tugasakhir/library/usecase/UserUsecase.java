@@ -10,7 +10,7 @@ import tugasakhir.library.model.request.user.UserRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.RoleRepository;
 import tugasakhir.library.repository.UserRepository;
-import tugasakhir.library.utils.user.UserMapper;
+import tugasakhir.library.utils.user.UserMapperImpl;
 
 import java.util.List;
 
@@ -53,6 +53,21 @@ public class UserUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<User> getUserByUsername(String userName) {
+        ResponseInfo<User> responseInfo = new ResponseInfo<>();
+
+        try {
+            User user;
+            user = userRepository.getUserByUsername(userName);
+            responseInfo.setSuccess(user);
+            log.info("[{}][SUCCESS GET USER][USERNAME: {}]", getClass().getSimpleName(), userName);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET USER][USERNAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userName, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<User> addNewUser(UserRq userRq) {
         ResponseInfo<User> responseInfo = new ResponseInfo<>();
 
@@ -60,7 +75,7 @@ public class UserUsecase {
             User user;
             userRq.setUserId(userRepository.generateUserId());
             userRq.setRoleId(roleRepository.getRoleByName("Member").getRoleId());
-            user = UserMapper.INSTANCE.toUser(userRq);
+            user = UserMapperImpl.toUser(userRq);
             userRepository.addUser(user);
             responseInfo.setSuccess(user);
             log.info("[{}][SUCCESS ADD NEW USER]", getClass().getSimpleName());
@@ -77,7 +92,7 @@ public class UserUsecase {
         try {
             User user = userRepository.getUserById(updateUserRq.getUserId());
             if (user != null) {
-                UserMapper.INSTANCE.updateUserFromUpdateUserRq(updateUserRq, user);
+                UserMapperImpl.updateUserFromUpdateUserRq(updateUserRq, user);
                 userRepository.updateUser(user);
 
                 responseInfo.setSuccess();

@@ -3,6 +3,7 @@ package tugasakhir.library.usecase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.entity.BorrowingDetail;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
@@ -18,6 +19,8 @@ import java.util.List;
 public class BorrowingDetailUsecase {
     @Autowired
     private BorrowingDetailRepository borrowingDetailRepository;
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     public ResponseInfo<List<BorrowingDetail>> getAllBorrowingDetails() {
         ResponseInfo<List<BorrowingDetail>> responseInfo = new ResponseInfo<>();
@@ -45,6 +48,40 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET BORROWING DETAIL][ID: {}]", getClass().getSimpleName(), borrowingId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BORROWING DETAIL][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), borrowingId, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<Integer> getCountBorrowingAndLateStatusByUserId(String userId) {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            String borrowingStatus = applicationProperties.getBorrowedStatus();
+            String lateStatus = applicationProperties.getLateStatus();
+            count = borrowingDetailRepository.getCountBorrowingAndLateStatusByUserId(userId, borrowingStatus, lateStatus);
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT BORROWING AND LATE STATUS][USER ID: {}]", getClass().getSimpleName(), userId);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT BORROWING AND LATE STATUS][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<Integer> getCountReturnStatusByUserId(String userId) {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            String returnStatus = applicationProperties.getReturnedStatus();
+            count = borrowingDetailRepository.getCountReturnStatusByUserId(userId, returnStatus);
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT RETURN STATUS][USER ID: {}]", getClass().getSimpleName(), userId);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT RETURN STATUS][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;

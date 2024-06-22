@@ -45,6 +45,18 @@ public class UserController {
                 .body(responseInfo.getBody());
     }
 
+    @GetMapping("/username")
+    ResponseEntity<Object> getUserByUsername(@RequestHeader(value = "request-id", required = false) String requestId,
+                                       @RequestParam(value = "userName") String userName) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<User> responseInfo;
+        log.info("[REQUEST RECEIVED - GET USER BY USERNAME][{}][{}]", userName, requestId);
+        responseInfo = userUsecase.getUserByUsername(userName);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createUser(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid UserRq userRq) {

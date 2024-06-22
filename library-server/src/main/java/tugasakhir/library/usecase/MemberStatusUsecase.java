@@ -50,6 +50,21 @@ public class MemberStatusUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<String> getStatusByMemberStatusId(String memberStatusId) {
+        ResponseInfo<String> responseInfo = new ResponseInfo<>();
+
+        try {
+            String status = null;
+            status = memberStatusRepository.getStatusByMemberStatusId(memberStatusId);
+            responseInfo.setSuccess(status);
+            log.info("[{}][SUCCESS GET MEMBER STATUS][ID: {}]", getClass().getSimpleName(), memberStatusId);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET MEMBER STATUS][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), memberStatusId, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<MemberStatus> addNewMemberStatus(MemberStatusRq memberStatusRq) {
         ResponseInfo<MemberStatus> responseInfo = new ResponseInfo<>();
 

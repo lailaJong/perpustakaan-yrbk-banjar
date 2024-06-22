@@ -33,6 +33,7 @@ public class ScoreDetailController {
                 .body(responseInfo.getBody());
     }
 
+    //getScoreDetailById for info benefit in dashboard member
     @GetMapping("/id")
     ResponseEntity<Object> getScoreDetailById(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "scoreDetailId") String scoreDetailId) {

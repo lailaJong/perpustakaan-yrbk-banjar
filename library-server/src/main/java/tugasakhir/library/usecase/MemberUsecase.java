@@ -1,22 +1,18 @@
 package tugasakhir.library.usecase;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tugasakhir.library.model.entity.Member;
-import tugasakhir.library.model.entity.User;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
 import tugasakhir.library.model.request.user.UserRq;
-import tugasakhir.library.model.request.usermember.UserMemberRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.MemberRepository;
 import tugasakhir.library.repository.MemberStatusRepository;
 import tugasakhir.library.repository.UserRepository;
-import tugasakhir.library.utils.member.MembersMapper;
+import tugasakhir.library.utils.member.MembersMapperImpl;
 import tugasakhir.library.utils.scoredetail.ScoreDetailMapper;
 
 import java.util.List;
@@ -30,8 +26,6 @@ public class MemberUsecase {
     private UserRepository userRepository;
     @Autowired
     private MemberStatusRepository memberStatusRepository;
-    @Autowired
-    private UserUsecase userUsecase;
 
     public ResponseInfo<List<Member>> getAllMembers() {
         ResponseInfo<List<Member>> responseInfo = new ResponseInfo<>();
@@ -64,13 +58,28 @@ public class MemberUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<Member> getMemberByUserId(String userId) {
+        ResponseInfo<Member> responseInfo = new ResponseInfo<>();
+
+        try {
+            Member member;
+            member = memberRepository.getMemberByUserId(userId);
+            responseInfo.setSuccess(member);
+            log.info("[{}][SUCCESS GET MEMBER][ID: {}]", getClass().getSimpleName(), userId);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET MEMBER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Member> addNewMember(MemberRq memberRq) {
         ResponseInfo<Member> responseInfo = new ResponseInfo<>();
 
         try {
             Member member;
             memberRq.setMemberId(memberRepository.generateMemberId());
-            member = MembersMapper.INSTANCE.toMember(memberRq);
+            member = MembersMapperImpl.toMember(memberRq);
             memberRepository.addMember(member);
             responseInfo.setSuccess(member);
             log.info("[{}][SUCCESS ADD NEW MEMBER]", getClass().getSimpleName());
@@ -81,15 +90,15 @@ public class MemberUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Member> addNewUserMember(UserRq userRq, MemberRq memberRq) {
+    public ResponseInfo<Member> addNewMember(UserRq userRq, MemberRq memberRq) {
         ResponseInfo<Member> responseInfo = new ResponseInfo<>();
         try {
             Member member;
             memberRq.setMemberId(memberRepository.generateMemberId());
             memberRq.setUserId(userRepository.getUserByUsername(userRq.getUsername()).getUserId());
             memberRq.setMemberStatusId(memberStatusRepository.getMemberStatusByStatus("ACTIVE").getMemberStatusId());
-            memberRq.setScoreDetailId(ScoreDetailMapper.INSTANCE.getScoreDetailId(10));
-            member = MembersMapper.INSTANCE.toMember(memberRq);
+            memberRq.setScoreDetailId(ScoreDetailMapper.INSTANCE.getScoreDetailId(memberRq.getPoint()));
+            member = MembersMapperImpl.toMember(memberRq);
             memberRepository.addMember(member);
             responseInfo.setSuccess(member);
             log.info("[{}][SUCCESS ADD NEW MEMBER]", getClass().getSimpleName());
@@ -106,7 +115,7 @@ public class MemberUsecase {
         try {
             Member member = memberRepository.getMemberById(updateMemberRq.getMemberId());
             if (member != null) {
-                MembersMapper.INSTANCE.updateMemberFromUpdateMemberRq(updateMemberRq, member);
+                MembersMapperImpl.updateMemberFromUpdateMemberRq(updateMemberRq, member);
                 memberRepository.updateMember(member);
 
                 responseInfo.setSuccess();
@@ -120,7 +129,6 @@ public class MemberUsecase {
         }
         return responseInfo;
     }
-
 
     public ResponseInfo<Object> deleteMember(String memberId) {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();

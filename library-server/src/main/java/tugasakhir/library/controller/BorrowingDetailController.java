@@ -45,6 +45,33 @@ public class BorrowingDetailController {
                 .body(responseInfo.getBody());
     }
 
+
+    //get count borrowing and late status by user id for jumlah koleksi dipinjam in dashboard member
+    @GetMapping("/id")
+    ResponseEntity<Object> getCountBorrowingAndLateStatusByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                                  @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET BORROWING AND LATE STATUS BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = borrowingDetailUsecase.getCountBorrowingAndLateStatusByUserId(userId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get count return status by user id for total riwayat peminjaman in dashboard member
+    @GetMapping("/id")
+    ResponseEntity<Object> getCountReturnStatusByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                                  @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET RETURN STATUS BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = borrowingDetailUsecase.getCountReturnStatusByUserId(userId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createBorrowingDetail(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid BorrowingDetailRq borrowingDetailRq) {

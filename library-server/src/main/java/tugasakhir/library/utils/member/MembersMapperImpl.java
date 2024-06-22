@@ -1,11 +1,9 @@
 package tugasakhir.library.utils.member;
 
-import tugasakhir.library.model.entity.Author;
 import tugasakhir.library.model.entity.Member;
-import tugasakhir.library.model.request.author.AuthorRq;
-import tugasakhir.library.model.request.author.UpdateAuthorRq;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
+import tugasakhir.library.model.request.usermember.UpdateUserMemberRq;
 
 import java.util.Date;
 
@@ -13,10 +11,9 @@ import java.util.Date;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class MembersMapperImpl implements MembersMapper {
+public class MembersMapperImpl {
 
-    @Override
-    public Member toMember(MemberRq memberRq) {
+    public static Member toMember(MemberRq memberRq) {
         if (memberRq == null) {
             return null;
         }
@@ -32,11 +29,11 @@ public class MembersMapperImpl implements MembersMapper {
         member.setDateOfBirth(memberRq.getDateOfBirth());
         member.setAddress(memberRq.getAddress());
         member.setPoint(memberRq.getPoint());
+        member.setRegristrationDate(memberRq.getRegristrationDate());
         return member;
     }
 
-    @Override
-    public void updateMemberFromUpdateMemberRq(UpdateMemberRq updateMemberRq, Member member) {
+    public static void updateMemberFromUpdateMemberRq(UpdateMemberRq updateMemberRq, Member member) {
         if ( updateMemberRq == null ) {
             return;
         }
@@ -70,6 +67,36 @@ public class MembersMapperImpl implements MembersMapper {
         }
         if (updateMemberRq.getPoint() != -50){
             member.setPoint( updateMemberRq.getPoint() );
+        }
+        if ( updateMemberRq.getRegristrationDate() != null ) {
+            member.setRegristrationDate( updateMemberRq.getRegristrationDate() );
+        }
+    }
+    public static void updateMemberFromUpdateMemberRq(UpdateUserMemberRq updateUserMemberRq, Member member) {
+        if ( updateUserMemberRq == null ) {
+            return;
+        }
+
+        if ( updateUserMemberRq.getUserId() != null ) {
+            member.setUserId( updateUserMemberRq.getUserId() );
+        }
+        if ( updateUserMemberRq.getName() != null ) {
+            member.setName( updateUserMemberRq.getName() );
+        }
+        if ( updateUserMemberRq.getGender() != null ) {
+            member.setGender( updateUserMemberRq.getGender() );
+        }
+        if ( updateUserMemberRq.getPhoneNumber() != null ) {
+            member.setPhoneNumber( updateUserMemberRq.getPhoneNumber() );
+        }
+        if ( updateUserMemberRq.getPlaceOfBirth() != null ) {
+            member.setPlaceOfBirth( updateUserMemberRq.getPlaceOfBirth() );
+        }
+        if ( updateUserMemberRq.getDateOfBirth() != null ) {
+            member.setDateOfBirth( updateUserMemberRq.getDateOfBirth() );
+        }
+        if ( updateUserMemberRq.getAddress() != null ) {
+            member.setAddress( updateUserMemberRq.getAddress() );
         }
     }
 }

@@ -47,6 +47,8 @@ public class MemberRepository {
             member.setPlaceOfBirth(rs.getString("place_of_birth"));
             member.setDateOfBirth(rs.getDate("date_of_birth"));
             member.setAddress(rs.getString("address"));
+            member.setPoint(rs.getInt("point"));
+            member.setRegristrationDate(rs.getDate("registration_date"));
             return member;
         }
     }
@@ -73,6 +75,18 @@ public class MemberRepository {
             return null;
         }
     }
+
+    public Member getMemberByUserId(String userId) {
+        try{
+            log.info("[GET MEMBER BY USER ID][{}][{}]", userId, applicationProperties.getGET_MEMBER_BY_USER_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("userId", userId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_BY_USER_ID(), paramSource, new MemberRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
 
     public Member getMemberByName(String memberName) {
         try{
@@ -120,8 +134,14 @@ public class MemberRepository {
     }
 
     public String generateMemberId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("MBR%03d", suffix);
+        try{
+            log.info("[GENERATE MEMBER ID][{}]", applicationProperties.getGET_COUNT_ALL_MEMBER());
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("MBR%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }

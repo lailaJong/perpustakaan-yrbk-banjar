@@ -39,7 +39,20 @@ public class OrderDetailController {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<OrderDetail> responseInfo;
         log.info("[REQUEST RECEIVED - GET ORDER DETAIL BY ID][{}][{}]", orderId, requestId);
-        responseInfo = orderDetailUsecase.getOrderDetailyId(orderId);
+        responseInfo = orderDetailUsecase.getOrderDetailById(orderId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get count order detail by user id for jumlah koleksi dipesan in dashboard member
+    @GetMapping("/id")
+    ResponseEntity<Object> getCountOrderDetailByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                              @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET COUNT ORDER DETAIL BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = orderDetailUsecase.getCountOrderDetailByUserId(userId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

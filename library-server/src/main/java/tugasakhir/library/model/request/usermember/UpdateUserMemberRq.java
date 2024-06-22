@@ -1,4 +1,4 @@
-package tugasakhir.library.model.request.member;
+package tugasakhir.library.model.request.usermember;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,24 +6,27 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import tugasakhir.library.utils.validation.UsernameConstraint;
 
 import java.util.Date;
+
+/**
+ * @author Putri Mele
+ * on 20/06/2024
+ */
 
 @Data
 @Accessors(chain = true)
 @Schema
-public class MemberRq {
-    @JsonProperty("member_id")
-    private String memberId;
-
+public class UpdateUserMemberRq {
     @JsonProperty("user_id")
     private String userId;
 
-    @JsonProperty("member_status_id")
-    private String memberStatusId;
-
-    @JsonProperty("score_detail_id")
-    private String scoreDetailId;
+    @JsonProperty("username")
+    @NotBlank(message = "Username is mandatory")
+    @Pattern(regexp = "^[a-z0-9_]+$", message = "Username must contain only lowercase letters, numbers, and underscores without spaces")
+    @UsernameConstraint
+    private String username;
 
     @JsonProperty("name")
     @NotBlank(message = "Name is mandatory")
@@ -52,11 +55,4 @@ public class MemberRq {
     @NotBlank(message = "Address is mandatory")
     @Pattern(regexp = "^[A-Z0-9., ]+$", message = "Address must contain only uppercase letters, numbers, periods, commas, and spaces")
     private String address;
-
-    @JsonProperty("point")
-    private int point;
-
-    @JsonProperty("regristrationDate")
-    private Date regristrationDate;
 }
-

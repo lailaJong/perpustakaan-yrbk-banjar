@@ -15,7 +15,9 @@ import tugasakhir.library.model.entity.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -41,7 +43,6 @@ public class UserRepository {
             user.setRoleId(rs.getString("role_id"));
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
-            user.setEmail(rs.getString("email"));
             return user;
         }
     }
@@ -114,8 +115,28 @@ public class UserRepository {
     }
 
     public String generateUserId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_USER(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("USR%03d", suffix);
+        try{
+            log.info("[GENERATE USER ID][{}]", applicationProperties.getGET_COUNT_ALL_USER());
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_USER(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("USR%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean existsByUsername(String username) {
+        try{
+            log.info("[GET EXIST USERNAME][{}][{}]", username, applicationProperties.getGET_EXIST_USERNAME());
+            Map<String, Object> params = new HashMap<>();
+            params.put("username", username);
+
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_USERNAME(), params, Integer.class);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
     }
 }

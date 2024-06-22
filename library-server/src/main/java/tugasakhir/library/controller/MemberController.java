@@ -45,6 +45,19 @@ public class MemberController {
                 .body(responseInfo.getBody());
     }
 
+    //get member by user id after sign up/login
+    @GetMapping("/user-id")
+    ResponseEntity<Object> getMemberByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                             @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Member> responseInfo;
+        log.info("[REQUEST RECEIVED - GET MEMBER BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = memberUsecase.getMemberByUserId(userId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createMember(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid MemberRq memberRq) {

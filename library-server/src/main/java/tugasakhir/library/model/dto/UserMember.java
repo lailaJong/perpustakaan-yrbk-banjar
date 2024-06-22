@@ -1,4 +1,4 @@
-package tugasakhir.library.model.entity;
+package tugasakhir.library.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,17 +14,13 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Accessors (chain = true)
-public class Member {
-    private String memberId;
-    private String userId;
-    private String memberStatusId;
-    private String scoreDetailId;
+public class UserMember {
+    private String username;
     private String name;
     private String gender;
     private String phoneNumber;
     private String placeOfBirth;
     private Date dateOfBirth;
     private String address;
-    private int point;
-    private Date regristrationDate;
+    private Date registrationDate;
 }
