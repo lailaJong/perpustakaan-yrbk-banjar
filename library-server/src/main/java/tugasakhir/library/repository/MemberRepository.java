@@ -76,6 +76,17 @@ public class MemberRepository {
         }
     }
 
+    public List<Member> getMembersByStatusId(String statusId) {
+        try {
+            log.info("[GET MEMBER BY STATUS ID][{}][{}]", statusId, applicationProperties.getGET_MEMBER_BY_STATUS_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("statusId", statusId);
+            return jdbcTemplate.query(applicationProperties.getGET_MEMBER_BY_STATUS_ID(), paramSource, new MemberRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
     public Member getMemberByUserId(String userId) {
         try{
             log.info("[GET MEMBER BY USER ID][{}][{}]", userId, applicationProperties.getGET_MEMBER_BY_USER_ID());

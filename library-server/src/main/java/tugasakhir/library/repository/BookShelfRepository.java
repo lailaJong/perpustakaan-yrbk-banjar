@@ -66,6 +66,17 @@ public class BookShelfRepository {
         }
     }
 
+    public BookShelf getBookShelfByCode(String bookShelfCode) {
+        try {
+            log.info("[GET BOOK SHELF BY CODE][{}]", bookShelfCode);
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookShelfCode", bookShelfCode);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
     // Update a bookshelf
     public void updateBookShelf(BookShelf bookShelf) {
         try{

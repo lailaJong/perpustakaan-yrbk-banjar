@@ -14,7 +14,6 @@ import lombok.experimental.Accessors;
 @Accessors (chain = true)
 public class ScoreDetail {
     private String scoreDetailId;
-//    private int point;
     private int extraBorrowTime;
     private int extraBooksQuota;
 }

@@ -66,6 +66,16 @@ public class PublisherRepository {
         }
     }
 
+    public Publisher getPublisherByName(String publisherName) {
+        try {
+            log.info("[GET PUBLISHER BY NAME][{}][{}]", publisherName, applicationProperties.getGET_PUBLISHER_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("publisherName", publisherName);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_PUBLISHER_BY_NAME(), paramSource, new PublisherRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
 
     // Update an publisher
     public void updatePublisher(Publisher publisher) {

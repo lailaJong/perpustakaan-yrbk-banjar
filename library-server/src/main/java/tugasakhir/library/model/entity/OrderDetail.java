@@ -19,5 +19,6 @@ public class OrderDetail {
     private String userId;
     private String bookId;
     private Date orderDate;
+    private Date takingDate;
     private String status;
 }

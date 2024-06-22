@@ -5,11 +5,12 @@ import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.book.BookRq;
 import tugasakhir.library.model.request.book.UpdateBookRq;
 import tugasakhir.library.model.response.ResponseInfo;
-import tugasakhir.library.repository.BookRepository;
-import tugasakhir.library.utils.book.BooksMapper;
+import tugasakhir.library.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tugasakhir.library.utils.book.BooksMapperImpl;
+
 import java.util.List;
 
 @Component
@@ -17,30 +18,22 @@ import java.util.List;
 public class BookUsecase {
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private AuthorRepository authorRepository;
+    @Autowired
+    private PublisherRepository publisherRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private BookShelfRepository bookShelfRepository;
 
     public ResponseInfo<List<Book>> getAllBooks() {
         ResponseInfo<List<Book>> responseInfo = new ResponseInfo<>();
 
         try {
             List<Book> books;
-            books = bookRepository.getAllBooks();
-            books.addAll(bookRepository.getAllBooks());
-            responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
-        }
-        return responseInfo;
-    }
-
-    public ResponseInfo<List<Book>> getAllBooks(String status) {
-        ResponseInfo<List<Book>> responseInfo = new ResponseInfo<>();
-
-        try {
-            List<Book> books;
-            books = bookRepository.getAllBooks(status);
-            books.addAll(bookRepository.getAllBooks(status));
+            books = bookRepository.getBooksWhereStockGreaterThanOne();
+            books.addAll(bookRepository.getBooksWhereStockGreaterThanOne());
             responseInfo.setSuccess(books);
             log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
         } catch (Exception ex) {
@@ -84,9 +77,13 @@ public class BookUsecase {
         ResponseInfo<Book> responseInfo = new ResponseInfo<>();
 
         try {
-            Book book;
             bookRq.setBookId(bookRepository.generateBookId());
-            book = BooksMapper.INSTANCE.toBook(bookRq);
+            String authorId = authorRepository.getAuthorByName(bookRq.getAuthorName()).getAuthorId();
+            String categoryId = categoryRepository.getCategoryByName(bookRq.getCategoryName()).getCategoryId();
+            String publisherId = publisherRepository.getPublisherByName(bookRq.getPublisherName()).getPublisherId();
+            String bookShelfId = bookShelfRepository.getBookShelfByCode(bookRq.getBookShelfCode()).getBookShelfId();
+
+            Book book = BooksMapperImpl.toBook(bookRq, categoryId, publisherId, authorId, bookShelfId);
             bookRepository.addBook(book);
             responseInfo.setSuccess(book);
             log.info("[{}][SUCCESS ADD NEW BOOK]", getClass().getSimpleName());
@@ -103,7 +100,12 @@ public class BookUsecase {
         try {
             Book book = bookRepository.getBookById(updateBooksRq.getBookId());
             if (book != null) {
-                BooksMapper.INSTANCE.updateBookFromUpdateBookRq(updateBooksRq, book);
+                String authorId = authorRepository.getAuthorByName(updateBooksRq.getAuthorName()).getAuthorId();
+                String categoryId = categoryRepository.getCategoryByName(updateBooksRq.getCategoryName()).getCategoryId();
+                String publisherId = publisherRepository.getPublisherByName(updateBooksRq.getPublisherName()).getPublisherId();
+                String bookShelfId = bookShelfRepository.getBookShelfByCode(updateBooksRq.getBookShelfCode()).getBookShelfId();
+
+                BooksMapperImpl.updateBookFromUpdateBookRq(updateBooksRq, book, categoryId, publisherId, authorId, bookShelfId);
                 bookRepository.updateBook(book);
 
                 responseInfo.setSuccess();

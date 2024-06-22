@@ -50,6 +50,21 @@ public class PublisherUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<Publisher> getPublisherByName(String publisherName) {
+        ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
+
+        try {
+            Publisher publisher;
+            publisher = publisherRepository.getPublisherByName(publisherName);
+            responseInfo.setSuccess(publisher);
+            log.info("[{}][SUCCESS GET PUBLISHER][NAME: {}]", getClass().getSimpleName(), publisherName);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET PUBLISHER][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherName, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Publisher> addNewPublisher(PublisherRq publisherRq) {
         ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
 

@@ -3,6 +3,7 @@ package tugasakhir.library.model.request.author;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,6 +16,7 @@ public class AuthorRq {
     private String authorId;
 
     @JsonProperty("author_name")
+    @NotBlank(message = "Author name is mandatory")
     private String authorName;
 }
 

@@ -45,6 +45,18 @@ public class PublisherController {
                 .body(responseInfo.getBody());
     }
 
+    @GetMapping("/name")
+    ResponseEntity<Object> getPublisherByName(@RequestHeader(value = "request-id", required = false) String requestId,
+                                            @RequestParam(value = "publisherName") String publisherName) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Publisher> responseInfo;
+        log.info("[REQUEST RECEIVED - GET PUBLISHER BY ID][{}][{}]", publisherName, requestId);
+        responseInfo = publisherUsecase.getPublisherByName(publisherName);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createPublisher(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid PublisherRq publisherRq) {

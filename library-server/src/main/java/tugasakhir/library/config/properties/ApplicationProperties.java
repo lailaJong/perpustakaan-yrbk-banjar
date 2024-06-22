@@ -25,31 +25,25 @@ public class ApplicationProperties {
     private String GET_ALL_MEMBER = "SELECT * FROM member";
     private String GET_MEMBER_BY_ID = "SELECT * FROM member WHERE member_id = :memberId";
     private String GET_MEMBER_BY_USER_ID = "SELECT * FROM member WHERE user_id = :userId";
+    private String GET_MEMBER_BY_STATUS_ID = "SELECT * FROM members WHERE member_status_id = :statusId";
     private String GET_MEMBER_BY_NAME = "SELECT * FROM member WHERE name = :name";
     private String UPDATE_MEMBER_BY_ID = "UPDATE member SET user_id = :userId, member_status_id = :memberStatusId, score_detail_id = :scoreDetailId, name = :name, gender = :gender, " +
             "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address, point = :point, registration_date = :registrationDate WHERE member_id = :memberId";
     private String DELETE_MEMBER_BY_ID = "DELETE FROM member WHERE member_id = :memberId";
     private String GET_COUNT_ALL_MEMBER = "SELECT COUNT(*) FROM member";
-    //BOOK PLACEMENT
-    private String INSERT_BOOK_PLACEMENT = "INSERT INTO book_placement (book_placement_id, book_shelf_id, book_id) " +
-            "VALUES (:bookPlacementId, :bookShelfId, :bookId)";
-    private String GET_BOOK_PLACEMENT_BY_ID = "SELECT * FROM book_placement WHERE book_placement_id = :bookPlacementId";
-    private String UPDATE_BOOK_PLACEMENT_BY_ID = "UPDATE book_placement SET book_shelf_id = :bookShelfId, book_id = :bookId " +
-            "WHERE book_placement_id = :bookPlacementId";
-    private String DELETE_BOOK_PLACEMENT_BY_ID = "DELETE FROM book_placement WHERE book_placement_id = :bookPlacementId";
-    private String GET_ALL_BOOK_PLACEMENT = "SELECT * FROM book_placement";
-    private String GET_COUNT_ALL_BOOK_PLACEMENT = "SELECT COUNT(*) FROM book_placement";
     //BOOK
-    private String INSERT_BOOK = "INSERT INTO book (book_id, book_title, category_id, publisher_id, author_id, language, isbn, number_of_pages, publication_year, synopsis, status) " +
-            "VALUES (:bookId, :bookTitle, :categoryId, :publisherId, :authorId, :language, :isbn, :numberOfPages, :publicationYear, :synopsis, :status)";
+    private String INSERT_BOOK = "INSERT INTO book (book_id, book_title, category_id, publisher_id, author_id, book_shelf_id, language, isbn, number_of_pages, publication_year, synopsis)" +
+            "VALUES (:bookId, :bookTitle, :categoryId, :publisherId, :authorId, :bookShelfId, :language, :isbn, :numberOfPages, :publicationYear, :synopsis)";
     private String GET_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = :bookId";
     private String GET_BOOK_BY_TITLE = "SELECT * FROM book WHERE book_title = :bookTitle";
-    private String UPDATE_BOOK_BY_ID = "UPDATE book SET book_title = :bookTitle, category_id = :categoryId, publisher_id = :publisherId, author_id = :authorId, language = :language, " +
-            "isbn = :isbn, number_of_pages = :numberOfPages, publication_year = :publicationYear, synopsis = :synopsis, status = :status WHERE book_id = :bookId";
+    private String UPDATE_BOOK_BY_ID = "UPDATE book SET book_title = :bookTitle, category_id = :categoryId, publisher_id = :publisherId, author_id = :authorId, book_shelf_id = :bookShelfId, language = :language, isbn = :isbn, number_of_pages = :numberOfPages, publication_year = :publicationYear, synopsis = :synopsis WHERE book_id = :bookId";
     private String DELETE_BOOK_BY_ID = "DELETE FROM book WHERE book_id = :bookId";
     private String GET_ALL_BOOK = "SELECT * FROM book";
-    private String GET_ALL_BOOK_BY_STATUS = "SELECT * FROM book WHERE status = :status";
     private String GET_COUNT_ALL_BOOK = "SELECT COUNT(*) FROM book";
+    private String GET_BOOKS_BY_AUTHOR = "SELECT * FROM book WHERE author_id = (SELECT author_id FROM authors WHERE author_name = :authorName)";
+    private String GET_BOOKS_BY_PUBLISHER = "SELECT * FROM book WHERE publisher_id = (SELECT publisher_id FROM publishers WHERE publisher_name = :publisherName)";
+    private String GET_BOOKS_BY_CATEGORY = "SELECT * FROM book WHERE category_id = (SELECT category_id FROM categories WHERE category_name = :categoryName)";
+    private String GET_BOOKS_STOCK_GREATER_THAN_ONE = "SELECT b.* FROM book b JOIN book_stock bs ON b.book_id = bs.book_id WHERE bs.stock > 1";
     //BOOKSHLEF
     private String INSERT_BOOKSHELF = "INSERT INTO book_shelf (book_shelf_id, book_shelf_code) VALUES (:bookShelfId, :bookShelfCode)";
     private String GET_BOOKSHELF_BY_ID = "SELECT * FROM book_shelf WHERE book_shelf_id = :bookShelfId";
@@ -57,6 +51,7 @@ public class ApplicationProperties {
     private String DELETE_BOOKSHELF_BY_ID = "DELETE FROM book_shelf WHERE book_shelf_id = :bookShelfId";
     private String GET_ALL_BOOKSHELF = "SELECT * FROM book_shelf";
     private String GET_COUNT_ALL_BOOKSHELF = "SELECT COUNT(*) FROM book_shelf";
+    private String GET_BOOK_SHELF_BY_CODE = "SELECT book_shelf_id FROM book_shelf WHERE book_shelf_code = :bookShelfCode";
     //BOOK STOCK
     private String INSERT_BOOK_STOCK = "INSERT INTO book_stock (book_stock_id, book_id, stock) VALUES (:bookStockId, :bookId, :stock)";
     private String GET_BOOK_STOCK_BY_ID = "SELECT * FROM book_stock WHERE book_stock_id = :bookStockId";
@@ -83,6 +78,7 @@ public class ApplicationProperties {
     private String DELETE_CATEGORY_BY_ID = "DELETE FROM category WHERE category_id = :categoryId";
     private String GET_ALL_CATEGORY = "SELECT * FROM category";
     private String GET_COUNT_ALL_CATEGORY = "SELECT COUNT(*) FROM category";
+    private String GET_CATEGORY_BY_NAME = "SELECT category_id FROM category WHERE category_name = :categoryName";
     //MEMBER STATUS
     private String INSERT_MEMBER_STATUS = "INSERT INTO member_status (member_status_id, status) VALUES (:memberStatusId, :status)";
     private String GET_MEMBER_STATUS_BY_ID = "SELECT * FROM member_status WHERE member_status_id = :memberStatusId";
@@ -114,6 +110,7 @@ public class ApplicationProperties {
     private String DELETE_PUBLISHER_BY_ID = "DELETE FROM publisher WHERE publisher_id = :publisherId";
     private String GET_ALL_PUBLISHER = "SELECT * FROM publisher";
     private String GET_COUNT_ALL_PUBLISHER = "SELECT COUNT(*) FROM publisher";
+    private String GET_PUBLISHER_BY_NAME = "SELECT publisher_id FROM publisher WHERE publisher_name = :publisherName";
     //ROLE
     private String INSERT_ROLE = "INSERT INTO role (role_id, role_name) VALUES (:roleId, :roleName)";
     private String GET_ROLE_BY_ID = "SELECT * FROM role WHERE role_id = :roleId";
@@ -139,10 +136,10 @@ public class ApplicationProperties {
     private String GET_COUNT_ALL_USER = "SELECT COUNT(*) FROM user";
     private String GET_EXIST_USERNAME = "SELECT COUNT(*) FROM user WHERE username = :username";
     //OTHERS
-    private String borrowedStatus = "Dipinjam";
-    private String lateStatus = "Telat";
-    private String returnedStatus = "Dikembalikan";
     private String orderedStatus = "Dipesan";
     private String cancelledStatus = "Dibatalkan";
     private String completedStatus = "Selesai";
+    private String borrowedStatus = "Dipinjam";
+    private String lateStatus = "Telat";
+    private String returnedStatus = "Selesai";
 }

@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import tugasakhir.library.utils.validation.StatusConstraint;
 
 /**
  * @author Putri Mele
@@ -20,11 +19,10 @@ public class Book {
         private String categoryId;
         private String publisherId;
         private String authorId;
+        private String bookShelfId;
         private String language;
         private String isbn;
         private int numberOfPages;
         private String publicationYear;
         private String synopsis;
-        @StatusConstraint
-        private String status;
 }

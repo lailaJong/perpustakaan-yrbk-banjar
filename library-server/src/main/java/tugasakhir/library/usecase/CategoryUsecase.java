@@ -50,6 +50,21 @@ public class CategoryUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<Category> getCategoryByName(String categoryName) {
+        ResponseInfo<Category> responseInfo = new ResponseInfo<>();
+
+        try {
+            Category category;
+            category = categoryRepository.getCategoryByName(categoryName);
+            responseInfo.setSuccess(category);
+            log.info("[{}][SUCCESS GET CATEGORY][NAME: {}]", getClass().getSimpleName(), categoryName);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET CATEGORY][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), categoryName, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Category> addNewCategory(CategoryRq categoryRq) {
         ResponseInfo<Category> responseInfo = new ResponseInfo<>();
 

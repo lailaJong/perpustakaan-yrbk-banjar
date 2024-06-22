@@ -23,17 +23,11 @@ public class BookController {
     private BookUsecase bookUsecase;
 
     @GetMapping("/all")
-    ResponseEntity<Object> getAllBooks(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "borrow-status", required = false) String status) {
+    ResponseEntity<Object> getAllBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Book>> responseInfo;
-        if (status == null) {
-            log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
-            responseInfo = bookUsecase.getAllBooks();
-        } else {
-            log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}][{}]", requestId, status);
-            responseInfo = bookUsecase.getAllBooks(status);
-        }
+        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
+        responseInfo = bookUsecase.getAllBooks();
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

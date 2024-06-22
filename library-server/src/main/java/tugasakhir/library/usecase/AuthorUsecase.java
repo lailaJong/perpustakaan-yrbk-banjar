@@ -50,6 +50,21 @@ public class AuthorUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<Author> getAuthorByName(String authorName) {
+        ResponseInfo<Author> responseInfo = new ResponseInfo<>();
+
+        try {
+            Author author;
+            author = authorRepository.getAuthorByName(authorName);
+            responseInfo.setSuccess(author);
+            log.info("[{}][SUCCESS GET AUTHOR][NAME: {}]", getClass().getSimpleName(), authorName);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET AUTHOR][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorName, ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Author> addNewAuthor(AuthorRq authorRq) {
         ResponseInfo<Author> responseInfo = new ResponseInfo<>();
 

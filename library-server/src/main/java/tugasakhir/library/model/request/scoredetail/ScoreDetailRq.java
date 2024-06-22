@@ -2,6 +2,7 @@ package tugasakhir.library.model.request.scoredetail;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -9,17 +10,15 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Schema
 public class ScoreDetailRq {
-    //score detail id default, hanya ada 10 dengan schema benefit tertentu
     @JsonProperty("scoreDetailId")
     private String scoreDetailId;
 
-//    @JsonProperty("point")
-//    private int point;
-
     @JsonProperty("extraBorrowTime")
+    @Min(value = 0, message = "Extra Borrow Time must be at least 0")
     private int extraBorrowTime;
 
     @JsonProperty("extraBooksQuota")
+    @Min(value = 0, message = "Extra Books Quota must be at least 0")
     private int extraBooksQuota;
 }
 

@@ -45,6 +45,18 @@ public class CategoryController {
                 .body(responseInfo.getBody());
     }
 
+    @GetMapping("/name")
+    ResponseEntity<Object> getCategoryByName(@RequestHeader(value = "request-id", required = false) String requestId,
+                                           @RequestParam(value = "categoryName") String categoryName) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Category> responseInfo;
+        log.info("[REQUEST RECEIVED - GET CATEGORY BY ID][{}][{}]", categoryName, requestId);
+        responseInfo = categoryUsecase.getCategoryByName(categoryName);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createCategory(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid CategoryRq categoryRq) {

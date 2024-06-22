@@ -1,4 +1,4 @@
-package tugasakhir.library.model.entity;
+package tugasakhir.library.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors (chain = true)
-public class BookPlacement {
-    private String bookPlacementId;
-    private String bookShelfId;
-    private String bookId;
+public class UpdateMemberStatusRq {
+    private String memberId;
+    private String memberStatusId;
 }

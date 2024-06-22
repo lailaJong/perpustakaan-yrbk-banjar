@@ -66,6 +66,18 @@ public class CategoryRepository {
         }
     }
 
+
+    public Category getCategoryByName(String categoryName) {
+        try {
+            log.info("[GET CATEGORY BY NAME][{}][{}]", categoryName, applicationProperties.getGET_CATEGORY_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("categoryName", categoryName);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
     // Update a category
     public void updateCategory(Category category) {
         try{

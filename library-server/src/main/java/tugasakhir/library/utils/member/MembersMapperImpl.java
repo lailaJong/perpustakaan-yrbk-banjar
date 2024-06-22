@@ -1,11 +1,21 @@
 package tugasakhir.library.utils.member;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.entity.Member;
+import tugasakhir.library.model.entity.MemberStatus;
+import tugasakhir.library.model.entity.ScoreDetail;
+import tugasakhir.library.model.entity.User;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
 import tugasakhir.library.model.request.usermember.UpdateUserMemberRq;
+import tugasakhir.library.repository.MemberStatusRepository;
+import tugasakhir.library.repository.ScoreDetailRepository;
+import tugasakhir.library.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Putri Mele
@@ -98,5 +108,35 @@ public class MembersMapperImpl {
         if ( updateUserMemberRq.getAddress() != null ) {
             member.setAddress( updateUserMemberRq.getAddress() );
         }
+    }
+
+    public static MemberDetail toMemberDetail(Member member, UserRepository userRepository, ScoreDetailRepository scoreDetailRepository, MemberStatusRepository memberStatusRepository) {
+        if (member == null) {
+            return null;
+        }
+        MemberDetail memberDetail = new MemberDetail();
+        memberDetail.setName(member.getName());
+        User user = userRepository.getUserById(member.getUserId());
+        memberDetail.setUsername(user.getUsername());
+        memberDetail.setGender(member.getGender());
+        memberDetail.setPlaceOfBirth(member.getPlaceOfBirth());
+        memberDetail.setDateOfBirth(member.getDateOfBirth());
+        memberDetail.setAddress(member.getAddress());
+        memberDetail.setPhoneNumber(member.getPhoneNumber());
+        memberDetail.setPoint(member.getPoint());
+        ScoreDetail scoreDetail = scoreDetailRepository.getScoreDetailById(member.getScoreDetailId());
+        memberDetail.setExtraBorrowTime(scoreDetail.getExtraBorrowTime());
+        memberDetail.setExtraBooksQuota(scoreDetail.getExtraBooksQuota());
+        MemberStatus status = memberStatusRepository.getMemberStatusById(member.getMemberStatusId());
+        memberDetail.setStatus(status.getStatus());
+        return memberDetail;
+    }
+
+    public static List<MemberDetail> toMemberDetailList(List<Member> members, UserRepository userRepository, ScoreDetailRepository scoreDetailRepository, MemberStatusRepository memberStatusRepository) {
+        List<MemberDetail> memberDetails = new ArrayList<>();
+        for (Member member : members) {
+            memberDetails.add(toMemberDetail(member, userRepository, scoreDetailRepository, memberStatusRepository));
+        }
+        return memberDetails;
     }
 }
