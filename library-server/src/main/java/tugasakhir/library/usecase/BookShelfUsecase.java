@@ -9,7 +9,7 @@ import tugasakhir.library.model.request.bookshelf.BookShelfRq;
 import tugasakhir.library.model.request.bookshelf.UpdateBookShelfRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.BookShelfRepository;
-import tugasakhir.library.utils.bookshelf.BookShelfMapper;
+import tugasakhir.library.utils.bookshelf.BookShelfMapperImpl;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class BookShelfUsecase {
     @Autowired
     private BookShelfRepository bookShelfRepository;
 
-    public ResponseInfo<List<BookShelf>> getAllBookShelfs() {
+    public ResponseInfo<List<BookShelf>> getAllBookShelves() {
         ResponseInfo<List<BookShelf>> responseInfo = new ResponseInfo<>();
 
         try {
@@ -27,9 +27,24 @@ public class BookShelfUsecase {
             bookShelves = bookShelfRepository.getAllBookShelves();
             bookShelves.addAll(bookShelfRepository.getAllBookShelves());
             responseInfo.setSuccess(bookShelves);
-            log.info("[{}][SUCCESS GET ALL BOOK SHELF][DATA SIZE: {}]", getClass().getSimpleName(), bookShelves.size());
+            log.info("[{}][SUCCESS GET ALL BOOK SHELVES][DATA SIZE: {}]", getClass().getSimpleName(), bookShelves.size());
         } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            log.info("[{}][FAILED GET ALL BOOK SHELVES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<BookShelf>> getBookShelfByCode(String code) {
+        ResponseInfo<List<BookShelf>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List <BookShelf> bookShelf;
+            bookShelf = bookShelfRepository.getBookShelfByCode(code);
+            responseInfo.setSuccess(bookShelf);
+            log.info("[{}][SUCCESS GET BOOK SHELF][CODE: {}]", getClass().getSimpleName(), code);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET BOOK SHELF][CODE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), code, ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -56,7 +71,7 @@ public class BookShelfUsecase {
         try {
             BookShelf bookShelf;
             bookShelfRq.setBookShelfId(bookShelfRepository.generateBookShelfId());
-            bookShelf = BookShelfMapper.INSTANCE.toBookShelf(bookShelfRq);
+            bookShelf = BookShelfMapperImpl.toBookShelf(bookShelfRq);
             bookShelfRepository.addBookShelf(bookShelf);
             responseInfo.setSuccess(bookShelf);
             log.info("[{}][SUCCESS ADD NEW BOOK SHELF]", getClass().getSimpleName());
@@ -73,7 +88,7 @@ public class BookShelfUsecase {
         try {
             BookShelf bookShelf = bookShelfRepository.getBookShelfById(updateBookShelfRq.getBookShelfId());
             if (bookShelf != null) {
-                BookShelfMapper.INSTANCE.updateBookShelfFromUpdateBookShelfRq(updateBookShelfRq, bookShelf);
+                BookShelfMapperImpl.updateBookShelfFromUpdateBookShelfRq(updateBookShelfRq, bookShelf);
                 bookShelfRepository.updateBookShelf(bookShelf);
 
                 responseInfo.setSuccess();

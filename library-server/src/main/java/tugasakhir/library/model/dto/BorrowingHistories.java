@@ -1,4 +1,4 @@
-package tugasakhir.library.model.entity;
+package tugasakhir.library.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +14,13 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Accessors (chain = true)
-public class OrderDetail {
-    private String orderId;
-    private String userId;
+public class BorrowingHistories {
+    private String borrowingId;
+    private String memberName;
     private String bookId;
-    private Date orderDate;
-    private Date takingDate;
     private String status;
+    private Date borrowingDate;
+    private Date returnDate;
+    private Date actualReturnDate;
 }
+

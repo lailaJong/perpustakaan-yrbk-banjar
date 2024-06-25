@@ -1,10 +1,10 @@
 package tugasakhir.library.model.exception;
 
-import com.practice.bookmanagement.model.enums.CompletionStatus;
+import tugasakhir.library.model.enums.CompletionStatus;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends CommonException {
-    private static final String DISPLAY_MESSAGE = "The Book is not found";
+    private static final String DISPLAY_MESSAGE = "The data is not found";
     private static final String MESSAGE = "Data of the book is not found";
     private static final String CODE = "03";
     private static final String TYPE = "Bad Request";

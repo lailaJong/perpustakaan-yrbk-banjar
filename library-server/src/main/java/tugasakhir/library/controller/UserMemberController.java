@@ -42,7 +42,7 @@ public class UserMemberController {
     private UserMemberUsecase userMemberUsecase;
 
     //pendaftaran anggota
-    @PostMapping("/createUserAndMember")
+    @PostMapping("/create")
     ResponseEntity<Object> createUserAndMember(@RequestHeader(value = "request-id", required = false) String requestId,
                                                @RequestBody @Valid UserMemberRq userMemberRq) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -92,12 +92,12 @@ public class UserMemberController {
                 .body(responseInfo.getBody());
     }
 
-    //edit user member by user id for edit profile in member dashboard
+    //update user and member by user id for edit profile in member dashboard
     @PutMapping("/update")
     public ResponseEntity<Object> updateUserMember(@RequestHeader(value = "request-id", required = false) String requestId,
                                                    @RequestBody @Valid UpdateUserMemberRq updateUserMemberRq) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        log.info("[REQUEST RECEIVED - UPDATE USER MEMBER][{}][PAYLOAD: {}]", requestId, updateUserMemberRq);
+        log.info("[REQUEST RECEIVED - UPDATE USER AND MEMBER][{}][PAYLOAD: {}]", requestId, updateUserMemberRq);
         ResponseInfo<Object> responseInfo = userMemberUsecase.updateUserMember(updateUserMemberRq);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())

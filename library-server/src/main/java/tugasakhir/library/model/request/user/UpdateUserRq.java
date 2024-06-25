@@ -24,6 +24,6 @@ public class UpdateUserRq {
 
     @JsonProperty("password")
     @NotBlank(message = "Password is mandatory")
-    @Pattern(regexp = "^[a-zA-Z0-9._@]+$", message = "Password must contain only letters, numbers, and . _ @ characters without spaces")
+    @Pattern(regexp = "\\S+", message = "Password cannot contain spaces")
     private String password;
 }

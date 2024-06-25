@@ -9,7 +9,7 @@ import tugasakhir.library.model.request.author.AuthorRq;
 import tugasakhir.library.model.request.author.UpdateAuthorRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.AuthorRepository;
-import tugasakhir.library.utils.author.AuthorsMapper;
+import tugasakhir.library.utils.author.AuthorsMapperImpl;
 
 import java.util.List;
 
@@ -50,16 +50,16 @@ public class AuthorUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Author> getAuthorByName(String authorName) {
-        ResponseInfo<Author> responseInfo = new ResponseInfo<>();
+    public ResponseInfo<List<Author>> getAuthorsByName(String authorName) {
+        ResponseInfo<List<Author>> responseInfo = new ResponseInfo<>();
 
         try {
-            Author author;
-            author = authorRepository.getAuthorByName(authorName);
+            List <Author> author;
+            author = authorRepository.getAuthorsByName(authorName);
             responseInfo.setSuccess(author);
-            log.info("[{}][SUCCESS GET AUTHOR][NAME: {}]", getClass().getSimpleName(), authorName);
+            log.info("[{}][SUCCESS GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
         } catch (Exception ex) {
-            log.info("[{}][FAILED GET AUTHOR][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorName, ex);
+            log.info("[{}][FAILED GET AUTHORS BY NAME][{}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorName, ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -71,7 +71,7 @@ public class AuthorUsecase {
         try {
             Author author;
             authorRq.setAuthorId(authorRepository.generateAuthorId());
-            author = AuthorsMapper.INSTANCE.toAuthor(authorRq);
+            author = AuthorsMapperImpl.toAuthor(authorRq);
             authorRepository.addAuthor(author);
             responseInfo.setSuccess(author);
             log.info("[{}][SUCCESS ADD NEW AUTHOR]", getClass().getSimpleName());
@@ -88,7 +88,7 @@ public class AuthorUsecase {
         try {
             Author author = authorRepository.getAuthorById(updateAuthorRq.getAuthorId());
             if (author != null) {
-                AuthorsMapper.INSTANCE.updateAuthorFromUpdateAuthorRq(updateAuthorRq, author);
+                AuthorsMapperImpl.updateAuthorFromUpdateAuthorRq(updateAuthorRq, author);
                 authorRepository.updateAuthor(author);
 
                 responseInfo.setSuccess();

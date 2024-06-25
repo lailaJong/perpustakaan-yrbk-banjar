@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 public class ApplicationProperties {
     //AUTHOR
     private String INSERT_AUTHOR = "INSERT INTO author (author_id, author_name) VALUES (:authorId, :authorName)";
-    private String GET_ALL_AUTHOR = "SELECT * FROM author";
+    private String GET_ALL_AUTHOR = "SELECT * FROM authors";
     private String GET_AUTHOR_BY_ID = "SELECT * FROM author WHERE author_id = :authorId";
-    private String GET_AUTHOR_BY_NAME = "SELECT * FROM author WHERE author_name = :authorName";
+    private String GET_AUTHOR_BY_NAME = "SELECT * FROM authors WHERE author_name = :authorName";
+    private String GET_AUTHORS_BY_NAME = "SELECT * FROM authors WHERE author_name LIKE :authorName";
     private String UPDATE_AUTHOR_BY_ID = "UPDATE author SET author_name = :authorName WHERE author_id = :authorId";
-    private String DELETE_AUTHOR_BY_ID = "DELETE FROM author WHERE author_id = :authorId";
+    private String DELETE_AUTHOR_BY_ID = "DELETE FROM authors WHERE author_id = :authorId";
     private String GET_COUNT_ALL_AUTHOR = "SELECT COUNT(*) FROM author";
     //MEMBER
     private String INSERT_MEMBER = "INSERT INTO member (member_id, user_id, member_status_id, score_detail_id, name, gender, phone_number, place_of_birth, date_of_birth, address, point, registration_date) " +
@@ -35,7 +36,14 @@ public class ApplicationProperties {
     private String INSERT_BOOK = "INSERT INTO book (book_id, book_title, category_id, publisher_id, author_id, book_shelf_id, language, isbn, number_of_pages, publication_year, synopsis)" +
             "VALUES (:bookId, :bookTitle, :categoryId, :publisherId, :authorId, :bookShelfId, :language, :isbn, :numberOfPages, :publicationYear, :synopsis)";
     private String GET_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = :bookId";
-    private String GET_BOOK_BY_TITLE = "SELECT * FROM book WHERE book_title = :bookTitle";
+    private String GET_BOOK_DETAIL_BY_ID = "SELECT b.book_id, b.book_title, a.author_name, p.publisher_name, c.category_name, b.publication_year, b.stock, b.language, b.isbn, b.number_of_pages, b.book_shelf_id, b.synopsis" +
+            " FROM" +
+            " books b" +
+            " INNER JOIN authors a ON b.author_id = a.author_id" +
+            " INNER JOIN publishers p ON b.publisher_id = p.publisher_id" +
+            " INNER JOIN categories c ON b.category_id = c.category_id" +
+            " INNER JOIN book_shelves bs ON b.book_shelf_id = bs.book_shelf_id";
+    private String GET_BOOK_BY_TITLE = "SELECT * FROM book WHERE book_title LIKE :bookTitle";
     private String UPDATE_BOOK_BY_ID = "UPDATE book SET book_title = :bookTitle, category_id = :categoryId, publisher_id = :publisherId, author_id = :authorId, book_shelf_id = :bookShelfId, language = :language, isbn = :isbn, number_of_pages = :numberOfPages, publication_year = :publicationYear, synopsis = :synopsis WHERE book_id = :bookId";
     private String DELETE_BOOK_BY_ID = "DELETE FROM book WHERE book_id = :bookId";
     private String GET_ALL_BOOK = "SELECT * FROM book";
@@ -49,36 +57,51 @@ public class ApplicationProperties {
     private String GET_BOOKSHELF_BY_ID = "SELECT * FROM book_shelf WHERE book_shelf_id = :bookShelfId";
     private String UPDATE_BOOKSHELF_BY_ID = "UPDATE book_shelf SET book_shelf_code = :bookShelfCode WHERE book_shelf_id = :bookShelfId";
     private String DELETE_BOOKSHELF_BY_ID = "DELETE FROM book_shelf WHERE book_shelf_id = :bookShelfId";
-    private String GET_ALL_BOOKSHELF = "SELECT * FROM book_shelf";
+    private String GET_ALL_BOOKSHELF = "SELECT * FROM book_shelves";
     private String GET_COUNT_ALL_BOOKSHELF = "SELECT COUNT(*) FROM book_shelf";
-    private String GET_BOOK_SHELF_BY_CODE = "SELECT book_shelf_id FROM book_shelf WHERE book_shelf_code = :bookShelfCode";
+    private String GET_BOOK_SHELF_BY_CODE = "SELECT * FROM book_shelves WHERE book_shelf_code LIKE :bookShelfCode";
     //BOOK STOCK
     private String INSERT_BOOK_STOCK = "INSERT INTO book_stock (book_stock_id, book_id, stock) VALUES (:bookStockId, :bookId, :stock)";
     private String GET_BOOK_STOCK_BY_ID = "SELECT * FROM book_stock WHERE book_stock_id = :bookStockId";
+    private String GET_BOOK_STOCK_BY_BOOK_ID = "SELECT * FROM book_stock WHERE book_id = :bookId";
     private String UPDATE_BOOK_STOCK_BY_ID = "UPDATE book_stock SET book_id = :bookId, stock = :stock WHERE book_stock_id = :bookStockId";
     private String DELETE_BOOK_STOCK_BY_ID = "DELETE FROM book_stock WHERE book_stock_id = :bookStockId";
     private String GET_ALL_BOOK_STOCK = "SELECT * FROM book_stock";
+    private String GET_ALL_BOOK_STOCK_DETAILS = "SELECT bs.book_stock_id AS bookStockId, bs.book_id AS bookId, b.book_title AS bookTitle, bs.stock AS stock FROM book_stock bs JOIN book b ON bs.book_id = b.book_id";
+    private String GET_ALL_BOOK_STOCK_DETAILS_BY_BOOK_TITLE = "SELECT bs.book_stock_id AS bookStockId, bs.book_id AS bookId, b.book_title AS bookTitle, bs.stock AS stock FROM book_stock bs JOIN book b ON bs.book_id = b.book_id WHERE b.book_title = :bookTitle";
     private String GET_COUNT_ALL_BOOK_STOCK = "SELECT COUNT(*) FROM book_stock";
     //BORROWING DETAIL
     private String INSERT_BORROWING_DETAIL = "INSERT INTO borrowing_detail (borrowing_id, user_id, book_id, borrowing_date, return_date, actual_return_date, status) " +
             "VALUES (:borrowingId, :userId, :bookId, :borrowingDate, :returnDate, :actualReturnDate, :status)";
     private String GET_BORROWING_DETAIL_BY_ID = "SELECT * FROM borrowing_detail WHERE borrowing_id = :borrowingId";
-    private String GET_COUNT_RETURN_STATUS_BY_USER_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE user_id = :userId AND status = :returnStatus";
-    private String GET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE user_id = :userId AND status = :borrowingStatus OR status = :lateStatus";
+    private String GET_COUNT_RETURN_STATUS_BY_USER_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE user_id = :userId AND status = :returnStatus OR status = :lostStatus";
+    private String GET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE user_id = :userId AND status = :borrowingStatus";
     private String UPDATE_BORROWING_DETAIL_BY_ID = "UPDATE borrowing_detail SET user_id = :userId, book_id = :bookId, borrowing_date = :borrowingDate, " +
             "return_date = :returnDate, actual_return_date = :actualReturnDate, status = :status " +
             "WHERE borrowing_id = :borrowingId";
     private String DELETE_BORROWING_DETAIL_BY_ID = "DELETE FROM borrowing_detail WHERE borrowing_id = :borrowingId";
     private String GET_ALL_BORROWING_DETAIL = "SELECT * FROM borrowing_detail";
+    private String GET_ALL_BORROWING_DETAILS_BY_USER_ID = "SELECT b.borrowing_id, bk.book_title, b.status, b.borrowing_date, b.return_date " +
+            "FROM borrowing b INNER JOIN book bk ON b.book_id = bk.book_id WHERE b.status = :status";
+    private String GET_ALL_BORROWING_DETAILS_BY_USER_ID_AND_BOOK_TITLE = "SELECT b.borrowing_id, bk.book_title, b.status, b.borrowing_date, b.return_date " +
+            "FROM borrowing b INNER JOIN book bk ON b.book_id = bk.book_id WHERE b.status = :status AND bk.book_title LIKE :bookTitle";
+    private String GET_ALL_BORROWING_DETAILS_BY_STATUS = "SELECT bd.borrowingId, m.title, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
+            "bd.status = :status";
+    private String GET_ALL_BORROWING_DETAILS_USER_BY_USER_ID = "SELECT bd.borrowingId, b.bookTitle, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Book b ON bd.bookId = b.bookId WHERE " +
+            "bd.userId = :userId AND bd.status = :returnedStatus OR bd.status = :lostStatus";
+    private String GET_ALL_BORROWING_DETAILS_USER_BY_USER_ID_AND_BOOK_TILTE = "SELECT bd.borrowingId, b.bookTitle, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Book b ON bd.bookId = b.bookId WHERE " +
+            "bd.userId = :userId AND bd.status = :returnedStatus OR bd.status = :lostStatus AND b.bookTitle LIKE :bookTitle";
+    private String GET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
+            "bd.status = :status AND m.name LIKE :name";
     private String GET_COUNT_ALL_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail";
     //CATEGORY
     private String INSERT_CATEGORY = "INSERT INTO category (category_id, category_name) VALUES (:categoryId, :categoryName)";
     private String GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE category_id = :categoryId";
     private String UPDATE_CATEGORY_BY_ID = "UPDATE category SET category_name = :categoryName WHERE category_id = :categoryId";
     private String DELETE_CATEGORY_BY_ID = "DELETE FROM category WHERE category_id = :categoryId";
-    private String GET_ALL_CATEGORY = "SELECT * FROM category";
+    private String GET_ALL_CATEGORIES = "SELECT * FROM categories";
     private String GET_COUNT_ALL_CATEGORY = "SELECT COUNT(*) FROM category";
-    private String GET_CATEGORY_BY_NAME = "SELECT category_id FROM category WHERE category_name = :categoryName";
+    private String GET_CATEGORY_BY_NAME = "SELECT * FROM category WHERE category_name LIKE :categoryName";
     //MEMBER STATUS
     private String INSERT_MEMBER_STATUS = "INSERT INTO member_status (member_status_id, status) VALUES (:memberStatusId, :status)";
     private String GET_MEMBER_STATUS_BY_ID = "SELECT * FROM member_status WHERE member_status_id = :memberStatusId";
@@ -100,8 +123,12 @@ public class ApplicationProperties {
     private String GET_ORDER_DETAIL_BY_ID = "SELECT * FROM order_detail WHERE order_id = :orderId";
     private String UPDATE_ORDER_DETAIL_BY_ID = "UPDATE order_detail SET user_id = :userId, book_id = :bookId, order_date = :orderDate, status = :status WHERE order_id = :orderId";
     private String DELETE_ORDER_DETAIL_BY_ID = "DELETE FROM order_detail WHERE order_id = :orderId";
-    private String GET_COUNT_ORDER_DETAIL_BY_USER_ID = "SELECT COUNT(*) FROM order_detail WHERE user_id = :user_id AND status = :orderStatus";
+    private String GET_COUNT_ORDER_DETAIL_BY_USER_ID = "SELECT COUNT(*) FROM order_detail WHERE user_id = :userId AND status = :orderStatus";
     private String GET_ALL_ORDER_DETAIL = "SELECT * FROM order_detail";
+    private String GET_ALL_ORDER_DETAILS_BY_USER_ID = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
+            "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status";
+    private String GET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
+            "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status AND b.book_title LIKE :bookTitle";
     private String GET_COUNT_ALL_ORDER_DETAIL = "SELECT COUNT(*) FROM order_detail";
     //PUBLISHER
     private String INSERT_PUBLISHER = "INSERT INTO publisher (publisher_id, publisher_name) VALUES (:publisherId, :publisherName)";
@@ -110,7 +137,7 @@ public class ApplicationProperties {
     private String DELETE_PUBLISHER_BY_ID = "DELETE FROM publisher WHERE publisher_id = :publisherId";
     private String GET_ALL_PUBLISHER = "SELECT * FROM publisher";
     private String GET_COUNT_ALL_PUBLISHER = "SELECT COUNT(*) FROM publisher";
-    private String GET_PUBLISHER_BY_NAME = "SELECT publisher_id FROM publisher WHERE publisher_name = :publisherName";
+    private String GET_PUBLISHER_BY_NAME = "SELECT * FROM publishers WHERE publisher_name LIKE :publisherName";
     //ROLE
     private String INSERT_ROLE = "INSERT INTO role (role_id, role_name) VALUES (:roleId, :roleName)";
     private String GET_ROLE_BY_ID = "SELECT * FROM role WHERE role_id = :roleId";
@@ -140,6 +167,6 @@ public class ApplicationProperties {
     private String cancelledStatus = "Dibatalkan";
     private String completedStatus = "Selesai";
     private String borrowedStatus = "Dipinjam";
-    private String lateStatus = "Telat";
+    private String lostStatus = "Hilang";
     private String returnedStatus = "Selesai";
 }

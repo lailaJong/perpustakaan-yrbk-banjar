@@ -110,8 +110,8 @@ public class MemberController {
                 .body(responseInfo.getBody());
     }
 
-    //get member by user id after sign up/login
-    @GetMapping("/user-id")
+    //get member by user id after login
+    @GetMapping("/userId")
     ResponseEntity<Object> getMemberByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
                                              @RequestParam(value = "userId") String userId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();

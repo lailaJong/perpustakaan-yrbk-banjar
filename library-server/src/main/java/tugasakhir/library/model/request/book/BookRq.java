@@ -2,6 +2,7 @@ package tugasakhir.library.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -85,6 +86,7 @@ public class BookRq {
 
     @JsonProperty("language")
     @NotBlank(message = "Language is mandatory")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Language must contain only alphabetic characters and spaces")
     private String language;
 
     @JsonProperty("isbn")
@@ -94,6 +96,7 @@ public class BookRq {
 
     @JsonProperty("number_of_pages")
     @Min(value = 1, message = "Number of pages must be at least 1")
+    @Max(value = 1500, message = "Number of pages must be at most 1500")
     private int numberOfPages;
 
     @JsonProperty("publication_year")
@@ -104,5 +107,10 @@ public class BookRq {
     @JsonProperty("synopsis")
     @NotBlank(message = "Synopsis is mandatory")
     private String synopsis;
+
+    @JsonProperty("stock")
+    @Min(value = 1, message = "Stock must be at least 1")
+    @Max(value = 99, message = "Stock must be at most 99")
+    private int stock;
 }
 

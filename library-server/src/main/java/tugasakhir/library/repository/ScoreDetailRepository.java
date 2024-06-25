@@ -38,7 +38,6 @@ public class ScoreDetailRepository {
         public ScoreDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
             ScoreDetail scoreDetail = new ScoreDetail();
             scoreDetail.setScoreDetailId(rs.getString("score_detail_id"));
-//            scoreDetail.setPoint(rs.getInt("point"));
             scoreDetail.setExtraBorrowTime(rs.getInt("extra_borrow_time"));
             scoreDetail.setExtraBooksQuota(rs.getInt("extra_books_quota"));
             return scoreDetail;

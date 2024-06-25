@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
+import tugasakhir.library.model.dto.BookStockDetail;
 import tugasakhir.library.model.entity.BookStock;
 
 import java.sql.ResultSet;
@@ -44,6 +45,18 @@ public class BookStockRepository {
         }
     }
 
+    private static final class BookStockDetailRowMapper implements RowMapper<BookStockDetail> {
+        @Override
+        public BookStockDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+            BookStockDetail bookStockDetail = new BookStockDetail();
+            bookStockDetail.setBookStockId(rs.getString("book_stock_id"));
+            bookStockDetail.setBookId(rs.getString("book_id"));
+            bookStockDetail.setBookTitle(rs.getString("book_title"));
+            bookStockDetail.setStock(rs.getInt("stock"));
+            return bookStockDetail;
+        }
+    }
+
     // Add a book stock
     public void addBookStock(BookStock bookStock) {
         try{
@@ -61,6 +74,18 @@ public class BookStockRepository {
             log.info("[GET BOOK STOCK BY ID][{}][{}}]", bookStockId, applicationProperties.getGET_BOOK_STOCK_BY_ID());
             SqlParameterSource paramSource = new MapSqlParameterSource("bookStockId", bookStockId);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_STOCK_BY_ID(), paramSource, new BookStockRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get a book stock by book id
+    public BookStock getBookStockByBookId(String bookId) {
+        try{
+            log.info("[GET BOOK STOCK BY BOOK ID][{}][{}}]", bookId, applicationProperties.getGET_BOOK_STOCK_BY_BOOK_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookId", bookId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_STOCK_BY_BOOK_ID(), paramSource, new BookStockRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
@@ -94,6 +119,28 @@ public class BookStockRepository {
         try{
             log.info("[GET ALL BOOK STOCK][{}]", applicationProperties.getGET_ALL_BOOK_STOCK());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK(), new BookStockRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<BookStockDetail> getAllBookStockDetails() {
+        try{
+            log.info("[GET ALL BOOK STOCK DETAILS][{}]", applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS(), new BookStockDetailRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<BookStockDetail> getAllBookStockDetailsByBookTitle(String bookTitle) {
+        try{
+            bookTitle = "%".concat(bookTitle).concat("%");
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookTitle", bookTitle);
+            log.info("[GET ALL BOOK STOCK DETAILS BY BOOK TITLE][{}]", applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS_BY_BOOK_TITLE());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS_BY_BOOK_TITLE(), paramSource, new BookStockDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

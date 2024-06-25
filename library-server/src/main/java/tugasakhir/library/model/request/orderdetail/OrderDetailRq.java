@@ -25,11 +25,12 @@ public class OrderDetailRq {
     private String bookId;
 
     @JsonProperty("order_date")
-    @NotNull(message = "Order date is mandatory")
     private Date orderDate;
 
+    @JsonProperty("taking_date")
+    private Date takingDate;
+
     @JsonProperty("status")
-    @NotBlank(message = "Status is mandatory")
     private String status;
 }
 

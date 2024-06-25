@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
+import tugasakhir.library.model.dto.BookDetail;
 import tugasakhir.library.model.entity.Book;
 
 import java.sql.ResultSet;
@@ -162,7 +163,28 @@ public class BookRepository {
             book.setNumberOfPages(rs.getInt("number_of_pages"));
             book.setPublicationYear(rs.getString("publication_year"));
             book.setSynopsis(rs.getString("synopsis"));
+            book.setStock(rs.getInt("stock"));
             return book;
+        }
+    }
+
+    private static final class BookDetailRowMapper implements RowMapper<BookDetail> {
+        @Override
+        public BookDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+            BookDetail bookDetail = new BookDetail();
+            bookDetail.setBookId(rs.getString("book_id"));
+            bookDetail.setBookTitle(rs.getString("book_title"));
+            bookDetail.setCategoryName(rs.getString("category_name"));
+            bookDetail.setPublisherName(rs.getString("publisher_name"));
+            bookDetail.setAuthorName(rs.getString("author_name"));
+            bookDetail.setBookShelfId(rs.getString("book_shelf_id"));
+            bookDetail.setLanguage(rs.getString("language"));
+            bookDetail.setIsbn(rs.getString("isbn"));
+            bookDetail.setNumberOfPages(rs.getInt("number_of_pages"));
+            bookDetail.setPublicationYear(rs.getString("publication_year"));
+            bookDetail.setSynopsis(rs.getString("synopsis"));
+            bookDetail.setStock((rs.getInt("stock"))-1);
+            return bookDetail;
         }
     }
 
@@ -189,11 +211,24 @@ public class BookRepository {
         }
     }
 
-    public Book getBookByBookTitle(String bookTitle) {
+    // Get a book detail by ID
+    public BookDetail getBookDetailById(String bookId) {
         try{
+            log.info("[GET BOOK DETAIL BY ID][{}][{}]", bookId, applicationProperties.getGET_BOOK_DETAIL_BY_ID());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookId", bookId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_DETAIL_BY_ID(), paramSource, new BookDetailRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Book> getBookByBookTitle(String bookTitle) {
+        try{
+            bookTitle = "%".concat(bookTitle).concat("%");
             log.info("[GET BOOK BY TITLE][{}][{}]", bookTitle, applicationProperties.getGET_BOOK_BY_TITLE());
             SqlParameterSource paramSource = new MapSqlParameterSource("bookTitle", bookTitle);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_BY_TITLE(), paramSource, new BookRowMapper());
+            return jdbcTemplate.query(applicationProperties.getGET_BOOK_BY_TITLE(), paramSource, new BookRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
@@ -225,7 +260,7 @@ public class BookRepository {
     // Get all books
     public List<Book> getAllBooks() {
         try{
-            log.info("[GET ALL BOOK][{}]", applicationProperties.getGET_ALL_BOOK());
+            log.info("[GET ALL BOOKS][{}]", applicationProperties.getGET_ALL_BOOK());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK(), new BookRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());

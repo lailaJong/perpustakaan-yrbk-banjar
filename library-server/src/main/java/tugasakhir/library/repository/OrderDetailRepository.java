@@ -11,11 +11,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
-import tugasakhir.library.model.entity.OrderDetail;
+import tugasakhir.library.model.dto.OrderDetail;
+import tugasakhir.library.model.entity.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,10 +34,10 @@ public class OrderDetailRepository {
     @Qualifier
     protected ApplicationProperties applicationProperties;
 
-    private static final class OrderDetailRowMapper implements RowMapper<OrderDetail> {
+    private static final class OrderRowMapper implements RowMapper<Order> {
         @Override
-        public OrderDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
-            OrderDetail orderDetail = new OrderDetail();
+        public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Order orderDetail = new Order();
             orderDetail.setOrderId(rs.getString("order_id"));
             orderDetail.setUserId(rs.getString("user_id"));
             orderDetail.setBookId(rs.getString("book_id"));
@@ -47,8 +47,21 @@ public class OrderDetailRepository {
         }
     }
 
+    private static final class OrderDetailRowMapper implements RowMapper<OrderDetail> {
+        @Override
+        public OrderDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrderId(rs.getString("order_id"));
+            orderDetail.setBookTitle(rs.getString("book_title"));
+            orderDetail.setOrderDate(rs.getDate("order_date"));
+            orderDetail.setTakingDate(rs.getDate("taking_date"));
+            orderDetail.setStatus(rs.getString("status"));
+            return orderDetail;
+        }
+    }
+
     // Add an order detail
-    public void addOrderDetail(OrderDetail orderDetail) {
+    public void addOrderDetail(Order orderDetail) {
         try{
             log.info("[ADD ORDER DETAIL][{}]", applicationProperties.getINSERT_ORDER_DETAIL());
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(orderDetail);
@@ -59,23 +72,23 @@ public class OrderDetailRepository {
     }
 
     // Get an order detail
-    public OrderDetail getOrderDetailById(String orderId) {
+    public Order getOrderDetailById(String orderId) {
         try{
             log.info("[GET ORDER DETAIL BY ID][{}][{}}]", orderId, applicationProperties.getGET_ORDER_DETAIL_BY_ID());
             SqlParameterSource paramSource = new MapSqlParameterSource("orderId", orderId);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_ORDER_DETAIL_BY_ID(), paramSource, new OrderDetailRepository.OrderDetailRowMapper());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_ORDER_DETAIL_BY_ID(), paramSource, new OrderRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
         }
     }
 
-    public int getCountOrderDetailByUserId(String userId, String orderStatus) {
+    public int getCountOrderDetailByUserId(String userId) {
         try{
             log.info("[GET COUNT ORDER DETAIL BY USER ID][{}][{}}]", userId, applicationProperties.getGET_COUNT_ORDER_DETAIL_BY_USER_ID());
             SqlParameterSource paramSource = new MapSqlParameterSource()
                     .addValue("userId", userId)
-                    .addValue("orderStatus", orderStatus);
+                    .addValue("orderStatus", applicationProperties.getOrderedStatus());
             return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ORDER_DETAIL_BY_USER_ID(), paramSource, Integer.class);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -84,7 +97,7 @@ public class OrderDetailRepository {
     }
 
     // Update an order detail
-    public void updateOrderDetail(OrderDetail orderDetail) {
+    public void updateOrderDetail(Order orderDetail) {
         try{
             log.info("[UPDATE ORDER DETAIL BY ID][{}][{}]", orderDetail.getOrderId(), applicationProperties.getUPDATE_ORDER_DETAIL_BY_ID());
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(orderDetail);
@@ -106,10 +119,40 @@ public class OrderDetailRepository {
     }
 
     // Get all order details
-    public List<OrderDetail> getAllOrderDetails() {
+    public List<Order> getAllOrderDetails() {
         try{
             log.info("[GET ALL ORDER DETAIL][{}]", applicationProperties.getGET_ALL_ORDER_DETAIL());
-            return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAIL(), new OrderDetailRepository.OrderDetailRowMapper());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAIL(), new OrderRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all order details by user id
+    public List<OrderDetail> getAllOrderDetailsByUserId(String userId) {
+        try{
+            log.info("[GET ALL ORDER DETAILS BY USER ID][{}][{}]", userId, applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID());
+            SqlParameterSource parameterSource = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("status", applicationProperties.getOrderedStatus());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID(), parameterSource, new OrderDetailRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all order details by user id and book title
+    public List<OrderDetail> getAllOrderDetailsByUserIdAndBookTitle(String userId, String bookTitle) {
+        try{
+            bookTitle = "%".concat(bookTitle).concat("%");
+            log.info("[GET ALL ORDER DETAILS BY USER ID AND BOOK TITLE][{}][{}][{}]", userId, bookTitle, applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE());
+            SqlParameterSource parameterSource = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("status", applicationProperties.getOrderedStatus())
+                    .addValue("bookTitle", bookTitle);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE(), parameterSource, new OrderDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

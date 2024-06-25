@@ -1,37 +1,30 @@
 package tugasakhir.library.utils.orderdetail;
 
-import org.springframework.core.annotation.Order;
-import tugasakhir.library.model.entity.Author;
-import tugasakhir.library.model.entity.OrderDetail;
-import tugasakhir.library.model.request.author.AuthorRq;
-import tugasakhir.library.model.request.author.UpdateAuthorRq;
+import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.request.orderdetail.OrderDetailRq;
 import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
-
-import java.util.Date;
 
 /**
  * @author Putri Mele
  * on 18/06/2024
  */
-public class OrderDetailMapperImpl implements OrderDetailMapper {
+public class OrderDetailMapperImpl{
 
-    @Override
-    public OrderDetail toOrderDetail(OrderDetailRq orderDetailRq) {
+    public static Order toOrderDetail(OrderDetailRq orderDetailRq) {
         if (orderDetailRq == null) {
             return null;
         }
-        OrderDetail orderDetail = new OrderDetail();
+        Order orderDetail = new Order();
         orderDetail.setOrderId(orderDetailRq.getOrderId());
         orderDetail.setUserId(orderDetailRq.getUserId());
         orderDetail.setBookId(orderDetailRq.getBookId());
         orderDetail.setOrderDate(orderDetailRq.getOrderDate());
+        orderDetail.setTakingDate(orderDetailRq.getTakingDate());
         orderDetail.setStatus(orderDetailRq.getStatus());
         return orderDetail;
     }
 
-    @Override
-    public void updateOrderDetailFromUpdateOrderDetailRq(UpdateOrderDetailRq updateOrderDetailRq, OrderDetail orderDetail) {
+    public static void updateOrderDetailFromUpdateOrderDetailRq(UpdateOrderDetailRq updateOrderDetailRq, Order orderDetail) {
         if ( updateOrderDetailRq == null ) {
             return;
         }

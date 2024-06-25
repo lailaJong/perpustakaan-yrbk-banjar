@@ -46,7 +46,7 @@ public class BookShelfRepository {
     // Add a bookshelf
     public void addBookShelf(BookShelf bookShelf) {
         try{
-            log.info("[ADD AUTHOR][{}]", applicationProperties.getINSERT_BOOKSHELF());
+            log.info("[ADD BOOK SHELF][{}]", applicationProperties.getINSERT_BOOKSHELF());
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(bookShelf);
             jdbcTemplate.update(applicationProperties.getINSERT_BOOKSHELF(), paramSource);
         }catch (Exception e){
@@ -66,21 +66,10 @@ public class BookShelfRepository {
         }
     }
 
-    public BookShelf getBookShelfByCode(String bookShelfCode) {
-        try {
-            log.info("[GET BOOK SHELF BY CODE][{}]", bookShelfCode);
-            SqlParameterSource paramSource = new MapSqlParameterSource("bookShelfCode", bookShelfCode);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return null;
-        }
-    }
-
     // Update a bookshelf
     public void updateBookShelf(BookShelf bookShelf) {
         try{
-            log.info("[UPDATE AUTHOR BY ID][{}][{}]", bookShelf.getBookShelfId(), applicationProperties.getUPDATE_BOOKSHELF_BY_ID());
+            log.info("[UPDATE BOOK SHELF BY ID][{}][{}]", bookShelf.getBookShelfId(), applicationProperties.getUPDATE_BOOKSHELF_BY_ID());
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(bookShelf);
             jdbcTemplate.update(applicationProperties.getUPDATE_BOOKSHELF_BY_ID(), paramSource);
         }catch (Exception e){
@@ -91,7 +80,7 @@ public class BookShelfRepository {
     // Delete a bookshelf
     public void deleteBookShelf(String bookShelfId) {
         try{
-            log.info("[DELETE AUTHOR BY ID][{}][{}]", bookShelfId, applicationProperties.getDELETE_BOOKSHELF_BY_ID());
+            log.info("[DELETE BOOK SHELF BY ID][{}][{}]", bookShelfId, applicationProperties.getDELETE_BOOKSHELF_BY_ID());
             SqlParameterSource paramSource = new MapSqlParameterSource("bookShelfId", bookShelfId);
             jdbcTemplate.update(applicationProperties.getDELETE_BOOKSHELF_BY_ID(), paramSource);
         }catch (Exception e){
@@ -102,9 +91,21 @@ public class BookShelfRepository {
     // Get all bookshelves
     public List<BookShelf> getAllBookShelves() {
         try{
-            log.info("[GET ALL BOOKSHELF][{}]", applicationProperties.getGET_ALL_BOOKSHELF());
+            log.info("[GET ALL BOOK SHELVES][{}]", applicationProperties.getGET_ALL_BOOKSHELF());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOKSHELF(), new BookShelfRowMapper());
         }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<BookShelf> getBookShelfByCode(String bookShelfCode) {
+        try {
+            bookShelfCode = "%".concat(bookShelfCode).concat("%");
+            log.info("[GET BOOK SHELF BY CODE][{}][{}]", bookShelfCode, applicationProperties.getGET_BOOK_SHELF_BY_CODE());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookShelfCode", bookShelfCode);
+            return jdbcTemplate.query(applicationProperties.getGET_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
+        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }

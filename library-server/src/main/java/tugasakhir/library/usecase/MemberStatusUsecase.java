@@ -54,8 +54,7 @@ public class MemberStatusUsecase {
         ResponseInfo<String> responseInfo = new ResponseInfo<>();
 
         try {
-            String status = null;
-            status = memberStatusRepository.getStatusByMemberStatusId(memberStatusId);
+            String status = memberStatusRepository.getStatusByMemberStatusId(memberStatusId);
             responseInfo.setSuccess(status);
             log.info("[{}][SUCCESS GET MEMBER STATUS][ID: {}]", getClass().getSimpleName(), memberStatusId);
         } catch (Exception ex) {

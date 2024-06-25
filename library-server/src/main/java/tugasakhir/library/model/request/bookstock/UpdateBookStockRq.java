@@ -1,6 +1,7 @@
 package tugasakhir.library.model.request.bookstock;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -19,5 +20,6 @@ public class UpdateBookStockRq {
 
     @JsonProperty("stock")
     @Min(value = 1, message = "Stock must be at least 1")
+    @Max(value = 99, message = "Stock must be at most 99")
     private int stock;
 }

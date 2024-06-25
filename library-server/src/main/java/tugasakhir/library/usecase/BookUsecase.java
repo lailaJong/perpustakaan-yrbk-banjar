@@ -1,5 +1,6 @@
 package tugasakhir.library.usecase;
 
+import tugasakhir.library.model.dto.BookDetail;
 import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.book.BookRq;
@@ -32,8 +33,8 @@ public class BookUsecase {
 
         try {
             List<Book> books;
-            books = bookRepository.getBooksWhereStockGreaterThanOne();
-            books.addAll(bookRepository.getBooksWhereStockGreaterThanOne());
+            books = bookRepository.getAllBooks();
+            books.addAll(bookRepository.getAllBooks());
             responseInfo.setSuccess(books);
             log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
         } catch (Exception ex) {
@@ -43,13 +44,13 @@ public class BookUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Book> getBookById(String bookId) {
-        ResponseInfo<Book> responseInfo = new ResponseInfo<>();
+    public ResponseInfo<BookDetail> getBookById(String bookId) {
+        ResponseInfo<BookDetail> responseInfo = new ResponseInfo<>();
 
         try {
-            Book book;
-            book = bookRepository.getBookById(bookId);
-            responseInfo.setSuccess(book);
+            BookDetail bookDetail;
+            bookDetail = bookRepository.getBookDetailById(bookId);
+            responseInfo.setSuccess(bookDetail);
             log.info("[{}][SUCCESS GET BOOK][ID: {}]", getClass().getSimpleName(), bookId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BOOK][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookId, ex);
@@ -58,13 +59,13 @@ public class BookUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Book> getBookByTitle(String bookTitle) {
-        ResponseInfo<Book> responseInfo = new ResponseInfo<>();
+    public ResponseInfo<List<Book>> getBookByTitle(String bookTitle) {
+        ResponseInfo<List<Book>> responseInfo = new ResponseInfo<>();
 
         try {
-            Book book;
-            book = bookRepository.getBookByBookTitle(bookTitle);
-            responseInfo.setSuccess(book);
+            List<Book> books;
+            books = bookRepository.getBookByBookTitle(bookTitle);
+            responseInfo.setSuccess(books);
             log.info("[{}][SUCCESS GET BOOK][TITLE: {}]", getClass().getSimpleName(), bookTitle);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BOOK][TITLE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookTitle, ex);

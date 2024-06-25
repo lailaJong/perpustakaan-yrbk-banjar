@@ -68,6 +68,7 @@ public class PublisherRepository {
 
     public Publisher getPublisherByName(String publisherName) {
         try {
+            publisherName = "%".concat(publisherName).concat("%");
             log.info("[GET PUBLISHER BY NAME][{}][{}]", publisherName, applicationProperties.getGET_PUBLISHER_BY_NAME());
             SqlParameterSource paramSource = new MapSqlParameterSource("publisherName", publisherName);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_PUBLISHER_BY_NAME(), paramSource, new PublisherRowMapper());
@@ -102,9 +103,21 @@ public class PublisherRepository {
     // Get all publisher
     public List<Publisher> getAllPublishers() {
         try{
-            log.info("[GET ALL PUBLISHER][{}]", applicationProperties.getGET_ALL_PUBLISHER());
+            log.info("[GET ALL PUBLISHERS][{}]", applicationProperties.getGET_ALL_PUBLISHER());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_PUBLISHER(), new PublisherRepository.PublisherRowMapper());
         }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Publisher> getAllPublishersByName(String publisherName) {
+        try {
+            publisherName = "%".concat(publisherName).concat("%");
+            log.info("[GET ALL PUBLISHERS BY NAME][{}][{}]", publisherName, applicationProperties.getGET_PUBLISHER_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("publisherName", publisherName);
+            return jdbcTemplate.query(applicationProperties.getGET_PUBLISHER_BY_NAME(), paramSource, new PublisherRowMapper());
+        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }

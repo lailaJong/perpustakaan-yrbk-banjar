@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tugasakhir.library.model.entity.OrderDetail;
+import tugasakhir.library.model.dto.OrderDetail;
+import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.request.orderdetail.OrderDetailRq;
 import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
 import tugasakhir.library.model.response.ResponseInfo;
@@ -25,9 +26,35 @@ public class OrderDetailController {
     @GetMapping("/all")
     ResponseEntity<Object> getAllOrderDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<OrderDetail>> responseInfo;
+        ResponseInfo<List<Order>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS][{}]", requestId);
         responseInfo = orderDetailUsecase.getAllOrderDetails();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    @GetMapping("/all/userId")
+    ResponseEntity<Object> getAllOrderDetailsByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                      @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<OrderDetail>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = orderDetailUsecase.getAllOrderDetailsByUserId(userId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+
+    @GetMapping("/all/userId/bookTitle")
+    ResponseEntity<Object> getAllOrderDetailsByUserIdAndBookTitle(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                                  @RequestParam(value = "userId") String userId,
+                                                                  @RequestParam(value = "bookTitle") String bookTitle) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<OrderDetail>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS BY USER ID AND BOOK TITLE][{}][{}][{}]", userId, bookTitle, requestId);
+        responseInfo = orderDetailUsecase.getAllOrderDetailsByUserIdAndBookTitle(userId, bookTitle);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
@@ -37,7 +64,7 @@ public class OrderDetailController {
     ResponseEntity<Object> getOrderDetailById(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "orderId") String orderId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<OrderDetail> responseInfo;
+        ResponseInfo<Order> responseInfo;
         log.info("[REQUEST RECEIVED - GET ORDER DETAIL BY ID][{}][{}]", orderId, requestId);
         responseInfo = orderDetailUsecase.getOrderDetailById(orderId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
@@ -63,12 +90,13 @@ public class OrderDetailController {
                                        @RequestBody @Valid OrderDetailRq orderDetailRq) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         log.info("[REQUEST RECEIVED - ADD NEW ORDER DETAIL][{}][PAYLOAD: {}]", requestId, orderDetailRq);
-        ResponseInfo<OrderDetail> responseInfo = orderDetailUsecase.addNewOrderDetail(orderDetailRq);
+        ResponseInfo<Order> responseInfo = orderDetailUsecase.addNewOrderDetail(orderDetailRq);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
     }
 
+    //update status dibatalkan
     @PutMapping("/update")
     ResponseEntity<Object> updateOrderDetail(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid UpdateOrderDetailRq updateOrderDetailRq) {

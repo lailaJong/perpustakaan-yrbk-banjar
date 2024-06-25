@@ -11,10 +11,9 @@ import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class BookStockMapperImpl implements BookStockMapper {
+public class BookStockMapperImpl {
 
-    @Override
-    public BookStock toBookStock(BookStockRq bookStockRq) {
+    public static BookStock toBookStock(BookStockRq bookStockRq) {
         if (bookStockRq == null) {
             return null;
         }
@@ -25,8 +24,7 @@ public class BookStockMapperImpl implements BookStockMapper {
         return bookStock;
     }
 
-    @Override
-    public void updateBookStockFromUpdateBookStockRq(UpdateBookStockRq updateBookStockRq, BookStock bookStock) {
+    public static void updateBookStockFromUpdateBookStockRq(UpdateBookStockRq updateBookStockRq, BookStock bookStock) {
         if ( updateBookStockRq == null ) {
             return;
         }
@@ -34,7 +32,7 @@ public class BookStockMapperImpl implements BookStockMapper {
         if ( updateBookStockRq.getBookId() != null ) {
             bookStock.setBookId( updateBookStockRq.getBookId() );
         }
-        if ( updateBookStockRq.getStock() != 0 ) {
+        if ( updateBookStockRq.getStock() != -1 ) {
             bookStock.setStock( updateBookStockRq.getStock() );
         }
     }

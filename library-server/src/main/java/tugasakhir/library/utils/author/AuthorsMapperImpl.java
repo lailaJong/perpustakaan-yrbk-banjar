@@ -8,10 +8,9 @@ import tugasakhir.library.model.request.author.UpdateAuthorRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class AuthorsMapperImpl implements AuthorsMapper {
+public class AuthorsMapperImpl{
 
-    @Override
-    public Author toAuthor(AuthorRq authorRq) {
+    public static Author toAuthor(AuthorRq authorRq) {
         if (authorRq == null) {
             return null;
         }
@@ -21,8 +20,7 @@ public class AuthorsMapperImpl implements AuthorsMapper {
         return author;
     }
 
-    @Override
-    public void updateAuthorFromUpdateAuthorRq(UpdateAuthorRq updateAuthorRq, Author author) {
+    public static void updateAuthorFromUpdateAuthorRq(UpdateAuthorRq updateAuthorRq, Author author) {
         if ( updateAuthorRq == null ) {
             return;
         }

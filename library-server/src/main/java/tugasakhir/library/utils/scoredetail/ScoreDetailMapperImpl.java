@@ -11,29 +11,23 @@ import tugasakhir.library.model.request.scoredetail.UpdateScoreDetailRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class ScoreDetailMapperImpl implements ScoreDetailMapper {
-    @Override
-    public ScoreDetail toScoreDetail(ScoreDetailRq scoreDetailRq) {
+public class ScoreDetailMapperImpl{
+    public static ScoreDetail toScoreDetail(ScoreDetailRq scoreDetailRq) {
         if (scoreDetailRq == null) {
             return null;
         }
         ScoreDetail scoreDetail = new ScoreDetail();
         scoreDetail.setScoreDetailId(scoreDetailRq.getScoreDetailId());
-//        scoreDetail.setPoint(scoreDetailRq.getPoint());
         scoreDetail.setExtraBorrowTime(scoreDetailRq.getExtraBorrowTime());
         scoreDetail.setExtraBooksQuota(scoreDetailRq.getExtraBooksQuota());
         return scoreDetail;
     }
 
-    @Override
-    public void updateScoreDetailFromUpdateScoreDetailRq(UpdateScoreDetailRq updateScoreDetailRq, ScoreDetail scoreDetail) {
+    public static void updateScoreDetailFromUpdateScoreDetailRq(UpdateScoreDetailRq updateScoreDetailRq, ScoreDetail scoreDetail) {
         if ( updateScoreDetailRq == null ) {
             return;
         }
 
-//        if ( updateScoreDetailRq.getPoint() != -1 ) {
-//            scoreDetail.setPoint( updateScoreDetailRq.getPoint() );
-//        }
         if ( updateScoreDetailRq.getExtraBorrowTime() != -1 ) {
             scoreDetail.setExtraBorrowTime( updateScoreDetailRq.getExtraBorrowTime() );
         }
@@ -42,10 +36,12 @@ public class ScoreDetailMapperImpl implements ScoreDetailMapper {
         }
     }
 
-    @Override
-    public String getScoreDetailId(int point){
+    public static String getScoreDetailId(int point){
         String scoreDetailId;
-        if (point > 10 && point <= 20){
+        if (point >= 0 && point <= 10){
+            scoreDetailId = "SCR00";
+        }
+        else if (point > 10 && point <= 20){
             scoreDetailId = "SCR01";
         } else if (point <= 40) {
             scoreDetailId = "SCR02";
@@ -63,7 +59,7 @@ public class ScoreDetailMapperImpl implements ScoreDetailMapper {
             scoreDetailId = "SCR08";
         } else if (point <= 200) {
             scoreDetailId = "SCR09";
-        } else if (point > 200){
+        } else if (point > 200 && point <= 1000){
             scoreDetailId = "SCR10";
         } else {
             scoreDetailId = null;

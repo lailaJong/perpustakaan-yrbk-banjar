@@ -3,17 +3,14 @@ package tugasakhir.library.usecase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tugasakhir.library.model.entity.BookShelf;
+import tugasakhir.library.model.dto.BookStockDetail;
 import tugasakhir.library.model.entity.BookStock;
 import tugasakhir.library.model.exception.NotFoundException;
-import tugasakhir.library.model.request.bookshelf.BookShelfRq;
-import tugasakhir.library.model.request.bookshelf.UpdateBookShelfRq;
 import tugasakhir.library.model.request.bookstock.BookStockRq;
 import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.BookStockRepository;
-import tugasakhir.library.utils.bookshelf.BookShelfMapper;
-import tugasakhir.library.utils.bookstock.BookStockMapper;
+import tugasakhir.library.utils.bookstock.BookStockMapperImpl;
 
 import java.util.List;
 
@@ -34,6 +31,38 @@ public class BookStockUsecase {
             log.info("[{}][SUCCESS GET ALL BOOK STOCK][DATA SIZE: {}]", getClass().getSimpleName(), bookStocks.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK STOCK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<BookStockDetail>> getAllBookStockDetails() {
+        ResponseInfo<List<BookStockDetail>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BookStockDetail> bookStocks;
+            bookStocks = bookStockRepository.getAllBookStockDetails();
+            bookStocks.addAll(bookStockRepository.getAllBookStockDetails());
+            responseInfo.setSuccess(bookStocks);
+            log.info("[{}][SUCCESS GET ALL BOOK STOCK DETAILS][DATA SIZE: {}]", getClass().getSimpleName(), bookStocks.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BOOK STOCK DETAILS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<BookStockDetail>> getAllBookStockDetailsByBookTitle(String bookTitle) {
+        ResponseInfo<List<BookStockDetail>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BookStockDetail> bookStocks;
+            bookStocks = bookStockRepository.getAllBookStockDetailsByBookTitle(bookTitle);
+            bookStocks.addAll(bookStockRepository.getAllBookStockDetailsByBookTitle(bookTitle));
+            responseInfo.setSuccess(bookStocks);
+            log.info("[{}][SUCCESS GET ALL BOOK STOCK DETAILS BY BOOK TITLE][{}][DATA SIZE: {}]", getClass().getSimpleName(), bookTitle, bookStocks.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BOOK STOCK DETAILS BY BOOK TITLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -60,7 +89,7 @@ public class BookStockUsecase {
         try {
             BookStock bookStock;
             bookStockRq.setBookStockId(bookStockRepository.generateBookStockId());
-            bookStock = BookStockMapper.INSTANCE.toBookStock(bookStockRq);
+            bookStock = BookStockMapperImpl.toBookStock(bookStockRq);
             bookStockRepository.addBookStock(bookStock);
             responseInfo.setSuccess(bookStock);
             log.info("[{}][SUCCESS ADD NEW BOOK STOCK]", getClass().getSimpleName());
@@ -77,7 +106,7 @@ public class BookStockUsecase {
         try {
             BookStock bookStock = bookStockRepository.getBookStockById(updateBookStockRq.getBookStockId());
             if (bookStock != null) {
-                BookStockMapper.INSTANCE.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
+                BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
                 bookStockRepository.updateBookStock(bookStock);
 
                 responseInfo.setSuccess();

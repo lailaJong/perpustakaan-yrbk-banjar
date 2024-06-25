@@ -58,7 +58,7 @@ public class UserMemberUsecase {
                 userRepository.updateUser(user);
                 responseInfo.setSuccess();
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException("Data of the user is not found");
             }
 
             Member member = memberRepository.getMemberByUserId(updateUserMemberRq.getUserId());
@@ -67,11 +67,11 @@ public class UserMemberUsecase {
                 memberRepository.updateMember(member);
                 responseInfo.setSuccess();
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException("Data of the member is not found");
             }
-            log.info("[{}][SUCCESS UPDATE USER MEMBER]", getClass().getSimpleName());
+            log.info("[{}][SUCCESS UPDATE USER AND MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
-            log.info("[{}][FAILED UPDATE USER MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            log.info("[{}][FAILED UPDATE USER AND MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;

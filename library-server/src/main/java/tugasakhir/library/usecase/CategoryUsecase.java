@@ -9,7 +9,7 @@ import tugasakhir.library.model.request.category.CategoryRq;
 import tugasakhir.library.model.request.category.UpdateCategoryRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.CategoryRepository;
-import tugasakhir.library.utils.category.CategoryMapper;
+import tugasakhir.library.utils.category.CategoryMapperImpl;
 
 import java.util.List;
 
@@ -50,11 +50,11 @@ public class CategoryUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Category> getCategoryByName(String categoryName) {
-        ResponseInfo<Category> responseInfo = new ResponseInfo<>();
+    public ResponseInfo<List<Category>> getCategoryByName(String categoryName) {
+        ResponseInfo<List<Category>> responseInfo = new ResponseInfo<>();
 
         try {
-            Category category;
+            List <Category> category;
             category = categoryRepository.getCategoryByName(categoryName);
             responseInfo.setSuccess(category);
             log.info("[{}][SUCCESS GET CATEGORY][NAME: {}]", getClass().getSimpleName(), categoryName);
@@ -71,7 +71,7 @@ public class CategoryUsecase {
         try {
             Category category;
             categoryRq.setCategoryId(categoryRepository.generateCategoryId());
-            category = CategoryMapper.INSTANCE.toCategory(categoryRq);
+            category = CategoryMapperImpl.toCategory(categoryRq);
             categoryRepository.addCategory(category);
             responseInfo.setSuccess(category);
             log.info("[{}][SUCCESS ADD NEW CATEGORY]", getClass().getSimpleName());
@@ -88,7 +88,7 @@ public class CategoryUsecase {
         try {
             Category category = categoryRepository.getCategoryById(updateCategoryRq.getCategoryId());
             if (category != null) {
-                CategoryMapper.INSTANCE.updateCategoryFromUpdateCategoryRq(updateCategoryRq, category);
+                CategoryMapperImpl.updateCategoryFromUpdateCategoryRq(updateCategoryRq, category);
                 categoryRepository.updateCategory(category);
 
                 responseInfo.setSuccess();

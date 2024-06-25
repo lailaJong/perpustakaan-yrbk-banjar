@@ -66,18 +66,6 @@ public class AuthorRepository {
         }
     }
 
-    // Get an author by name
-    public Author getAuthorByName(String authorName) {
-        try {
-            log.info("[GET AUTHOR BY NAME][{}][{}]", authorName, applicationProperties.getGET_AUTHOR_BY_NAME());
-            SqlParameterSource paramSource = new MapSqlParameterSource("authorName", authorName);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_AUTHOR_BY_NAME(), paramSource, new AuthorRowMapper());
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
-        }
-    }
-
     // Update an author
     public void updateAuthor(Author author) {
         try{
@@ -103,8 +91,33 @@ public class AuthorRepository {
     // Get all authors
     public List<Author> getAllAuthors() {
         try{
-            log.info("[GET ALL AUTHOR][{}]", applicationProperties.getGET_ALL_AUTHOR());
+            log.info("[GET ALL AUTHORS][{}]", applicationProperties.getGET_ALL_AUTHOR());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_AUTHOR(), new AuthorRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get an author by name
+    public List<Author> getAuthorsByName(String authorName) {
+        try {
+            authorName = "%".concat(authorName).concat("%");
+            log.info("[GET AUTHORS BY NAME][{}][{}]", authorName, applicationProperties.getGET_AUTHORS_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("authorName", authorName);
+            return jdbcTemplate.query(applicationProperties.getGET_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public Author getAuthorByName(String authorName) {
+        try {
+            authorName = "%".concat(authorName).concat("%");
+            log.info("[GET AUTHORS BY NAME][{}][{}]", authorName, applicationProperties.getGET_AUTHORS_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("authorName", authorName);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

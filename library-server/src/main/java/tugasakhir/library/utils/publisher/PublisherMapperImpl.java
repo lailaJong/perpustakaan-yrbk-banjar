@@ -11,10 +11,9 @@ import tugasakhir.library.model.request.publisher.UpdatePublisherRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class PublisherMapperImpl implements PublisherMapper {
+public class PublisherMapperImpl{
 
-    @Override
-    public Publisher toPublisher(PublisherRq publisherRq) {
+    public static Publisher toPublisher(PublisherRq publisherRq) {
         if (publisherRq == null) {
             return null;
         }
@@ -24,8 +23,7 @@ public class PublisherMapperImpl implements PublisherMapper {
         return publisher;
     }
 
-    @Override
-    public void updatePublisherFromUpdatePublisherRq(UpdatePublisherRq updatePublisherRq, Publisher publisher) {
+    public static void updatePublisherFromUpdatePublisherRq(UpdatePublisherRq updatePublisherRq, Publisher publisher) {
         if ( updatePublisherRq == null ) {
             return;
         }

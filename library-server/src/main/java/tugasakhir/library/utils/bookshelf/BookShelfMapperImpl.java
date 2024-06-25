@@ -12,10 +12,9 @@ import tugasakhir.library.model.request.bookshelf.UpdateBookShelfRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class BookShelfMapperImpl implements BookShelfMapper {
+public class BookShelfMapperImpl{
 
-    @Override
-    public BookShelf toBookShelf(BookShelfRq bookShelfRq) {
+    public static BookShelf toBookShelf(BookShelfRq bookShelfRq) {
         if (bookShelfRq == null) {
             return null;
         }
@@ -25,8 +24,7 @@ public class BookShelfMapperImpl implements BookShelfMapper {
         return bookShelf;
     }
 
-    @Override
-    public void updateBookShelfFromUpdateBookShelfRq(UpdateBookShelfRq updateBookShelfRq, BookShelf bookShelf) {
+    public static void updateBookShelfFromUpdateBookShelfRq(UpdateBookShelfRq updateBookShelfRq, BookShelf bookShelf) {
         if ( updateBookShelfRq == null ) {
             return;
         }

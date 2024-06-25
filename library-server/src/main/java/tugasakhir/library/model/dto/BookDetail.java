@@ -1,4 +1,4 @@
-package tugasakhir.library.model.entity;
+package tugasakhir.library.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -13,17 +13,17 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @NotNull
 @Accessors(chain = true)
-public class Book {
+public class BookDetail {
         private String bookId;
         private String bookTitle;
-        private String categoryId;
-        private String publisherId;
-        private String authorId;
-        private String bookShelfId;
+        private String authorName;
+        private String publisherName;
+        private String categoryName;
+        private String publicationYear;
+        private int stock;
         private String language;
         private String isbn;
         private int numberOfPages;
-        private String publicationYear;
+        private String bookShelfId;
         private String synopsis;
-        private int stock;
 }

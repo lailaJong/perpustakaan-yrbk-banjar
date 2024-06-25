@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tugasakhir.library.model.dto.BookStockDetail;
 import tugasakhir.library.model.entity.BookStock;
 import tugasakhir.library.model.request.bookstock.BookStockRq;
 import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
@@ -22,16 +23,33 @@ public class BookStockController {
     @Autowired
     private BookStockUsecase bookStockUsecase;
 
+//    @GetMapping("/all")
+//    ResponseEntity<Object> getAllBookStocks(@RequestHeader(value = "request-id", required = false) String requestId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<List<BookStock>> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET ALL BOOK STOCKS][{}]", requestId);
+//        responseInfo = bookStockUsecase.getAllBookStocks();
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
+
     @GetMapping("/all")
-    ResponseEntity<Object> getAllBookStocks(@RequestHeader(value = "request-id", required = false) String requestId) {
+    ResponseEntity<Object> getAllBookStockDetail(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                 @RequestParam(value = "bookTitle") String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BookStock>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOK STOCKS][{}]", requestId);
-        responseInfo = bookStockUsecase.getAllBookStocks();
+        ResponseInfo<List<BookStockDetail>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BOOK STOCK DETAILS][{}]", requestId);
+        if (bookTitle == null){
+            responseInfo = bookStockUsecase.getAllBookStockDetails();
+        } else {
+            responseInfo = bookStockUsecase.getAllBookStockDetailsByBookTitle(bookTitle);
+        }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
     }
+
 
     @GetMapping("/id")
     ResponseEntity<Object> getBookStockById(@RequestHeader(value = "request-id", required = false) String requestId,

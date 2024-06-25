@@ -33,6 +33,7 @@ public class UserController {
                 .body(responseInfo.getBody());
     }
 
+    //get user by user id after login
     @GetMapping("/id")
     ResponseEntity<Object> getUserById(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "userId") String userId) {

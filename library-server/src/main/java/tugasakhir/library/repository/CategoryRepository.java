@@ -46,7 +46,7 @@ public class CategoryRepository {
     // Add a category
     public void addCategory(Category category) {
         try{
-            log.info("[ADD CATEGORY][{}]", applicationProperties.getINSERT_AUTHOR());
+            log.info("[ADD CATEGORY][{}]", applicationProperties.getINSERT_CATEGORY());
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(category);
             jdbcTemplate.update(applicationProperties.getINSERT_CATEGORY(), paramSource);
         }catch (Exception e){
@@ -61,18 +61,6 @@ public class CategoryRepository {
             SqlParameterSource paramSource = new MapSqlParameterSource("categoryId", categoryId);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_CATEGORY_BY_ID(), paramSource, new CategoryRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
-        }
-    }
-
-
-    public Category getCategoryByName(String categoryName) {
-        try {
-            log.info("[GET CATEGORY BY NAME][{}][{}]", categoryName, applicationProperties.getGET_CATEGORY_BY_NAME());
-            SqlParameterSource paramSource = new MapSqlParameterSource("categoryName", categoryName);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
-        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }
@@ -103,9 +91,21 @@ public class CategoryRepository {
     // Get all categories
     public List<Category> getAllCategories() {
         try{
-            log.info("[GET ALL CATEGORY][{}]", applicationProperties.getGET_ALL_CATEGORY());
-            return jdbcTemplate.query(applicationProperties.getGET_ALL_CATEGORY(), new CategoryRowMapper());
+            log.info("[GET ALL CATEGORIES][{}]", applicationProperties.getGET_ALL_CATEGORIES());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_CATEGORIES(), new CategoryRowMapper());
         }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Category> getCategoryByName(String categoryName) {
+        try {
+            categoryName = "%".concat(categoryName).concat("%");
+            log.info("[GET CATEGORY BY NAME][{}][{}]", categoryName, applicationProperties.getGET_CATEGORY_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("categoryName", categoryName);
+            return jdbcTemplate.query(applicationProperties.getGET_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
+        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }

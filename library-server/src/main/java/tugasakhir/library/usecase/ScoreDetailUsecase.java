@@ -9,7 +9,7 @@ import tugasakhir.library.model.request.scoredetail.ScoreDetailRq;
 import tugasakhir.library.model.request.scoredetail.UpdateScoreDetailRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.ScoreDetailRepository;
-import tugasakhir.library.utils.scoredetail.ScoreDetailMapper;
+import tugasakhir.library.utils.scoredetail.ScoreDetailMapperImpl;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class ScoreDetailUsecase {
         try {
             ScoreDetail scoreDetail;
             scoreDetailRq.setScoreDetailId(scoreDetailRepository.generateScoreDetailId());
-            scoreDetail = ScoreDetailMapper.INSTANCE.toScoreDetail(scoreDetailRq);
+            scoreDetail = ScoreDetailMapperImpl.toScoreDetail(scoreDetailRq);
             scoreDetailRepository.addScoreDetail(scoreDetail);
             responseInfo.setSuccess(scoreDetail);
             log.info("[{}][SUCCESS ADD NEW SCORE DETAIL]", getClass().getSimpleName());
@@ -73,7 +73,7 @@ public class ScoreDetailUsecase {
         try {
             ScoreDetail scoreDetail = scoreDetailRepository.getScoreDetailById(updateScoreDetailRq.getScoreDetailId());
             if (scoreDetail != null) {
-                ScoreDetailMapper.INSTANCE.updateScoreDetailFromUpdateScoreDetailRq(updateScoreDetailRq, scoreDetail);
+                ScoreDetailMapperImpl.updateScoreDetailFromUpdateScoreDetailRq(updateScoreDetailRq, scoreDetail);
                 scoreDetailRepository.updateScoreDetail(scoreDetail);
 
                 responseInfo.setSuccess();

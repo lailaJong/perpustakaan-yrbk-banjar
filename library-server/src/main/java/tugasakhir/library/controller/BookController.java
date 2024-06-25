@@ -1,5 +1,6 @@
 package tugasakhir.library.controller;
 
+import tugasakhir.library.model.dto.BookDetail;
 import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.request.book.BookRq;
 import tugasakhir.library.model.request.book.UpdateBookRq;
@@ -22,6 +23,7 @@ public class BookController {
     @Autowired
     private BookUsecase bookUsecase;
 
+    //get all books
     @GetMapping("/all")
     ResponseEntity<Object> getAllBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -33,11 +35,12 @@ public class BookController {
                 .body(responseInfo.getBody());
     }
 
+    //get book by book id
     @GetMapping("/id")
     ResponseEntity<Object> getBookById(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "bookId") String bookId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Book> responseInfo;
+        ResponseInfo<BookDetail> responseInfo;
         log.info("[REQUEST RECEIVED - GET BOOK BY ID][{}][{}]", bookId, requestId);
         responseInfo = bookUsecase.getBookById(bookId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
@@ -45,12 +48,13 @@ public class BookController {
                 .body(responseInfo.getBody());
     }
 
+    //get all books by book title
     @GetMapping("/title")
-    ResponseEntity<Object> getBookByTitle(@RequestHeader(value = "request-id", required = false) String requestId,
+    ResponseEntity<Object> getAllBooksByTitle(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "bookTitle") String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Book> responseInfo;
-        log.info("[REQUEST RECEIVED - GET BOOK BY ID][{}][{}]", bookTitle, requestId);
+        ResponseInfo<List<Book>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BOOKS BY TITLE][{}][{}]", bookTitle, requestId);
         responseInfo = bookUsecase.getBookByTitle(bookTitle);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())

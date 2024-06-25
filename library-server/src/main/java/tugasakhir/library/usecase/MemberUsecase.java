@@ -16,7 +16,7 @@ import tugasakhir.library.repository.MemberStatusRepository;
 import tugasakhir.library.repository.ScoreDetailRepository;
 import tugasakhir.library.repository.UserRepository;
 import tugasakhir.library.utils.member.MembersMapperImpl;
-import tugasakhir.library.utils.scoredetail.ScoreDetailMapper;
+import tugasakhir.library.utils.scoredetail.ScoreDetailMapperImpl;
 
 import java.util.List;
 
@@ -160,7 +160,7 @@ public class MemberUsecase {
             memberRq.setMemberId(memberRepository.generateMemberId());
             memberRq.setUserId(userRepository.getUserByUsername(userRq.getUsername()).getUserId());
             memberRq.setMemberStatusId(memberStatusRepository.getMemberStatusByStatus("ACTIVE").getMemberStatusId());
-            memberRq.setScoreDetailId(ScoreDetailMapper.INSTANCE.getScoreDetailId(memberRq.getPoint()));
+            memberRq.setScoreDetailId(ScoreDetailMapperImpl.getScoreDetailId(memberRq.getPoint()));
             member = MembersMapperImpl.toMember(memberRq);
             memberRepository.addMember(member);
             responseInfo.setSuccess(member);

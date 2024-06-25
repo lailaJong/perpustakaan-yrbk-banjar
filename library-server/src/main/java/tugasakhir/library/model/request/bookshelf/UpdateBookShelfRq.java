@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import tugasakhir.library.utils.validation.BookShelfCode;
 
 @Data
 @Accessors(chain = true)
@@ -15,5 +16,6 @@ public class UpdateBookShelfRq {
 
     @JsonProperty("bookshelf_code")
     @NotBlank(message = "Bookshelf code is mandatory")
+    @BookShelfCode
     private String bookShelfCode;
 }

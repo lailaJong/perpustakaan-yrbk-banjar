@@ -46,12 +46,12 @@ public class AuthorController {
     }
 
     @GetMapping("/name")
-    ResponseEntity<Object> getAuthorByName(@RequestHeader(value = "request-id", required = false) String requestId,
+    ResponseEntity<Object> getAuthorsByName(@RequestHeader(value = "request-id", required = false) String requestId,
                                          @RequestParam(value = "authorName") String authorName) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Author> responseInfo;
-        log.info("[REQUEST RECEIVED - GET AUTHOR BY ID][{}][{}]", authorName, requestId);
-        responseInfo = authorUsecase.getAuthorByName(authorName);
+        ResponseInfo<List<Author>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET AUTHORS BY ID][{}][{}]", authorName, requestId);
+        responseInfo = authorUsecase.getAuthorsByName(authorName);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

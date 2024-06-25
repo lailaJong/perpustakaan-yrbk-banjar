@@ -9,7 +9,7 @@ import tugasakhir.library.model.request.publisher.PublisherRq;
 import tugasakhir.library.model.request.publisher.UpdatePublisherRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.PublisherRepository;
-import tugasakhir.library.utils.publisher.PublisherMapper;
+import tugasakhir.library.utils.publisher.PublisherMapperImpl;
 
 import java.util.List;
 
@@ -27,9 +27,9 @@ public class PublisherUsecase {
             publishers = publisherRepository.getAllPublishers();
             publishers.addAll(publisherRepository.getAllPublishers());
             responseInfo.setSuccess(publishers);
-            log.info("[{}][SUCCESS GET ALL PUBLISHER][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
+            log.info("[{}][SUCCESS GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
         } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL PUBLISHER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            log.info("[{}][FAILED GET ALL PUBLISHERS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -50,16 +50,16 @@ public class PublisherUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Publisher> getPublisherByName(String publisherName) {
-        ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
+    public ResponseInfo<List<Publisher>> getAllPublishersByName(String publisherName) {
+        ResponseInfo<List<Publisher>> responseInfo = new ResponseInfo<>();
 
         try {
-            Publisher publisher;
-            publisher = publisherRepository.getPublisherByName(publisherName);
-            responseInfo.setSuccess(publisher);
-            log.info("[{}][SUCCESS GET PUBLISHER][NAME: {}]", getClass().getSimpleName(), publisherName);
+            List<Publisher> publishers;
+            publishers = publisherRepository.getAllPublishersByName(publisherName);
+            responseInfo.setSuccess(publishers);
+            log.info("[{}][SUCCESS GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
         } catch (Exception ex) {
-            log.info("[{}][FAILED GET PUBLISHER][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherName, ex);
+            log.info("[{}][FAILED GET ALL PUBLISHERS BY NAME][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherName, ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -71,7 +71,7 @@ public class PublisherUsecase {
         try {
             Publisher publisher;
             publisherRq.setPublisherId(publisherRepository.generatePublisherId());
-            publisher = PublisherMapper.INSTANCE.toPublisher(publisherRq);
+            publisher = PublisherMapperImpl.toPublisher(publisherRq);
             publisherRepository.addPublisher(publisher);
             responseInfo.setSuccess(publisher);
             log.info("[{}][SUCCESS ADD NEW PUBLISHER]", getClass().getSimpleName());
@@ -88,7 +88,7 @@ public class PublisherUsecase {
         try {
             Publisher publisher = publisherRepository.getPublisherById(updatePublisherRq.getPublisherId());
             if (publisher != null) {
-                PublisherMapper.INSTANCE.updatePublisherFromUpdatePublisherRq(updatePublisherRq, publisher);
+                PublisherMapperImpl.updatePublisherFromUpdatePublisherRq(updatePublisherRq, publisher);
                 publisherRepository.updatePublisher(publisher);
 
                 responseInfo.setSuccess();

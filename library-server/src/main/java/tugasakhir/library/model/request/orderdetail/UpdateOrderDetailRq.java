@@ -27,6 +27,10 @@ public class UpdateOrderDetailRq {
     @NotNull(message = "Order date is mandatory")
     private Date orderDate;
 
+    @JsonProperty("taking_date")
+    @NotNull(message = "Taking date is mandatory")
+    private Date takingDate;
+
     @JsonProperty("status")
     @NotBlank(message = "Status is mandatory")
     private String status;

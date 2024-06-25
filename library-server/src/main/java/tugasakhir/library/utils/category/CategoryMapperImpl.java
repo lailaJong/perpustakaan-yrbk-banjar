@@ -11,10 +11,9 @@ import tugasakhir.library.model.request.category.UpdateCategoryRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class CategoryMapperImpl implements CategoryMapper {
+public class CategoryMapperImpl{
 
-    @Override
-    public Category toCategory(CategoryRq categoryRq) {
+    public static Category toCategory(CategoryRq categoryRq) {
         if (categoryRq == null) {
             return null;
         }
@@ -24,8 +23,7 @@ public class CategoryMapperImpl implements CategoryMapper {
         return category;
     }
 
-    @Override
-    public void updateCategoryFromUpdateCategoryRq(UpdateCategoryRq updateCategoryRq, Category category) {
+    public static void updateCategoryFromUpdateCategoryRq(UpdateCategoryRq updateCategoryRq, Category category) {
         if ( updateCategoryRq == null ) {
             return;
         }

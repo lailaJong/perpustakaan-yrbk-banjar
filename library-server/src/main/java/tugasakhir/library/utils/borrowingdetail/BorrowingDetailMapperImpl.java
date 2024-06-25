@@ -1,14 +1,8 @@
 package tugasakhir.library.utils.borrowingdetail;
 
-import tugasakhir.library.model.entity.Author;
-import tugasakhir.library.model.entity.BorrowingDetail;
-import tugasakhir.library.model.request.author.AuthorRq;
-import tugasakhir.library.model.request.author.UpdateAuthorRq;
+import tugasakhir.library.model.entity.Borrowing;
 import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
 import tugasakhir.library.model.request.borrowingdetail.UpdateBorrowingDetailRq;
-import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
-
-import java.util.Date;
 
 /**
  * @author Putri Mele
@@ -17,11 +11,11 @@ import java.util.Date;
 public class BorrowingDetailMapperImpl implements BorrowingDetailMapper {
 
     @Override
-    public BorrowingDetail toBorrowingDetail(BorrowingDetailRq borrowingDetailRq) {
+    public Borrowing toBorrowingDetail(BorrowingDetailRq borrowingDetailRq) {
         if (borrowingDetailRq == null) {
             return null;
         }
-        BorrowingDetail borrowingDetail = new BorrowingDetail();
+        Borrowing borrowingDetail = new Borrowing();
         borrowingDetail.setBorrowingId(borrowingDetailRq.getBorrowingId());
         borrowingDetail.setUserId(borrowingDetailRq.getUserId());
         borrowingDetail.setBookId(borrowingDetailRq.getBookId());
@@ -33,7 +27,7 @@ public class BorrowingDetailMapperImpl implements BorrowingDetailMapper {
     }
 
     @Override
-    public void updateBorrowingDetailFromUpdateBorrowingDetailRq(UpdateBorrowingDetailRq updateOrderDetailRq, BorrowingDetail borrowingDetail) {
+    public void updateBorrowingDetailFromUpdateBorrowingDetailRq(UpdateBorrowingDetailRq updateOrderDetailRq, Borrowing borrowingDetail) {
         if ( updateOrderDetailRq == null ) {
             return;
         }
