@@ -11,10 +11,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
+import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.entity.Member;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +51,16 @@ public class MemberRepository {
             member.setAddress(rs.getString("address"));
             member.setPoint(rs.getInt("point"));
             member.setRegristrationDate(rs.getDate("registration_date"));
+            return member;
+        }
+    }
+
+    private static final class TopMemberRowMapper implements RowMapper<TopBorrowerMember> {
+        @Override
+        public TopBorrowerMember mapRow(ResultSet rs, int rowNum) throws SQLException {
+            TopBorrowerMember member = new TopBorrowerMember();
+            member.setName(rs.getString("name"));
+            member.setName(rs.getString("total_borrowings"));
             return member;
         }
     }
@@ -150,6 +162,51 @@ public class MemberRepository {
             int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
             int suffix = count + 1;
             return String.format("MBR%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public int getCountAllMember() {
+        try{
+            log.info("[GET COUNT ALL MEMBER][{}]", applicationProperties.getGET_COUNT_ALL_MEMBER());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    // Get top borrower member
+    public List<TopBorrowerMember> getTopBorrowerMember() {
+        try {
+            log.info("[GET TOP BORROWER MEMBER > 1][{}]", applicationProperties.getGET_TOP_BORROWER_MEMBER());
+            return jdbcTemplate.query(applicationProperties.getGET_TOP_BORROWER_MEMBER(), new TopMemberRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    //get point
+    public int getMemberPoint(String userId) {
+        try{
+            log.info("[GET MEMBER POINT][{}]", applicationProperties.getGET_MEMBER_POINT());
+            SqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_POINT(), parameterSource, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    //get scoreId
+    public String getScoreId(String userId) {
+        try{
+            log.info("[GET SCORE ID MEMBER][{}]", applicationProperties.getGET_SCORE_ID_MEMBER());
+            SqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_SCORE_ID_MEMBER(), parameterSource, String.class);
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

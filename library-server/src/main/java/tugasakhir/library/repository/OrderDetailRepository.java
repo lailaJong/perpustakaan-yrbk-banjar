@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.dto.OrderDetail;
+import tugasakhir.library.model.dto.OrderDetailOfficer;
 import tugasakhir.library.model.entity.Order;
 
 import java.sql.ResultSet;
@@ -56,6 +57,16 @@ public class OrderDetailRepository {
             orderDetail.setOrderDate(rs.getDate("order_date"));
             orderDetail.setTakingDate(rs.getDate("taking_date"));
             orderDetail.setStatus(rs.getString("status"));
+            return orderDetail;
+        }
+    }
+
+    private static final class OrderDetailOfficerRowMapper implements RowMapper<OrderDetailOfficer> {
+        @Override
+        public OrderDetailOfficer mapRow(ResultSet rs, int rowNum) throws SQLException {
+            OrderDetailOfficer orderDetail = new OrderDetailOfficer();
+            orderDetail.setOrderId(rs.getString("order_id"));
+            orderDetail.setBookTitle(rs.getString("book_title"));
             return orderDetail;
         }
     }
@@ -137,6 +148,18 @@ public class OrderDetailRepository {
                     .addValue("userId", userId)
                     .addValue("status", applicationProperties.getOrderedStatus());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID(), parameterSource, new OrderDetailRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all order details officer
+    public List<OrderDetailOfficer> getAllOrderDetailsOfficer() {
+        try{
+            log.info("[GET ALL ORDER DETAILS OFFICER][{}][", applicationProperties.getGET_ALL_ORDER_DETAILS_OFFICER());
+            SqlParameterSource parameterSource = new MapSqlParameterSource("status", applicationProperties.getOrderedStatus());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_OFFICER(), parameterSource, new OrderDetailOfficerRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

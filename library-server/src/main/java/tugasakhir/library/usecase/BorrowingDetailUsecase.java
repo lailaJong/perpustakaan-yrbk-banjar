@@ -13,7 +13,7 @@ import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
 import tugasakhir.library.model.request.borrowingdetail.UpdateBorrowingDetailRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.BorrowingDetailRepository;
-import tugasakhir.library.utils.borrowingdetail.BorrowingDetailMapper;
+import tugasakhir.library.utils.borrowingdetail.BorrowingDetailMapperImpl;
 
 import java.util.List;
 
@@ -170,7 +170,6 @@ public class BorrowingDetailUsecase {
         return responseInfo;
     }
 
-
     public ResponseInfo<Integer> getCountAllBorrowingHistoryByUserId(String userId) {
         ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
 
@@ -186,13 +185,43 @@ public class BorrowingDetailUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<Integer> getCountAllBorrowing() {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            count = borrowingDetailRepository.getCountAllBorrowing();
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT ALL BORROWING]", getClass().getSimpleName());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT ALL BORROWING][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<Integer> getCountAllLateBorrowing() {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            count = borrowingDetailRepository.getCountAllLateBorrowing();
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT ALL LATE BORROWING]", getClass().getSimpleName());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT ALL LATE BORROWING][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Borrowing> addNewBorrowingDetail(BorrowingDetailRq borrowingDetailRq) {
         ResponseInfo<Borrowing> responseInfo = new ResponseInfo<>();
 
         try {
             Borrowing borrowingDetail;
             borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
-            borrowingDetail = BorrowingDetailMapper.INSTANCE.toBorrowingDetail(borrowingDetailRq);
+            borrowingDetail = BorrowingDetailMapperImpl.toBorrowingDetail(borrowingDetailRq);
             borrowingDetailRepository.addBorrowingDetail(borrowingDetail);
             responseInfo.setSuccess(borrowingDetail);
             log.info("[{}][SUCCESS ADD NEW BORROWING DETAIL]", getClass().getSimpleName());
@@ -209,7 +238,7 @@ public class BorrowingDetailUsecase {
         try {
             Borrowing borrowingDetail = borrowingDetailRepository.getBorrowingDetailById(updateBorrowingDetailRq.getBorrowingId());
             if (borrowingDetail != null) {
-                BorrowingDetailMapper.INSTANCE.updateBorrowingDetailFromUpdateBorrowingDetailRq(updateBorrowingDetailRq, borrowingDetail);
+                BorrowingDetailMapperImpl.updateBorrowingDetailFromUpdateBorrowingDetailRq(updateBorrowingDetailRq, borrowingDetail);
                 borrowingDetailRepository.updateBorrowingDetail(borrowingDetail);
 
                 responseInfo.setSuccess();

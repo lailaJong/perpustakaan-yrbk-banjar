@@ -38,6 +38,9 @@ public class OrderDetailMapperImpl{
         if ( updateOrderDetailRq.getOrderDate() != null ) {
             orderDetail.setOrderDate( updateOrderDetailRq.getOrderDate() );
         }
+        if ( updateOrderDetailRq.getTakingDate() != null ) {
+            orderDetail.setTakingDate( updateOrderDetailRq.getTakingDate() );
+        }
         if ( updateOrderDetailRq.getStatus() != null ) {
             orderDetail.setStatus( updateOrderDetailRq.getStatus() );
         }

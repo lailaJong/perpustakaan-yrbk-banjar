@@ -136,6 +136,30 @@ public class BorrowingDetailController {
                 .body(responseInfo.getBody());
     }
 
+    //get count all borrowing detail "dipinjam"
+    @GetMapping("/histories/userId")
+    ResponseEntity<Object> getCountAllBorrowing(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET COUNT ALL BORROWING][{}]", requestId);
+        responseInfo = borrowingDetailUsecase.getCountAllBorrowing();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get count all borrowing detail "telat"
+    @GetMapping("/histories/userId")
+    ResponseEntity<Object> getCountAllLateBorrowing(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET COUNT ALL LATE BORROWING][{}]", requestId);
+        responseInfo = borrowingDetailUsecase.getCountAllLateBorrowing();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @PostMapping("/create")
     ResponseEntity<Object> createBorrowingDetail(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestBody @Valid BorrowingDetailRq borrowingDetailRq) {

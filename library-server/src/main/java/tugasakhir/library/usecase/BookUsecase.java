@@ -1,6 +1,7 @@
 package tugasakhir.library.usecase;
 
 import tugasakhir.library.model.dto.BookDetail;
+import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.book.BookRq;
@@ -39,6 +40,38 @@ public class BookUsecase {
             log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<Integer> getCountAllBooks() {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            count = bookRepository.getCountAllBook();
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT ALL BOOK]", getClass().getSimpleName());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<List<TopBorrowedBook>> getTopBorrowedBooks() {
+        ResponseInfo<List<TopBorrowedBook>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<TopBorrowedBook> books;
+            books = bookRepository.getTopBorrowedBook();
+            books.addAll(bookRepository.getTopBorrowedBook());
+            responseInfo.setSuccess(books);
+            log.info("[{}][SUCCESS GET TOP BORROWED BOOKS][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET TOP BORROWED BOOKS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tugasakhir.library.model.dto.MemberDetail;
+import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.dto.UpdateMemberStatusRq;
 import tugasakhir.library.model.entity.Member;
 import tugasakhir.library.model.exception.NotFoundException;
@@ -43,6 +44,37 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET ALL MEMBER][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<Integer> getCountAllMembers() {
+        ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
+
+        try {
+            int count = 0;
+            count = memberRepository.getCountAllMember();
+            responseInfo.setSuccess(count);
+            log.info("[{}][SUCCESS GET COUNT ALL MEMBER]", getClass().getSimpleName());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET COUNT ALL MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<TopBorrowerMember>> getTopBorrowerMembers() {
+        ResponseInfo<List<TopBorrowerMember>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<TopBorrowerMember> members;
+            members = memberRepository.getTopBorrowerMember();
+            members.addAll(memberRepository.getTopBorrowerMember());
+            responseInfo.setSuccess(members);
+            log.info("[{}][SUCCESS GET TOP BORROWER MEMBER][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET TOP BORROWER MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;

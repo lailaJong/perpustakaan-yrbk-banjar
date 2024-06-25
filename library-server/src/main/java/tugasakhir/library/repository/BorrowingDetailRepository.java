@@ -270,4 +270,27 @@ public class BorrowingDetailRepository {
         int suffix = count + 1;
         return String.format("BRW%03d", suffix);
     }
+
+    //get count all borrowing
+    public int getCountAllBorrowing() {
+        try{
+            log.info("[GET COUNT ALL BORROWING DETAIL][{}]", applicationProperties.getGET_COUNT_ALL_BORROWING_DETAIL_DIPINJAM());
+            SqlParameterSource parameterSource = new MapSqlParameterSource("status", applicationProperties.getBorrowedStatus());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BORROWING_DETAIL_DIPINJAM(), parameterSource, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    //get count all late borrowing
+    public int getCountAllLateBorrowing() {
+        try{
+            log.info("[GET COUNT ALL LATE BORROWING DETAIL][{}]", applicationProperties.getGET_COUNT_ALL_LATE_BORROWING_DETAIL());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_LATE_BORROWING_DETAIL(), (SqlParameterSource) null, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
 }

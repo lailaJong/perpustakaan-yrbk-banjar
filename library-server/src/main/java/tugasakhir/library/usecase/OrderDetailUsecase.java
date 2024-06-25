@@ -5,19 +5,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.dto.OrderDetail;
+import tugasakhir.library.model.dto.OrderDetailOfficer;
 import tugasakhir.library.model.entity.BookStock;
+import tugasakhir.library.model.entity.Borrowing;
 import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
+import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
 import tugasakhir.library.model.request.orderdetail.OrderDetailRq;
 import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.BookStockRepository;
+import tugasakhir.library.repository.BorrowingDetailRepository;
 import tugasakhir.library.repository.OrderDetailRepository;
 import tugasakhir.library.utils.bookstock.BookStockMapperImpl;
-import tugasakhir.library.utils.orderdetail.OrderDetailMapper;
+import tugasakhir.library.utils.borrowingdetail.BorrowingDetailMapperImpl;
 import tugasakhir.library.utils.orderdetail.OrderDetailMapperImpl;
 import tugasakhir.library.utils.orderdetail.TakingDate;
+import tugasakhir.library.utils.validation.BenefitValidation;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +32,8 @@ import java.util.List;
 public class OrderDetailUsecase {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private BorrowingDetailRepository borrowingDetailRepository;
     @Autowired
     private BookStockRepository bookStockRepository;
     @Autowired
@@ -43,6 +50,23 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ALL ORDER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    //get order details officer
+    public ResponseInfo<List<OrderDetailOfficer>> getAllOrderDetailsOfficer() {
+        ResponseInfo<List<OrderDetailOfficer>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<OrderDetailOfficer> orderDetails;
+            orderDetails = orderDetailRepository.getAllOrderDetailsOfficer();
+            orderDetails.addAll(orderDetailRepository.getAllOrderDetailsOfficer());
+            responseInfo.setSuccess(orderDetails);
+            log.info("[{}][SUCCESS GET ALL ORDER DETAILS OFFICER][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL ORDER DETAILS OFFICER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -151,6 +175,35 @@ public class OrderDetailUsecase {
         try {
             Order orderDetail = orderDetailRepository.getOrderDetailById(updateOrderDetailRq.getOrderId());
             if (orderDetail != null) {
+                if (updateOrderDetailRq.getStatus().equalsIgnoreCase(applicationProperties.getCancelledStatus())){
+                    //tambahkan stok buku by book id
+                    BookStock bookStock = bookStockRepository.getBookStockByBookId(updateOrderDetailRq.getBookId());
+                    if (bookStock != null) {
+                        log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
+                        UpdateBookStockRq updateBookStockRq = null;
+                        updateBookStockRq.setBookStockId(bookStock.getBookStockId());
+                        updateBookStockRq.setBookId(bookStock.getBookId());
+                        updateBookStockRq.setStock((bookStock.getStock()+1));
+                        BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
+                        bookStockRepository.updateBookStock(bookStock);
+                    } else {
+                        throw new NotFoundException("Data of the book stock is not found");
+                    }
+                }else {
+                        //tambahkan borrowing detail
+                        Borrowing borrowingDetail;
+                        BenefitValidation benefitValidation = new BenefitValidation();
+                        BorrowingDetailRq borrowingDetailRq = new BorrowingDetailRq();
+                        borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
+                        borrowingDetailRq.setUserId(updateOrderDetailRq.getUserId());
+                        borrowingDetailRq.setBookId(updateOrderDetailRq.getBookId());
+                        borrowingDetailRq.setBorrowingDate(new Date());
+                        borrowingDetailRq.setReturnDate(benefitValidation.setReturnDates(updateOrderDetailRq.getUserId()));
+                        borrowingDetailRq.setStatus(applicationProperties.getBorrowedStatus());
+                        borrowingDetail = BorrowingDetailMapperImpl.toBorrowingDetail(borrowingDetailRq);
+                        borrowingDetailRepository.addBorrowingDetail(borrowingDetail);
+                        responseInfo.setSuccess(borrowingDetail);
+                }
                 OrderDetailMapperImpl.updateOrderDetailFromUpdateOrderDetailRq(updateOrderDetailRq, orderDetail);
                 orderDetailRepository.updateOrderDetail(orderDetail);
 

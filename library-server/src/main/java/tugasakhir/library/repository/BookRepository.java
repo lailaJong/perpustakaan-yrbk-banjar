@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.dto.BookDetail;
+import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
 
 import java.sql.ResultSet;
@@ -168,6 +169,16 @@ public class BookRepository {
         }
     }
 
+    private static final class TopBorrowedBookRowMapper implements RowMapper<TopBorrowedBook> {
+        @Override
+        public TopBorrowedBook mapRow(ResultSet rs, int rowNum) throws SQLException {
+            TopBorrowedBook book = new TopBorrowedBook();
+            book.setBookTitle(rs.getString("book_title"));
+            book.setTotalBorrowings(rs.getLong("total_borrowings"));
+            return book;
+        }
+    }
+
     private static final class BookDetailRowMapper implements RowMapper<BookDetail> {
         @Override
         public BookDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -319,6 +330,27 @@ public class BookRepository {
         int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BOOK(), (SqlParameterSource) null, Integer.class);
         int suffix = count + 1;
         return String.format("BUK%03d", suffix);
+    }
+
+    public int getCountAllBook() {
+        try{
+            log.info("[GET COUNT ALL BOOK][{}]", applicationProperties.getGET_COUNT_ALL_BOOK());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BOOK(), (SqlParameterSource) null, Integer.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    // Get top borrowed book
+    public List<TopBorrowedBook> getTopBorrowedBook() {
+        try {
+            log.info("[GET TOP BORROWED BOOK > 1][{}]", applicationProperties.getTOP_5_MOST_BORROWED_BOOKS());
+            return jdbcTemplate.query(applicationProperties.getTOP_5_MOST_BORROWED_BOOKS(), new TopBorrowedBookRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ArrayList<>();
+        }
     }
 }
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tugasakhir.library.model.dto.OrderDetail;
+import tugasakhir.library.model.dto.OrderDetailOfficer;
 import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.request.orderdetail.OrderDetailRq;
 import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
@@ -29,6 +30,17 @@ public class OrderDetailController {
         ResponseInfo<List<Order>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS][{}]", requestId);
         responseInfo = orderDetailUsecase.getAllOrderDetails();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    @GetMapping("/allOrder")
+    ResponseEntity<Object> getAllOrderDetailsOfficer(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<OrderDetailOfficer>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS OFFICER][{}]", requestId);
+        responseInfo = orderDetailUsecase.getAllOrderDetailsOfficer();
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

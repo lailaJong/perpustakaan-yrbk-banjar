@@ -8,10 +8,9 @@ import tugasakhir.library.model.request.borrowingdetail.UpdateBorrowingDetailRq;
  * @author Putri Mele
  * on 18/06/2024
  */
-public class BorrowingDetailMapperImpl implements BorrowingDetailMapper {
+public class BorrowingDetailMapperImpl {
 
-    @Override
-    public Borrowing toBorrowingDetail(BorrowingDetailRq borrowingDetailRq) {
+    public static Borrowing toBorrowingDetail(BorrowingDetailRq borrowingDetailRq) {
         if (borrowingDetailRq == null) {
             return null;
         }
@@ -26,8 +25,7 @@ public class BorrowingDetailMapperImpl implements BorrowingDetailMapper {
         return borrowingDetail;
     }
 
-    @Override
-    public void updateBorrowingDetailFromUpdateBorrowingDetailRq(UpdateBorrowingDetailRq updateOrderDetailRq, Borrowing borrowingDetail) {
+    public static void updateBorrowingDetailFromUpdateBorrowingDetailRq(UpdateBorrowingDetailRq updateOrderDetailRq, Borrowing borrowingDetail) {
         if ( updateOrderDetailRq == null ) {
             return;
         }

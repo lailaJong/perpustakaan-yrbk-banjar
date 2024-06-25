@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tugasakhir.library.model.dto.MemberDetail;
+import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.dto.UpdateMemberStatusRq;
 import tugasakhir.library.model.entity.Member;
 import tugasakhir.library.model.request.member.MemberRq;
@@ -36,6 +37,27 @@ public class MemberController {
                 .body(responseInfo.getBody());
     }
 
+    @GetMapping("/countAll")
+    ResponseEntity<Object> getCountAllMembers(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET COUNT ALL MEMBERS][{}]", requestId);
+        responseInfo = memberUsecase.getCountAllMembers();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    @GetMapping("/top")
+    ResponseEntity<Object> getTopBorrowerMembers(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<TopBorrowerMember>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET TOP BORROWER MEMBERS][{}]", requestId);
+        responseInfo = memberUsecase.getTopBorrowerMembers();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
 
     @GetMapping("/all/detail")
     ResponseEntity<ResponseInfo<List<MemberDetail>>> getAllMemberDetails(@RequestHeader(value = "request-id", required = false) String requestId) {

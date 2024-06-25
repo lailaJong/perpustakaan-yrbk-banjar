@@ -1,6 +1,7 @@
 package tugasakhir.library.controller;
 
 import tugasakhir.library.model.dto.BookDetail;
+import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.request.book.BookRq;
 import tugasakhir.library.model.request.book.UpdateBookRq;
@@ -30,6 +31,29 @@ public class BookController {
         ResponseInfo<List<Book>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
         responseInfo = bookUsecase.getAllBooks();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    @GetMapping("/countAll")
+    ResponseEntity<Object> getCountAllBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET COUNT ALL BOOKS][{}]", requestId);
+        responseInfo = bookUsecase.getCountAllBooks();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get top borrowed books
+    @GetMapping("/top")
+    ResponseEntity<Object> getTopBorrowedBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<TopBorrowedBook>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET TOP BORROWED BOOKS][{}]", requestId);
+        responseInfo = bookUsecase.getTopBorrowedBooks();
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

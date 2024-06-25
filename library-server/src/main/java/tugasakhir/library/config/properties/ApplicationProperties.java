@@ -32,6 +32,14 @@ public class ApplicationProperties {
             "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address, point = :point, registration_date = :registrationDate WHERE member_id = :memberId";
     private String DELETE_MEMBER_BY_ID = "DELETE FROM member WHERE member_id = :memberId";
     private String GET_COUNT_ALL_MEMBER = "SELECT COUNT(*) FROM member";
+    private String GET_MEMBER_POINT = "SELECT point FROM member where user_id = :userId";
+    private String GET_SCORE_ID_MEMBER = "SELECT score_detail_id FROM member where user_id = :userId";
+    private String GET_TOP_BORROWER_MEMBER = "SELECT m.name, COUNT(b.borrowing_id) AS total_borrowings " +
+            "FROM members m INNER JOIN member_statuses ms ON m.member_status_id = ms.member_status_id INNER JOIN borrowings b ON m.user_id = b.user_id " +
+            "WHERE ms.status = 'ACTIVE' " +
+            "GROUP BY m.name " +
+            "ORDER BY total_borrowings DESC " +
+            "LIMIT 5";
     //BOOK
     private String INSERT_BOOK = "INSERT INTO book (book_id, book_title, category_id, publisher_id, author_id, book_shelf_id, language, isbn, number_of_pages, publication_year, synopsis)" +
             "VALUES (:bookId, :bookTitle, :categoryId, :publisherId, :authorId, :bookShelfId, :language, :isbn, :numberOfPages, :publicationYear, :synopsis)";
@@ -48,6 +56,11 @@ public class ApplicationProperties {
     private String DELETE_BOOK_BY_ID = "DELETE FROM book WHERE book_id = :bookId";
     private String GET_ALL_BOOK = "SELECT * FROM book";
     private String GET_COUNT_ALL_BOOK = "SELECT COUNT(*) FROM book";
+    private String TOP_5_MOST_BORROWED_BOOKS = "SELECT bk.book_title, COUNT(b.borrowing_id) AS total_borrowings " +
+            "FROM books bk INNER JOIN borrowings b ON bk.book_id = b.book_id " +
+            "GROUP BY bk.book_title " +
+            "ORDER BY total_borrowings DESC " +
+            "LIMIT 5";
     private String GET_BOOKS_BY_AUTHOR = "SELECT * FROM book WHERE author_id = (SELECT author_id FROM authors WHERE author_name = :authorName)";
     private String GET_BOOKS_BY_PUBLISHER = "SELECT * FROM book WHERE publisher_id = (SELECT publisher_id FROM publishers WHERE publisher_name = :publisherName)";
     private String GET_BOOKS_BY_CATEGORY = "SELECT * FROM book WHERE category_id = (SELECT category_id FROM categories WHERE category_name = :categoryName)";
@@ -94,6 +107,8 @@ public class ApplicationProperties {
     private String GET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
             "bd.status = :status AND m.name LIKE :name";
     private String GET_COUNT_ALL_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail";
+    private String GET_COUNT_ALL_BORROWING_DETAIL_DIPINJAM = "SELECT COUNT(*) FROM borrowing_detail where status = :borrowedStatus";
+    private String GET_COUNT_ALL_LATE_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail WHERE return_date < CURRENT_DATE";
     //CATEGORY
     private String INSERT_CATEGORY = "INSERT INTO category (category_id, category_name) VALUES (:categoryId, :categoryName)";
     private String GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE category_id = :categoryId";
@@ -121,10 +136,12 @@ public class ApplicationProperties {
     //ORDER DETAIL
     private String INSERT_ORDER_DETAIL = "INSERT INTO order_detail (order_id, user_id, book_id, order_date, status) VALUES (:order_id, :userId, :bookId, :orderDate, :status)";
     private String GET_ORDER_DETAIL_BY_ID = "SELECT * FROM order_detail WHERE order_id = :orderId";
-    private String UPDATE_ORDER_DETAIL_BY_ID = "UPDATE order_detail SET user_id = :userId, book_id = :bookId, order_date = :orderDate, status = :status WHERE order_id = :orderId";
+    private String UPDATE_ORDER_DETAIL_BY_ID = "UPDATE order_detail SET user_id = :userId, book_id = :bookId, order_date = :orderDate, taking_date = :takingDate, status = :status WHERE order_id = :orderId";
     private String DELETE_ORDER_DETAIL_BY_ID = "DELETE FROM order_detail WHERE order_id = :orderId";
     private String GET_COUNT_ORDER_DETAIL_BY_USER_ID = "SELECT COUNT(*) FROM order_detail WHERE user_id = :userId AND status = :orderStatus";
     private String GET_ALL_ORDER_DETAIL = "SELECT * FROM order_detail";
+    private String GET_ALL_ORDER_DETAILS_OFFICER = "SELECT o.order_id, b.book_title " +
+            "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.status = :status";
     private String GET_ALL_ORDER_DETAILS_BY_USER_ID = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
             "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status";
     private String GET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
@@ -168,5 +185,7 @@ public class ApplicationProperties {
     private String completedStatus = "Selesai";
     private String borrowedStatus = "Dipinjam";
     private String lostStatus = "Hilang";
-    private String returnedStatus = "Selesai";
+    private String returnedStatus = "Dikembalikan";
+    private int regulerTime = 2;
+    private int regulerQuota = 2;
 }
