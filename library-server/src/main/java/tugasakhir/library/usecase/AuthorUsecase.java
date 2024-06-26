@@ -55,7 +55,7 @@ public class AuthorUsecase {
 
         try {
             List <Author> author;
-            author = authorRepository.getAuthorsByName(authorName);
+            author = authorRepository.getAllAuthorsByName(authorName);
             responseInfo.setSuccess(author);
             log.info("[{}][SUCCESS GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
         } catch (Exception ex) {

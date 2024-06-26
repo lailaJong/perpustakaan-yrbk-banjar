@@ -85,6 +85,7 @@ public class BooksMapperImpl{
         book.setNumberOfPages(bookRq.getNumberOfPages());
         book.setPublicationYear(bookRq.getPublicationYear());
         book.setSynopsis(bookRq.getSynopsis());
+        book.setStock(bookRq.getStock());
         return book;
     }
 

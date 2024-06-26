@@ -1,6 +1,7 @@
 package tugasakhir.library.usecase;
 
 import tugasakhir.library.model.dto.BookDetail;
+import tugasakhir.library.model.dto.ListBook;
 import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.exception.NotFoundException;
@@ -36,6 +37,39 @@ public class BookUsecase {
             List<Book> books;
             books = bookRepository.getAllBooks();
             books.addAll(bookRepository.getAllBooks());
+            responseInfo.setSuccess(books);
+            log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<List<ListBook>> getAllBookTitles() {
+        ResponseInfo<List<ListBook>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<ListBook> books;
+            books = bookRepository.getAllBookTitles();
+            books.addAll(bookRepository.getAllBookTitles());
+            responseInfo.setSuccess(books);
+            log.info("[{}][SUCCESS GET ALL BOOK NAMES][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BOOK NAMES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<BookDetail>> getAllBooksDetail() {
+        ResponseInfo<List<BookDetail>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BookDetail> books;
+            books = bookRepository.getAllBooksDetail();
+            books.addAll(bookRepository.getAllBooksDetail());
             responseInfo.setSuccess(books);
             log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
         } catch (Exception ex) {
@@ -92,16 +126,16 @@ public class BookUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<List<Book>> getBookByTitle(String bookTitle) {
-        ResponseInfo<List<Book>> responseInfo = new ResponseInfo<>();
+    public ResponseInfo<List<BookDetail>> getBookByTitle(String bookTitle) {
+        ResponseInfo<List<BookDetail>> responseInfo = new ResponseInfo<>();
 
         try {
-            List<Book> books;
+            List<BookDetail> books;
             books = bookRepository.getBookByBookTitle(bookTitle);
             responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET BOOK][TITLE: {}]", getClass().getSimpleName(), bookTitle);
+            log.info("[{}][SUCCESS GET BOOK DETAIL][TITLE: {}]", getClass().getSimpleName(), bookTitle);
         } catch (Exception ex) {
-            log.info("[{}][FAILED GET BOOK][TITLE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookTitle, ex);
+            log.info("[{}][FAILED GET BOOK DETAIL][TITLE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookTitle, ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;

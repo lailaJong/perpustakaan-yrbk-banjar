@@ -3,6 +3,7 @@ package tugasakhir.library.usecase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tugasakhir.library.model.dto.ListMember;
 import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.dto.UpdateMemberStatusRq;
@@ -49,6 +50,22 @@ public class MemberUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<List<ListMember>> getAllMemberNames() {
+        ResponseInfo<List<ListMember>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<ListMember> members;
+            members = memberRepository.getAllMemberNames();
+            members.addAll(memberRepository.getAllMemberNames());
+            responseInfo.setSuccess(members);
+            log.info("[{}][SUCCESS GET ALL MEMBER NAMES][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL MEMBER NAMES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Integer> getCountAllMembers() {
         ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
 
@@ -83,7 +100,24 @@ public class MemberUsecase {
     public ResponseInfo<List<MemberDetail>> getAllMemberDetails() {
         ResponseInfo<List<MemberDetail>> responseInfo = new ResponseInfo<>();
         try {
+//            List<MemberDetail> memberDetails;
+//            memberDetails = memberRepository.getAllMembers();
+//            memberDetails.addAll(memberRepository.getAllMembers());
             List<Member> members = memberRepository.getAllMembers();
+            List<MemberDetail> memberDetails = MembersMapperImpl.toMemberDetailList(members, userRepository, scoreDetailRepository, memberStatusRepository);
+            responseInfo.setSuccess(memberDetails);
+            log.info("[{}][SUCCESS GET ALL MEMBER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL MEMBER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<MemberDetail>> getAllMemberDetailsByName(String memberName) {
+        ResponseInfo<List<MemberDetail>> responseInfo = new ResponseInfo<>();
+        try {
+            List<Member> members = memberRepository.getAllMembersByName(memberName);
             List<MemberDetail> memberDetails = MembersMapperImpl.toMemberDetailList(members, userRepository, scoreDetailRepository, memberStatusRepository);
             responseInfo.setSuccess(memberDetails);
             log.info("[{}][SUCCESS GET ALL MEMBER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), members.size());

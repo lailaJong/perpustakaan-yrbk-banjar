@@ -20,6 +20,6 @@ public class UpdateBookStockRq {
 
     @JsonProperty("stock")
     @Min(value = 1, message = "Stock must be at least 1")
-    @Max(value = 99, message = "Stock must be at most 99")
+    @Max(value = 1000, message = "Stock must be at most 1000")
     private int stock;
 }

@@ -7,14 +7,27 @@ import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.dto.BorrowingDetail;
 import tugasakhir.library.model.dto.BorrowingHistories;
 import tugasakhir.library.model.dto.BorrowingHistoriesUser;
+import tugasakhir.library.model.dto.BorrowingTrxOfficer;
+import tugasakhir.library.model.entity.BookStock;
 import tugasakhir.library.model.entity.Borrowing;
+import tugasakhir.library.model.entity.Member;
+import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.exception.NotFoundException;
+import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
 import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
 import tugasakhir.library.model.request.borrowingdetail.UpdateBorrowingDetailRq;
 import tugasakhir.library.model.response.ResponseInfo;
+import tugasakhir.library.repository.BookStockRepository;
 import tugasakhir.library.repository.BorrowingDetailRepository;
+import tugasakhir.library.repository.MemberRepository;
+import tugasakhir.library.utils.bookstock.BookStockMapperImpl;
 import tugasakhir.library.utils.borrowingdetail.BorrowingDetailMapperImpl;
+import tugasakhir.library.utils.orderdetail.OrderDetailMapperImpl;
+import tugasakhir.library.utils.orderdetail.TakingDate;
+import tugasakhir.library.utils.scoredetail.ScoreDetailMapperImpl;
+import tugasakhir.library.utils.validation.BenefitValidation;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -22,6 +35,10 @@ import java.util.List;
 public class BorrowingDetailUsecase {
     @Autowired
     private BorrowingDetailRepository borrowingDetailRepository;
+    @Autowired
+    private BookStockRepository bookStockRepository;
+    @Autowired
+    private MemberRepository memberRepository;
     @Autowired
     private ApplicationProperties applicationProperties;
 
@@ -74,13 +91,13 @@ public class BorrowingDetailUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<List<BorrowingHistories>> getAllBorrowingHistories(String status) {
+    public ResponseInfo<List<BorrowingHistories>> getAllBorrowingHistories() {
         ResponseInfo<List<BorrowingHistories>> responseInfo = new ResponseInfo<>();
 
         try {
             List<BorrowingHistories> borrowingHistories;
-            borrowingHistories = borrowingDetailRepository.getAllBorrowingHistories(status);
-            borrowingHistories.addAll(borrowingDetailRepository.getAllBorrowingHistories(status));
+            borrowingHistories = borrowingDetailRepository.getAllBorrowingHistories();
+            borrowingHistories.addAll(borrowingDetailRepository.getAllBorrowingHistories());
             responseInfo.setSuccess(borrowingHistories);
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES][DATA SIZE: {}]", getClass().getSimpleName(), borrowingHistories.size());
         } catch (Exception ex) {
@@ -91,17 +108,85 @@ public class BorrowingDetailUsecase {
     }
 
 
-    public ResponseInfo<List<BorrowingHistories>> getAllBorrowingHistoriesByMemberName(String status, String name) {
+    public ResponseInfo<List<BorrowingHistories>> getAllBorrowingHistoriesByMemberName(String name) {
         ResponseInfo<List<BorrowingHistories>> responseInfo = new ResponseInfo<>();
 
         try {
             List<BorrowingHistories> borrowingHistories;
-            borrowingHistories = borrowingDetailRepository.getAllBorrowingHistoriesByMemberName(status, name);
-            borrowingHistories.addAll(borrowingDetailRepository.getAllBorrowingHistoriesByMemberName(status, name));
+            borrowingHistories = borrowingDetailRepository.getAllBorrowingHistoriesByMemberName(name);
+            borrowingHistories.addAll(borrowingDetailRepository.getAllBorrowingHistoriesByMemberName(name));
             responseInfo.setSuccess(borrowingHistories);
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES BY NAME][DATA SIZE: {}]", getClass().getSimpleName(), borrowingHistories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES BY NAME][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<List<BorrowingTrxOfficer>> getAllBorrowingTrx() {
+        ResponseInfo<List<BorrowingTrxOfficer>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BorrowingTrxOfficer> borrowingTrxOfficers;
+            borrowingTrxOfficers = borrowingDetailRepository.getAllBorrowingTrx();
+            borrowingTrxOfficers.addAll(borrowingDetailRepository.getAllBorrowingTrx());
+            responseInfo.setSuccess(borrowingTrxOfficers);
+            log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BORROWING HISTORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<List<BorrowingTrxOfficer>> getAllBorrowingTrxByMemberName(String name) {
+        ResponseInfo<List<BorrowingTrxOfficer>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BorrowingTrxOfficer> borrowingTrxOfficers;
+            borrowingTrxOfficers = borrowingDetailRepository.getAllBorrowingTrxByMemberName(name);
+            borrowingTrxOfficers.addAll(borrowingDetailRepository.getAllBorrowingTrxByMemberName(name));
+            responseInfo.setSuccess(borrowingTrxOfficers);
+            log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES BY NAME][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BORROWING HISTORIES BY NAME][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<List<BorrowingTrxOfficer>> getAllLateBorrowingTrx() {
+        ResponseInfo<List<BorrowingTrxOfficer>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BorrowingTrxOfficer> borrowingTrxOfficers;
+            borrowingTrxOfficers = borrowingDetailRepository.getAllLateBorrowingTrx();
+            borrowingTrxOfficers.addAll(borrowingDetailRepository.getAllLateBorrowingTrx());
+            responseInfo.setSuccess(borrowingTrxOfficers);
+            log.info("[{}][SUCCESS GET ALL LATE BORROWING HISTORIES][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL LATE BORROWING HISTORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.setCommonException(ex);
+        }
+        return responseInfo;
+    }
+
+
+    public ResponseInfo<List<BorrowingTrxOfficer>> getAllLateBorrowingTrxByMemberName(String name) {
+        ResponseInfo<List<BorrowingTrxOfficer>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BorrowingTrxOfficer> borrowingTrxOfficers;
+            borrowingTrxOfficers = borrowingDetailRepository.getAllLateBorrowingTrxByMemberName(name);
+            borrowingTrxOfficers.addAll(borrowingDetailRepository.getAllLateBorrowingTrxByMemberName(name));
+            responseInfo.setSuccess(borrowingTrxOfficers);
+            log.info("[{}][SUCCESS GET ALL LATE BORROWING HISTORIES BY NAME][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL LATE BORROWING HISTORIES BY NAME][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
         }
         return responseInfo;
@@ -159,8 +244,7 @@ public class BorrowingDetailUsecase {
 
         try {
             int count = 0;
-            String borrowingStatus = applicationProperties.getBorrowedStatus();
-            count = borrowingDetailRepository.getCountBorrowingStatusByUserId(userId, borrowingStatus);
+            count = borrowingDetailRepository.getCountBorrowingStatusByUserId(userId);
             responseInfo.setSuccess(count);
             log.info("[{}][SUCCESS GET COUNT BORROWING STATUS][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
@@ -219,12 +303,37 @@ public class BorrowingDetailUsecase {
         ResponseInfo<Borrowing> responseInfo = new ResponseInfo<>();
 
         try {
-            Borrowing borrowingDetail;
-            borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
-            borrowingDetail = BorrowingDetailMapperImpl.toBorrowingDetail(borrowingDetailRq);
-            borrowingDetailRepository.addBorrowingDetail(borrowingDetail);
-            responseInfo.setSuccess(borrowingDetail);
-            log.info("[{}][SUCCESS ADD NEW BORROWING DETAIL]", getClass().getSimpleName());
+            //tambahkan validasi check sisa quota
+            BenefitValidation benefitValidation = new BenefitValidation();
+            boolean isQuotasAvailable = false;
+            isQuotasAvailable = benefitValidation.isQuotasAvailable(borrowingDetailRq.getUserId());
+            if (isQuotasAvailable){
+                Borrowing borrowingDetail;
+                borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
+                borrowingDetailRq.setBorrowingDate(new Date());
+                borrowingDetailRq.setReturnDate(benefitValidation.setReturnDates(borrowingDetailRq.getUserId()));
+                borrowingDetailRq.setStatus(applicationProperties.getBorrowedStatus());
+                borrowingDetail = BorrowingDetailMapperImpl.toBorrowingDetail(borrowingDetailRq);
+                borrowingDetailRepository.addBorrowingDetail(borrowingDetail);
+                responseInfo.setSuccess(borrowingDetail);
+                log.info("[{}][SUCCESS ADD NEW BORROWING DETAIL]", getClass().getSimpleName());
+                //kurangi stok buku by book id
+                BookStock bookStock = bookStockRepository.getBookStockByBookId(borrowingDetail.getBookId());
+                if (bookStock != null) {
+                    log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
+                    UpdateBookStockRq updateBookStockRq = null;
+                    updateBookStockRq.setBookStockId(bookStock.getBookStockId());
+                    updateBookStockRq.setBookId(bookStock.getBookId());
+                    updateBookStockRq.setStock((bookStock.getStock()-1));
+                    BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
+                    bookStockRepository.updateBookStock(bookStock);
+                } else {
+                    throw new NotFoundException("Data of the book stock is not found");
+                }
+                responseInfo.setSuccess(borrowingDetail);
+            } else {
+                throw new NotFoundException("Quota is not available, remaining quota is 0!");
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);
@@ -234,10 +343,39 @@ public class BorrowingDetailUsecase {
 
     public ResponseInfo<Object> updateBorrowingDetail(UpdateBorrowingDetailRq updateBorrowingDetailRq) {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
-
+        int finalPoint = 0;
         try {
             Borrowing borrowingDetail = borrowingDetailRepository.getBorrowingDetailById(updateBorrowingDetailRq.getBorrowingId());
+            updateBorrowingDetailRq.setActualReturnDate(new Date());
+            Member member = memberRepository.getMemberByUserId(updateBorrowingDetailRq.getUserId());
+            BookStock bookStock = bookStockRepository.getBookStockByBookId(updateBorrowingDetailRq.getBookId());
+            int previousPoint = member.getPoint();
+            int finalStock = bookStock.getStock();
             if (borrowingDetail != null) {
+                if (updateBorrowingDetailRq.getStatus().equalsIgnoreCase(applicationProperties.getReturnedStatus())){
+                    if (updateBorrowingDetailRq.getActualReturnDate().after(updateBorrowingDetailRq.getReturnDate())){
+                        //late case
+                        //point -1
+                        finalPoint = previousPoint - applicationProperties.getLatePoint();
+                    } else {
+                        //point +1
+                        finalPoint = previousPoint + applicationProperties.getOnTimePoint();
+                    }
+                    //update stock +1
+                    finalStock = finalStock + 1;
+                } else {
+                    //lost case
+                    //update point -10
+                    finalPoint = previousPoint - applicationProperties.getLostPoint();
+                }
+                //update point in member
+                member.setPoint(finalPoint);
+                member.setScoreDetailId(ScoreDetailMapperImpl.getScoreDetailId(finalPoint));
+                memberRepository.updateMember(member);
+                //update book stock
+                bookStock.setStock(finalStock);
+                bookStockRepository.updateBookStock(bookStock);
+                //update borrowing trx
                 BorrowingDetailMapperImpl.updateBorrowingDetailFromUpdateBorrowingDetailRq(updateBorrowingDetailRq, borrowingDetail);
                 borrowingDetailRepository.updateBorrowingDetail(borrowingDetail);
 
@@ -245,7 +383,7 @@ public class BorrowingDetailUsecase {
             } else {
                 throw new NotFoundException();
             }
-            log.info("[{}][SUCCESS UPDATE BORROWING DETAIL]", getClass().getSimpleName());
+            log.info("[{}][SUCCESS UPDATE BORROWING DETAIL][POINT: {}][STOCK: {}]", getClass().getSimpleName(), finalPoint, finalStock);
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.setCommonException(ex);

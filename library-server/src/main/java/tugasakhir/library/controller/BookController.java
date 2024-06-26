@@ -1,6 +1,7 @@
 package tugasakhir.library.controller;
 
 import tugasakhir.library.model.dto.BookDetail;
+import tugasakhir.library.model.dto.ListBook;
 import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.request.book.BookRq;
@@ -36,6 +37,31 @@ public class BookController {
                 .body(responseInfo.getBody());
     }
 
+    //get all book titles
+    @GetMapping("/allTitle")
+    ResponseEntity<Object> getAllBookTitle(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<ListBook>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BOOK NAMES][{}]", requestId);
+        responseInfo = bookUsecase.getAllBookTitles();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+
+    //get all books detail
+    @GetMapping("/all/details")
+    ResponseEntity<Object> getAllBooksDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<BookDetail>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
+        responseInfo = bookUsecase.getAllBooksDetail();
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     @GetMapping("/countAll")
     ResponseEntity<Object> getCountAllBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -65,7 +91,7 @@ public class BookController {
                                        @RequestParam(value = "bookId") String bookId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<BookDetail> responseInfo;
-        log.info("[REQUEST RECEIVED - GET BOOK BY ID][{}][{}]", bookId, requestId);
+        log.info("[REQUEST RECEIVED - GET BOOK DETAILS BY ID][{}][{}]", bookId, requestId);
         responseInfo = bookUsecase.getBookById(bookId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
@@ -77,9 +103,9 @@ public class BookController {
     ResponseEntity<Object> getAllBooksByTitle(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "bookTitle") String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Book>> responseInfo;
+        ResponseInfo<List<BookDetail>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BOOKS BY TITLE][{}][{}]", bookTitle, requestId);
-        responseInfo = bookUsecase.getBookByTitle(bookTitle);
+        responseInfo = bookUsecase. getBookByTitle(bookTitle);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

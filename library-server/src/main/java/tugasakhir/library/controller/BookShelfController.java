@@ -81,10 +81,10 @@ public class BookShelfController {
 
     @DeleteMapping("/delete")
     ResponseEntity<Object> deleteBookShelf(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "bookShelfId") String boookShelfId) {
+                                       @RequestParam(value = "bookShelfId") String bookShelfId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        log.info("[REQUEST RECEIVED - DELETE BOOK SHELF][{}][BOOK SHELF ID: {}]", requestId, boookShelfId);
-        ResponseInfo<Object> responseInfo = bookShelfUsecase.deleteBookShelf(boookShelfId);
+        log.info("[REQUEST RECEIVED - DELETE BOOK SHELF][{}][BOOK SHELF ID: {}]", requestId, bookShelfId);
+        ResponseInfo<Object> responseInfo = bookShelfUsecase.deleteBookShelf(bookShelfId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

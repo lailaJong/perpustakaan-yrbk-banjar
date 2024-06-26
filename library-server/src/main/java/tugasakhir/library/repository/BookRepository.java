@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.dto.BookDetail;
+import tugasakhir.library.model.dto.ListBook;
 import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
 
@@ -169,6 +170,16 @@ public class BookRepository {
         }
     }
 
+    private static final class BookNamesRowMapper implements RowMapper<ListBook> {
+        @Override
+        public ListBook mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ListBook book = new ListBook();
+            book.setBookId(rs.getString("book_id"));
+            book.setBookTitle(rs.getString("book_title"));
+            return book;
+        }
+    }
+
     private static final class TopBorrowedBookRowMapper implements RowMapper<TopBorrowedBook> {
         @Override
         public TopBorrowedBook mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -234,12 +245,12 @@ public class BookRepository {
         }
     }
 
-    public List<Book> getBookByBookTitle(String bookTitle) {
+    public List<BookDetail> getBookByBookTitle(String bookTitle) {
         try{
             bookTitle = "%".concat(bookTitle).concat("%");
-            log.info("[GET BOOK BY TITLE][{}][{}]", bookTitle, applicationProperties.getGET_BOOK_BY_TITLE());
+            log.info("[GET BOOK DETAIL BY TITLE][{}][{}]", bookTitle, applicationProperties.getGET_BOOK_DETAIL_BY_TITLE());
             SqlParameterSource paramSource = new MapSqlParameterSource("bookTitle", bookTitle);
-            return jdbcTemplate.query(applicationProperties.getGET_BOOK_BY_TITLE(), paramSource, new BookRowMapper());
+            return jdbcTemplate.query(applicationProperties.getGET_BOOK_DETAIL_BY_TITLE(), paramSource, new BookDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
@@ -273,6 +284,28 @@ public class BookRepository {
         try{
             log.info("[GET ALL BOOKS][{}]", applicationProperties.getGET_ALL_BOOK());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK(), new BookRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    // Get all book title
+    public List<ListBook> getAllBookTitles() {
+        try{
+            log.info("[GET ALL BOOK NAMES][{}]", applicationProperties.getGET_ALL_BOOK_TITLE());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_TITLE(), new BookNamesRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    // Get all books details
+    public List<BookDetail> getAllBooksDetail() {
+        try{
+            log.info("[GET ALL BOOKS DETAIL][{}]", applicationProperties.getGET_ALL_BOOK_DETAIL());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_DETAIL(), new BookDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return new ArrayList<>();

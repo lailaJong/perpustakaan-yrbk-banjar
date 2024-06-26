@@ -40,7 +40,7 @@ public class BookShelfUsecase {
 
         try {
             List <BookShelf> bookShelf;
-            bookShelf = bookShelfRepository.getBookShelfByCode(code);
+            bookShelf = bookShelfRepository.getAllBookShelfByCode(code);
             responseInfo.setSuccess(bookShelf);
             log.info("[{}][SUCCESS GET BOOK SHELF][CODE: {}]", getClass().getSimpleName(), code);
         } catch (Exception ex) {

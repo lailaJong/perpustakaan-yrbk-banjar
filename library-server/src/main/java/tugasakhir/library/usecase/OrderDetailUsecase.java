@@ -140,27 +140,35 @@ public class OrderDetailUsecase {
         ResponseInfo<Order> responseInfo = new ResponseInfo<>();
 
         try {
-            Order orderDetail;
-            orderDetailRq.setOrderId(orderDetailRepository.generateOrderDetailId());
-            orderDetailRq.setOrderDate(new Date());
-            orderDetailRq.setTakingDate(TakingDate.setTakingDates(orderDetailRq.getOrderDate()));
-            orderDetailRq.setStatus(applicationProperties.getOrderedStatus());
-            orderDetail = OrderDetailMapperImpl.toOrderDetail(orderDetailRq);
-            orderDetailRepository.addOrderDetail(orderDetail);
-            //kurangi stok buku by book id
-            BookStock bookStock = bookStockRepository.getBookStockByBookId(orderDetailRq.getBookId());
-            if (bookStock != null) {
-                log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
-                UpdateBookStockRq updateBookStockRq = null;
-                updateBookStockRq.setBookStockId(bookStock.getBookStockId());
-                updateBookStockRq.setBookId(bookStock.getBookId());
-                updateBookStockRq.setStock((bookStock.getStock()-1));
-                BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
-                bookStockRepository.updateBookStock(bookStock);
+            //tambahkan validasi check sisa quota
+            BenefitValidation benefitValidation = new BenefitValidation();
+            boolean isQuotasAvailable = false;
+            isQuotasAvailable = benefitValidation.isQuotasAvailable(orderDetailRq.getUserId());
+            if (isQuotasAvailable){
+                Order orderDetail;
+                orderDetailRq.setOrderId(orderDetailRepository.generateOrderDetailId());
+                orderDetailRq.setOrderDate(new Date());
+                orderDetailRq.setTakingDate(TakingDate.setTakingDates(orderDetailRq.getOrderDate()));
+                orderDetailRq.setStatus(applicationProperties.getOrderedStatus());
+                orderDetail = OrderDetailMapperImpl.toOrderDetail(orderDetailRq);
+                orderDetailRepository.addOrderDetail(orderDetail);
+                //kurangi stok buku by book id
+                BookStock bookStock = bookStockRepository.getBookStockByBookId(orderDetailRq.getBookId());
+                if (bookStock != null) {
+                    log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
+                    UpdateBookStockRq updateBookStockRq = null;
+                    updateBookStockRq.setBookStockId(bookStock.getBookStockId());
+                    updateBookStockRq.setBookId(bookStock.getBookId());
+                    updateBookStockRq.setStock((bookStock.getStock()-1));
+                    BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
+                    bookStockRepository.updateBookStock(bookStock);
+                } else {
+                    throw new NotFoundException("Data of the book stock is not found");
+                }
+                responseInfo.setSuccess(orderDetail);
             } else {
-                throw new NotFoundException("Data of the book stock is not found");
+                throw new NotFoundException("Quota is not available, remaining quota is 0!");
             }
-            responseInfo.setSuccess(orderDetail);
             log.info("[{}][SUCCESS ADD NEW ORDER DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -179,7 +187,6 @@ public class OrderDetailUsecase {
                     //tambahkan stok buku by book id
                     BookStock bookStock = bookStockRepository.getBookStockByBookId(updateOrderDetailRq.getBookId());
                     if (bookStock != null) {
-                        log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
                         UpdateBookStockRq updateBookStockRq = null;
                         updateBookStockRq.setBookStockId(bookStock.getBookStockId());
                         updateBookStockRq.setBookId(bookStock.getBookId());

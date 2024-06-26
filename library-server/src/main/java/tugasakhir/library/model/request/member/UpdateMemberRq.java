@@ -54,6 +54,6 @@ public class UpdateMemberRq {
     @JsonProperty("point")
     private int point;
 
-    @JsonProperty("regristrationDate")
+    @JsonProperty("registrationDate")
     private Date regristrationDate;
 }

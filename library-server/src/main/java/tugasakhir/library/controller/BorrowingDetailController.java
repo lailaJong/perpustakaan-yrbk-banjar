@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tugasakhir.library.model.dto.BorrowingDetail;
 import tugasakhir.library.model.dto.BorrowingHistories;
 import tugasakhir.library.model.dto.BorrowingHistoriesUser;
+import tugasakhir.library.model.dto.BorrowingTrxOfficer;
 import tugasakhir.library.model.entity.Borrowing;
 import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
 import tugasakhir.library.model.request.borrowingdetail.UpdateBorrowingDetailRq;
@@ -63,17 +64,50 @@ public class BorrowingDetailController {
                 .body(responseInfo.getBody());
     }
 
-    @GetMapping("/status/name")
+    @GetMapping("/all/name")
     ResponseEntity<Object> getAllBorrowingHistories(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                    @RequestParam(value = "status") String status,
                                                     @RequestParam(value = "name") String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BorrowingHistories>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORIES][{}]", requestId);
         if (name == null){
-            responseInfo = borrowingDetailUsecase.getAllBorrowingHistories(status);
+            responseInfo = borrowingDetailUsecase.getAllBorrowingHistories();
         } else {
-            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByMemberName(status, name);
+            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByMemberName(name);
+        }
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get all borrowing trx for officer
+    @GetMapping("/allTrx")
+    ResponseEntity<Object> getAllBorrowingTrx(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                    @RequestParam(value = "name") String name) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<BorrowingTrxOfficer>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BORROWING TRX][{}]", requestId);
+        if (name == null){
+            responseInfo = borrowingDetailUsecase.getAllBorrowingTrx();
+        } else {
+            responseInfo = borrowingDetailUsecase.getAllBorrowingTrxByMemberName(name);
+        }
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get all borrowing trx "late" for officer
+    @GetMapping("/allLateTrx")
+    ResponseEntity<Object> getAllLateBorrowingTrx(@RequestHeader(value = "request-id", required = false) String requestId,
+                                              @RequestParam(value = "name") String name) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<BorrowingTrxOfficer>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL LATE BORROWING TRX][{}]", requestId);
+        if (name == null){
+            responseInfo = borrowingDetailUsecase.getAllLateBorrowingTrx();
+        } else {
+            responseInfo = borrowingDetailUsecase.getAllLateBorrowingTrxByMemberName(name);
         }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())

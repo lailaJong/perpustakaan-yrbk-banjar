@@ -55,7 +55,7 @@ public class CategoryUsecase {
 
         try {
             List <Category> category;
-            category = categoryRepository.getCategoryByName(categoryName);
+            category = categoryRepository.getAllCategoryByName(categoryName);
             responseInfo.setSuccess(category);
             log.info("[{}][SUCCESS GET CATEGORY][NAME: {}]", getClass().getSimpleName(), categoryName);
         } catch (Exception ex) {

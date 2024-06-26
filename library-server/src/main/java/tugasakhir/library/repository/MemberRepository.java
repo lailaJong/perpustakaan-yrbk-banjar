@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.config.variable.ApplicationConstant;
+import tugasakhir.library.model.dto.ListMember;
 import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.entity.Member;
 
@@ -60,7 +61,17 @@ public class MemberRepository {
         public TopBorrowerMember mapRow(ResultSet rs, int rowNum) throws SQLException {
             TopBorrowerMember member = new TopBorrowerMember();
             member.setName(rs.getString("name"));
-            member.setName(rs.getString("total_borrowings"));
+            member.setTotalBorrowings(rs.getLong("total_borrowings"));
+            return member;
+        }
+    }
+
+    private static final class MemberNamesRowMapper implements RowMapper<ListMember> {
+        @Override
+        public ListMember mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ListMember member = new ListMember();
+            member.setMemberId(rs.getString("member_id"));
+            member.setName(rs.getString("name"));
             return member;
         }
     }
@@ -150,6 +161,30 @@ public class MemberRepository {
         try{
             log.info("[GET ALL MEMBER][{}]", applicationProperties.getGET_ALL_MEMBER());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER(), new MemberRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all members
+    public List<ListMember> getAllMemberNames() {
+        try{
+            log.info("[GET ALL MEMBER NAMES][{}]", applicationProperties.getGET_ALL_MEMBER_NAMES());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER_NAMES(), new MemberNamesRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all members
+    public List<Member> getAllMembersByName(String name) {
+        try{
+            name = "%".concat(name).concat("%");
+            log.info("[GET ALL MEMBER][{}]", applicationProperties.getGET_ALL_MEMBER_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("name", name);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER_BY_NAME(), paramSource, new MemberRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

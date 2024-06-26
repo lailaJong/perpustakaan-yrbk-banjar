@@ -99,12 +99,23 @@ public class CategoryRepository {
         }
     }
 
-    public List<Category> getCategoryByName(String categoryName) {
+    public List<Category> getAllCategoryByName(String categoryName) {
         try {
             categoryName = "%".concat(categoryName).concat("%");
+            log.info("[GET ALL CATEGORY BY NAME][{}][{}]", categoryName, applicationProperties.getGET_ALL_CATEGORY_BY_NAME());
+            SqlParameterSource paramSource = new MapSqlParameterSource("categoryName", categoryName);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public Category getCategoryByName(String categoryName) {
+        try {
             log.info("[GET CATEGORY BY NAME][{}][{}]", categoryName, applicationProperties.getGET_CATEGORY_BY_NAME());
             SqlParameterSource paramSource = new MapSqlParameterSource("categoryName", categoryName);
-            return jdbcTemplate.query(applicationProperties.getGET_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
         } catch (Exception e) {
             log.error(e.getMessage());
             return null;

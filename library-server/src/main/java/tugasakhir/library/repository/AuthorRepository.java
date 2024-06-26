@@ -100,12 +100,12 @@ public class AuthorRepository {
     }
 
     // Get an author by name
-    public List<Author> getAuthorsByName(String authorName) {
+    public List<Author> getAllAuthorsByName(String authorName) {
         try {
             authorName = "%".concat(authorName).concat("%");
-            log.info("[GET AUTHORS BY NAME][{}][{}]", authorName, applicationProperties.getGET_AUTHORS_BY_NAME());
+            log.info("[GET AUTHORS BY NAME][{}][{}]", authorName, applicationProperties.getGET_ALL_AUTHORS_BY_NAME());
             SqlParameterSource paramSource = new MapSqlParameterSource("authorName", authorName);
-            return jdbcTemplate.query(applicationProperties.getGET_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
@@ -114,10 +114,9 @@ public class AuthorRepository {
 
     public Author getAuthorByName(String authorName) {
         try {
-            authorName = "%".concat(authorName).concat("%");
-            log.info("[GET AUTHORS BY NAME][{}][{}]", authorName, applicationProperties.getGET_AUTHORS_BY_NAME());
+            log.info("[GET AUTHOR BY NAME][{}][{}]", authorName, applicationProperties.getGET_AUTHOR_BY_NAME());
             SqlParameterSource paramSource = new MapSqlParameterSource("authorName", authorName);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_AUTHOR_BY_NAME(), paramSource, new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

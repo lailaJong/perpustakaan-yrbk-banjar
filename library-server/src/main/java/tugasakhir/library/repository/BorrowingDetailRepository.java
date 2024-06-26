@@ -14,6 +14,7 @@ import tugasakhir.library.config.variable.ApplicationConstant;
 import tugasakhir.library.model.dto.BorrowingDetail;
 import tugasakhir.library.model.dto.BorrowingHistories;
 import tugasakhir.library.model.dto.BorrowingHistoriesUser;
+import tugasakhir.library.model.dto.BorrowingTrxOfficer;
 import tugasakhir.library.model.entity.Borrowing;
 
 import java.sql.ResultSet;
@@ -79,6 +80,20 @@ public class BorrowingDetailRepository {
         }
     }
 
+    private static final class BorrowingTrxRowMapper implements RowMapper<BorrowingTrxOfficer> {
+        @Override
+        public BorrowingTrxOfficer mapRow(ResultSet rs, int rowNum) throws SQLException {
+            BorrowingTrxOfficer borrowingTrxOfficer = new BorrowingTrxOfficer();
+            borrowingTrxOfficer.setBorrowingId(rs.getString("borrowing_id"));
+            borrowingTrxOfficer.setMemberName(rs.getString("name"));
+            borrowingTrxOfficer.setBookId(rs.getString("book_id"));
+            borrowingTrxOfficer.setStatus(rs.getString("status"));
+            borrowingTrxOfficer.setBorrowingDate(rs.getDate("borrowing_date"));
+            borrowingTrxOfficer.setReturnDate(rs.getDate("return_date"));
+            return borrowingTrxOfficer;
+        }
+    }
+
     private static final class BorrowingHistoriesUserRowMapper implements RowMapper<BorrowingHistoriesUser> {
         @Override
         public BorrowingHistoriesUser mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -115,13 +130,13 @@ public class BorrowingDetailRepository {
         }
     }
 
-    public int getCountBorrowingStatusByUserId(String userId, String borrowingStatus) {
+    public int getCountBorrowingStatusByUserId(String userId) {
         try{
 
-            log.info("[GET COUNT BORROWING DETAIL BY USER ID AND STATUS][{}][{}][{}]", userId, borrowingStatus, applicationProperties.getGET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID());
+            log.info("[GET COUNT BORROWING DETAIL BY USER ID AND STATUS][{}][{}][{}]", userId, applicationProperties.getBorrowedStatus(), applicationProperties.getGET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID());
             SqlParameterSource paramSource = new MapSqlParameterSource()
                     .addValue("userId", userId)
-                    .addValue("borrowingStatus", borrowingStatus);
+                    .addValue("borrowingStatus", applicationProperties.getBorrowedStatus());
             return jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_BORROWING_LATE_STATUS_BY_USER_ID(), paramSource, Integer.class);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -207,10 +222,12 @@ public class BorrowingDetailRepository {
     }
 
     // Get all borrowing details when status "selesai"
-    public List<BorrowingHistories> getAllBorrowingHistories(String status) {
+    public List<BorrowingHistories> getAllBorrowingHistories() {
         try{
-            log.info("[GET ALL BORROWING HISTORIES][{}][{}]", applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS(), status);
-            SqlParameterSource paramSource = new MapSqlParameterSource("status", status);
+            log.info("[GET ALL BORROWING HISTORIES][{}]", applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS());
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("returnedStatus", applicationProperties.getReturnedStatus())
+                    .addValue("lostStatus", applicationProperties.getLostStatus());
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS(), paramSource, new BorrowingHistoriesRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
@@ -219,14 +236,71 @@ public class BorrowingDetailRepository {
     }
 
     // Get all borrowing details when status "selesai" based on member name
-    public List<BorrowingHistories> getAllBorrowingHistoriesByMemberName(String status, String name) {
+    public List<BorrowingHistories> getAllBorrowingHistoriesByMemberName(String name) {
         try{
             name = "%".concat("%");
-            log.info("[GET ALL BORROWING HISTORIES BY NAME][{}][{}][{}]", applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME(), status, name);
+            log.info("[GET ALL BORROWING HISTORIES BY NAME][{}][{}]", applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME(), name);
             SqlParameterSource paramSource = new MapSqlParameterSource()
-                    .addValue("status", status)
+                    .addValue("returnedStatus", applicationProperties.getReturnedStatus())
+                    .addValue("lostStatus", applicationProperties.getLostStatus())
                     .addValue("name", name);
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME(), paramSource, new BorrowingHistoriesRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all borrowing trx for officer
+    public List<BorrowingTrxOfficer> getAllBorrowingTrx() {
+        try{
+            log.info("[GET ALL BORROWING TRX][{}]", applicationProperties.getGET_ALL_BORROWING_TRX());
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("borrowedStatus", applicationProperties.getBorrowedStatus());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_TRX(), paramSource, new BorrowingTrxRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all borrowing trx for trx based on member name
+    public List<BorrowingTrxOfficer> getAllBorrowingTrxByMemberName(String name) {
+        try{
+            name = "%".concat("%");
+            log.info("[GET ALL BORROWING TRX BY NAME][{}][{}]", applicationProperties.getGET_ALL_BORROWING_TRX_BY_MEMBER_NAME(), name);
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("borrowedStatus", applicationProperties.getBorrowedStatus())
+                    .addValue("name", name);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_TRX_BY_MEMBER_NAME(), paramSource, new BorrowingTrxRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all late borrowing trx for officer
+    public List<BorrowingTrxOfficer> getAllLateBorrowingTrx() {
+        try{
+            log.info("[GET ALL LATE BORROWING TRX][{}]", applicationProperties.getGET_ALL_LATE_BORROWING_TRX());
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("borrowedStatus", applicationProperties.getBorrowedStatus());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_LATE_BORROWING_TRX(), paramSource, new BorrowingTrxRowMapper());
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    // Get all late borrowing trx for trx based on member name
+    public List<BorrowingTrxOfficer> getAllLateBorrowingTrxByMemberName(String name) {
+        try{
+            name = "%".concat("%");
+            log.info("[GET ALL LATE BORROWING TRX BY NAME][{}][{}]", applicationProperties.getGET_ALL_LATE_BORROWING_TRX_BY_MEMBER_NAME(), name);
+            SqlParameterSource paramSource = new MapSqlParameterSource()
+                    .addValue("borrowedStatus", applicationProperties.getBorrowedStatus())
+                    .addValue("name", name);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_LATE_BORROWING_TRX_BY_MEMBER_NAME(), paramSource, new BorrowingTrxRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
             return null;

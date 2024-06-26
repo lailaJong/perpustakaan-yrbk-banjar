@@ -99,12 +99,23 @@ public class BookShelfRepository {
         }
     }
 
-    public List<BookShelf> getBookShelfByCode(String bookShelfCode) {
+    public List<BookShelf> getAllBookShelfByCode(String bookShelfCode) {
         try {
             bookShelfCode = "%".concat(bookShelfCode).concat("%");
+            log.info("[GET BOOK SHELF BY CODE][{}][{}]", bookShelfCode, applicationProperties.getGET_ALL_BOOK_SHELF_BY_CODE());
+            SqlParameterSource paramSource = new MapSqlParameterSource("bookShelfCode", bookShelfCode);
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public BookShelf getBookShelfByCode(String bookShelfCode) {
+        try {
             log.info("[GET BOOK SHELF BY CODE][{}][{}]", bookShelfCode, applicationProperties.getGET_BOOK_SHELF_BY_CODE());
             SqlParameterSource paramSource = new MapSqlParameterSource("bookShelfCode", bookShelfCode);
-            return jdbcTemplate.query(applicationProperties.getGET_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
         } catch (Exception e) {
             log.error(e.getMessage());
             return null;

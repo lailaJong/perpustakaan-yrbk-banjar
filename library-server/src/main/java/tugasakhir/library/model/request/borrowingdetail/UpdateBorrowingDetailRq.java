@@ -28,11 +28,13 @@ public class UpdateBorrowingDetailRq {
     private Date borrowingDate;
 
     @JsonProperty("return_date")
+    @NotNull(message = "Return date is mandatory")
     private Date returnDate;
 
     @JsonProperty("actual_return_date")
     private Date actualReturnDate;
 
     @JsonProperty("status")
+    @NotNull(message = "Borrowing date is mandatory")
     private String status;
 }
