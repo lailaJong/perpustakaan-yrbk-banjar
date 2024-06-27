@@ -38,20 +38,21 @@ public class ScoreDetailMapperImpl{
 
     public static String getScoreDetailId(int point){
         String scoreDetailId;
-        if (point >= 0 && point <= 10){
+        if (point < 0){
             scoreDetailId = "SCR00";
         }
-        else if (point > 10 && point <= 20){
+        else if (point > 1 && point <= 10){
             scoreDetailId = "SCR01";
-        } else if (point <= 40) {
+        }
+        else if (point > 10 && point <= 30){
             scoreDetailId = "SCR02";
-        } else if (point <= 60) {
+        } else if (point <= 50) {
             scoreDetailId = "SCR03";
-        } else if (point <= 90) {
+        } else if (point <= 70) {
             scoreDetailId = "SCR04";
-        } else if (point <= 110) {
+        } else if (point <= 100) {
             scoreDetailId = "SCR05";
-        } else if (point <= 130) {
+        } else if (point <= 120) {
             scoreDetailId = "SCR06";
         } else if (point <= 150) {
             scoreDetailId = "SCR07";
@@ -59,10 +60,8 @@ public class ScoreDetailMapperImpl{
             scoreDetailId = "SCR08";
         } else if (point <= 200) {
             scoreDetailId = "SCR09";
-        } else if (point > 200 && point <= 1000){
-            scoreDetailId = "SCR10";
         } else {
-            scoreDetailId = null;
+            scoreDetailId = "SCR10";
         }
         return scoreDetailId;
     }

@@ -8,6 +8,7 @@ import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.dto.UpdateMemberStatusRq;
 import tugasakhir.library.model.entity.Member;
+import tugasakhir.library.model.entity.ScoreDetail;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
@@ -264,6 +265,10 @@ public class MemberUsecase {
         try {
             Member member = memberRepository.getMemberById(updateMemberStatusRq.getMemberId());
             if (member != null) {
+                if (memberStatusRepository.getMemberStatusById(member.getMemberStatusId()).getStatus().equalsIgnoreCase("DEACTIVE")){
+                    member.setPoint(0);
+                    member.setScoreDetailId(ScoreDetailMapperImpl.getScoreDetailId(0));
+                }
                 member.setMemberStatusId(updateMemberStatusRq.getMemberStatusId());
                 memberRepository.updateMember(member);
                 responseInfo.setSuccess();

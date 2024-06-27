@@ -20,6 +20,7 @@ import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.BookStockRepository;
 import tugasakhir.library.repository.BorrowingDetailRepository;
 import tugasakhir.library.repository.MemberRepository;
+import tugasakhir.library.repository.MemberStatusRepository;
 import tugasakhir.library.utils.bookstock.BookStockMapperImpl;
 import tugasakhir.library.utils.borrowingdetail.BorrowingDetailMapperImpl;
 import tugasakhir.library.utils.orderdetail.OrderDetailMapperImpl;
@@ -39,6 +40,8 @@ public class BorrowingDetailUsecase {
     private BookStockRepository bookStockRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private MemberStatusRepository memberStatusRepository;
     @Autowired
     private ApplicationProperties applicationProperties;
 
@@ -367,6 +370,10 @@ public class BorrowingDetailUsecase {
                     //lost case
                     //update point -10
                     finalPoint = previousPoint - applicationProperties.getLostPoint();
+                }
+                //kondisi update status member where point <0
+                if (finalPoint < 0){
+                    member.setMemberStatusId(memberStatusRepository.getMemberStatusByStatus("DEACTIVE").getMemberStatusId());
                 }
                 //update point in member
                 member.setPoint(finalPoint);
