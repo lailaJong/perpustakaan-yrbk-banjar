@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 public class ApplicationProperties {
     //AUTHOR
     private String INSERT_AUTHOR = "INSERT INTO author (author_id, author_name) VALUES (:authorId, :authorName)";
-    private String GET_ALL_AUTHOR = "SELECT * FROM authors";
+    private String GET_ALL_AUTHOR = "SELECT * FROM author";
     private String GET_AUTHOR_BY_ID = "SELECT * FROM author WHERE author_id = :authorId";
-    private String GET_AUTHOR_BY_NAME = "SELECT * FROM authors WHERE author_name = :authorName";
-    private String GET_ALL_AUTHORS_BY_NAME = "SELECT * FROM authors WHERE author_name LIKE :authorName";
+    private String GET_AUTHOR_BY_NAME = "SELECT * FROM author WHERE author_name = :authorName";
+    private String GET_ALL_AUTHORS_BY_NAME = "SELECT * FROM author WHERE author_name LIKE :authorName";
     private String UPDATE_AUTHOR_BY_ID = "UPDATE author SET author_name = :authorName WHERE author_id = :authorId";
-    private String DELETE_AUTHOR_BY_ID = "DELETE FROM authors WHERE author_id = :authorId";
+    private String DELETE_AUTHOR_BY_ID = "DELETE FROM author WHERE author_id = :authorId";
     private String GET_COUNT_ALL_AUTHOR = "SELECT COUNT(*) FROM author";
     //MEMBER
     private String INSERT_MEMBER = "INSERT INTO member (member_id, user_id, member_status_id, score_detail_id, name, gender, phone_number, place_of_birth, date_of_birth, address, point, registration_date) " +
@@ -28,7 +28,7 @@ public class ApplicationProperties {
     private String GET_ALL_MEMBER_BY_NAME = "SELECT * FROM member where name LIKE :name";
     private String GET_MEMBER_BY_ID = "SELECT * FROM member WHERE member_id = :memberId";
     private String GET_MEMBER_BY_USER_ID = "SELECT * FROM member WHERE user_id = :userId";
-    private String GET_MEMBER_BY_STATUS_ID = "SELECT * FROM members WHERE member_status_id = :statusId";
+    private String GET_MEMBER_BY_STATUS_ID = "SELECT * FROM member WHERE member_status_id = :statusId";
     private String GET_MEMBER_BY_NAME = "SELECT * FROM member WHERE name = :name";
     private String UPDATE_MEMBER_BY_ID = "UPDATE member SET user_id = :userId, member_status_id = :memberStatusId, score_detail_id = :scoreDetailId, name = :name, gender = :gender, " +
             "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address, point = :point, registration_date = :registrationDate WHERE member_id = :memberId";
@@ -37,7 +37,7 @@ public class ApplicationProperties {
     private String GET_MEMBER_POINT = "SELECT point FROM member where user_id = :userId";
     private String GET_SCORE_ID_MEMBER = "SELECT score_detail_id FROM member where user_id = :userId";
     private String GET_TOP_BORROWER_MEMBER = "SELECT m.name, COUNT(b.borrowing_id) AS total_borrowings " +
-            "FROM members m INNER JOIN member_statuses ms ON m.member_status_id = ms.member_status_id INNER JOIN borrowings b ON m.user_id = b.user_id " +
+            "FROM member m INNER JOIN member_status ms ON m.member_status_id = ms.member_status_id INNER JOIN borrowings b ON m.user_id = b.user_id " +
             "WHERE ms.status = 'ACTIVE' " +
             "GROUP BY m.name " +
             "ORDER BY total_borrowings DESC " +
@@ -48,19 +48,19 @@ public class ApplicationProperties {
     private String GET_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = :bookId";
     private String GET_BOOK_DETAIL_BY_ID = "SELECT b.book_id, b.book_title, a.author_name, p.publisher_name, c.category_name, b.publication_year, b.stock, b.language, b.isbn, b.number_of_pages, b.book_shelf_id, b.synopsis, b.stock" +
             " FROM" +
-            " books b" +
-            " INNER JOIN authors a ON b.author_id = a.author_id" +
-            " INNER JOIN publishers p ON b.publisher_id = p.publisher_id" +
-            " INNER JOIN categories c ON b.category_id = c.category_id" +
-            " INNER JOIN book_shelves bs ON b.book_shelf_id = bs.book_shelf_id" +
+            " book b" +
+            " INNER JOIN author a ON b.author_id = a.author_id" +
+            " INNER JOIN publisher p ON b.publisher_id = p.publisher_id" +
+            " INNER JOIN category c ON b.category_id = c.category_id" +
+            " INNER JOIN book_shelf bs ON b.book_shelf_id = bs.book_shelf_id" +
             " WHERE b.book_id = :bookId";
     private String GET_BOOK_DETAIL_BY_TITLE = "SELECT b.book_id, b.book_title, a.author_name, p.publisher_name, c.category_name, b.publication_year, b.stock, b.language, b.isbn, b.number_of_pages, b.book_shelf_id, b.synopsis, b.stock" +
             " FROM" +
-            " books b" +
-            " INNER JOIN authors a ON b.author_id = a.author_id" +
-            " INNER JOIN publishers p ON b.publisher_id = p.publisher_id" +
-            " INNER JOIN categories c ON b.category_id = c.category_id" +
-            " INNER JOIN book_shelves bs ON b.book_shelf_id = bs.book_shelf_id" +
+            " book b" +
+            " INNER JOIN author a ON b.author_id = a.author_id" +
+            " INNER JOIN publisher p ON b.publisher_id = p.publisher_id" +
+            " INNER JOIN category c ON b.category_id = c.category_id" +
+            " INNER JOIN book_shelf bs ON b.book_shelf_id = bs.book_shelf_id" +
             " WHERE b.book_title LIKE :bookTitle";
     private String GET_BOOK_BY_TITLE = "SELECT * FROM book WHERE book_title LIKE :bookTitle";
     private String UPDATE_BOOK_BY_ID = "UPDATE book SET book_title = :bookTitle, category_id = :categoryId, publisher_id = :publisherId, author_id = :authorId, book_shelf_id = :bookShelfId, language = :language, isbn = :isbn, number_of_pages = :numberOfPages, publication_year = :publicationYear, synopsis = :synopsis, stock = :stock WHERE book_id = :bookId";
@@ -69,30 +69,30 @@ public class ApplicationProperties {
     private String GET_ALL_BOOK_TITLE = "SELECT book_id, book_title FROM book";
     private String GET_ALL_BOOK_DETAIL = "SELECT b.book_id, b.book_title, a.author_name, p.publisher_name, c.category_name, b.publication_year, b.stock, b.language, b.isbn, b.number_of_pages, b.book_shelf_id, b.synopsis, b.stock" +
             " FROM" +
-            " books b" +
-            " INNER JOIN authors a ON b.author_id = a.author_id" +
-            " INNER JOIN publishers p ON b.publisher_id = p.publisher_id" +
-            " INNER JOIN categories c ON b.category_id = c.category_id" +
-            " INNER JOIN book_shelves bs ON b.book_shelf_id = bs.book_shelf_id";
+            " book b" +
+            " INNER JOIN author a ON b.author_id = a.author_id" +
+            " INNER JOIN publisher p ON b.publisher_id = p.publisher_id" +
+            " INNER JOIN category c ON b.category_id = c.category_id" +
+            " INNER JOIN book_shelf bs ON b.book_shelf_id = bs.book_shelf_id";
     private String GET_COUNT_ALL_BOOK = "SELECT COUNT(*) FROM book";
     private String TOP_5_MOST_BORROWED_BOOKS = "SELECT bk.book_title, COUNT(b.borrowing_id) AS total_borrowings " +
-            "FROM books bk INNER JOIN borrowings b ON bk.book_id = b.book_id " +
+            "FROM book bk INNER JOIN borrowings b ON bk.book_id = b.book_id " +
             "GROUP BY bk.book_title " +
             "ORDER BY total_borrowings DESC " +
             "LIMIT 5";
-    private String GET_BOOKS_BY_AUTHOR = "SELECT * FROM book WHERE author_id = (SELECT author_id FROM authors WHERE author_name = :authorName)";
-    private String GET_BOOKS_BY_PUBLISHER = "SELECT * FROM book WHERE publisher_id = (SELECT publisher_id FROM publishers WHERE publisher_name = :publisherName)";
-    private String GET_BOOKS_BY_CATEGORY = "SELECT * FROM book WHERE category_id = (SELECT category_id FROM categories WHERE category_name = :categoryName)";
+    private String GET_BOOKS_BY_AUTHOR = "SELECT * FROM book WHERE author_id = (SELECT author_id FROM author WHERE author_name = :authorName)";
+    private String GET_BOOKS_BY_PUBLISHER = "SELECT * FROM book WHERE publisher_id = (SELECT publisher_id FROM publisher WHERE publisher_name = :publisherName)";
+    private String GET_BOOKS_BY_CATEGORY = "SELECT * FROM book WHERE category_id = (SELECT category_id FROM category WHERE category_name = :categoryName)";
     private String GET_BOOKS_STOCK_GREATER_THAN_ONE = "SELECT b.* FROM book b JOIN book_stock bs ON b.book_id = bs.book_id WHERE bs.stock > 1";
     //BOOKSHLEF
     private String INSERT_BOOKSHELF = "INSERT INTO book_shelf (book_shelf_id, book_shelf_code) VALUES (:bookShelfId, :bookShelfCode)";
     private String GET_BOOKSHELF_BY_ID = "SELECT * FROM book_shelf WHERE book_shelf_id = :bookShelfId";
     private String UPDATE_BOOKSHELF_BY_ID = "UPDATE book_shelf SET book_shelf_code = :bookShelfCode WHERE book_shelf_id = :bookShelfId";
     private String DELETE_BOOKSHELF_BY_ID = "DELETE FROM book_shelf WHERE book_shelf_id = :bookShelfId";
-    private String GET_ALL_BOOKSHELF = "SELECT * FROM book_shelves";
+    private String GET_ALL_BOOKSHELF = "SELECT * FROM book_shelf";
     private String GET_COUNT_ALL_BOOKSHELF = "SELECT COUNT(*) FROM book_shelf";
-    private String GET_ALL_BOOK_SHELF_BY_CODE = "SELECT * FROM book_shelves WHERE book_shelf_code LIKE :bookShelfCode";
-    private String GET_BOOK_SHELF_BY_CODE = "SELECT * FROM book_shelves WHERE book_shelf_code = :bookShelfCode";
+    private String GET_ALL_BOOK_SHELF_BY_CODE = "SELECT * FROM book_shelf WHERE book_shelf_code LIKE :bookShelfCode";
+    private String GET_BOOK_SHELF_BY_CODE = "SELECT * FROM book_shelf WHERE book_shelf_code = :bookShelfCode";
     //BOOK STOCK
     private String INSERT_BOOK_STOCK = "INSERT INTO book_stock (book_stock_id, book_id, stock) VALUES (:bookStockId, :bookId, :stock)";
     private String GET_BOOK_STOCK_BY_ID = "SELECT * FROM book_stock WHERE book_stock_id = :bookStockId";
@@ -142,7 +142,7 @@ public class ApplicationProperties {
     private String GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE category_id = :categoryId";
     private String UPDATE_CATEGORY_BY_ID = "UPDATE category SET category_name = :categoryName WHERE category_id = :categoryId";
     private String DELETE_CATEGORY_BY_ID = "DELETE FROM category WHERE category_id = :categoryId";
-    private String GET_ALL_CATEGORIES = "SELECT * FROM categories";
+    private String GET_ALL_CATEGORIES = "SELECT * FROM category";
     private String GET_COUNT_ALL_CATEGORY = "SELECT COUNT(*) FROM category";
     private String GET_CATEGORY_BY_NAME = "SELECT * FROM category WHERE category_name = :categoryName";
     private String GET_ALL_CATEGORY_BY_NAME = "SELECT * FROM category WHERE category_name LIKE :categoryName";
@@ -170,11 +170,11 @@ public class ApplicationProperties {
     private String GET_COUNT_ORDER_DETAIL_BY_USER_ID = "SELECT COUNT(*) FROM order_detail WHERE user_id = :userId AND status = :orderStatus";
     private String GET_ALL_ORDER_DETAIL = "SELECT * FROM order_detail";
     private String GET_ALL_ORDER_DETAILS_OFFICER = "SELECT o.order_id, b.book_title " +
-            "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.status = :status";
+            "FROM order o INNER JOIN book b ON o.book_id = b.book_id WHERE o.status = :status";
     private String GET_ALL_ORDER_DETAILS_BY_USER_ID = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
-            "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status";
+            "FROM order o INNER JOIN book b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status";
     private String GET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
-            "FROM orders o INNER JOIN books b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status AND b.book_title LIKE :bookTitle";
+            "FROM order o INNER JOIN book b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status AND b.book_title LIKE :bookTitle";
     private String GET_COUNT_ALL_ORDER_DETAIL = "SELECT COUNT(*) FROM order_detail";
     //PUBLISHER
     private String INSERT_PUBLISHER = "INSERT INTO publisher (publisher_id, publisher_name) VALUES (:publisherId, :publisherName)";
@@ -183,8 +183,8 @@ public class ApplicationProperties {
     private String DELETE_PUBLISHER_BY_ID = "DELETE FROM publisher WHERE publisher_id = :publisherId";
     private String GET_ALL_PUBLISHER = "SELECT * FROM publisher";
     private String GET_COUNT_ALL_PUBLISHER = "SELECT COUNT(*) FROM publisher";
-    private String GET_PUBLISHER_BY_NAME = "SELECT * FROM publishers WHERE publisher_name = :publisherName";
-    private String GET_ALL_PUBLISHER_BY_NAME = "SELECT * FROM publishers WHERE publisher_name LIKE :publisherName";
+    private String GET_PUBLISHER_BY_NAME = "SELECT * FROM publisher WHERE publisher_name = :publisherName";
+    private String GET_ALL_PUBLISHER_BY_NAME = "SELECT * FROM publisher WHERE publisher_name LIKE :publisherName";
     //ROLE
     private String INSERT_ROLE = "INSERT INTO role (role_id, role_name) VALUES (:roleId, :roleName)";
     private String GET_ROLE_BY_ID = "SELECT * FROM role WHERE role_id = :roleId";
