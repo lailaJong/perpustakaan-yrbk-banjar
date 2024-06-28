@@ -46,7 +46,7 @@ public class MemberStatusController {
     }
 
     //get member status by member status id for status anggota in dashboard member
-    @GetMapping("/id")
+    @GetMapping("/status/id")
     ResponseEntity<Object> getStatusByMemberStatusId(@RequestHeader(value = "request-id", required = false) String requestId,
                                                @RequestParam(value = "memberStatusId") String memberStatusId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();

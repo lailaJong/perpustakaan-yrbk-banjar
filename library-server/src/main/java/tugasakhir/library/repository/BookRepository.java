@@ -143,11 +143,11 @@ import java.util.List;
 
 public class BookRepository {
     @Autowired
-    @Qualifier(ApplicationConstant.BEAN_DS)
+    @Qualifier(ApplicationConstant.BEAN_JDBC_POSTGRES)
     protected NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    @Qualifier
+    @Qualifier(ApplicationConstant.PROPERTIES_NAME)
     protected ApplicationProperties applicationProperties;
 
     private static final class BookRowMapper implements RowMapper<Book> {

@@ -1,6 +1,6 @@
 package tugasakhir.library.model.exception;
 
-import com.practice.bookmanagement.model.enums.CompletionStatus;
+import tugasakhir.library.model.enums.CompletionStatus;
 import org.springframework.http.HttpStatus;
 
 public class AlreadyExistException extends CommonException {

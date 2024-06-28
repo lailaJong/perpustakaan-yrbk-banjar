@@ -27,11 +27,11 @@ import java.util.List;
 @Slf4j
 public class BookStockRepository {
     @Autowired
-    @Qualifier(ApplicationConstant.BEAN_DS)
+    @Qualifier(ApplicationConstant.BEAN_JDBC_POSTGRES)
     protected NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    @Qualifier
+    @Qualifier(ApplicationConstant.PROPERTIES_NAME)
     protected ApplicationProperties applicationProperties;
 
     private static final class BookStockRowMapper implements RowMapper<BookStock> {

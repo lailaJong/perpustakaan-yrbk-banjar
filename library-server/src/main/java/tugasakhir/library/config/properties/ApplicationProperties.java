@@ -2,6 +2,7 @@ package tugasakhir.library.config.properties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Putri Mele
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Configuration
 public class ApplicationProperties {
     //AUTHOR
     private String INSERT_AUTHOR = "INSERT INTO author (author_id, author_name) VALUES (:authorId, :authorName)";

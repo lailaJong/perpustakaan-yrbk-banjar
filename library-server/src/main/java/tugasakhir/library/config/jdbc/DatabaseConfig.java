@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfig {
     @Bean(name = ApplicationConstant.BEAN_DS)
-    @ConfigurationProperties("datasouce.database-server")
+    @ConfigurationProperties("datasource.database-server")
     public DataSource dataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }

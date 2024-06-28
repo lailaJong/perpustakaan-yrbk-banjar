@@ -85,7 +85,7 @@ public class OrderDetailController {
     }
 
     //get count order detail by user id for jumlah koleksi dipesan in dashboard member
-    @GetMapping("/id")
+    @GetMapping("/count/id")
     ResponseEntity<Object> getCountOrderDetailByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
                                               @RequestParam(value = "userId") String userId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();

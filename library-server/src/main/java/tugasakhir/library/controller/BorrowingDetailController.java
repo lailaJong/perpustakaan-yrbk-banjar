@@ -81,7 +81,7 @@ public class BorrowingDetailController {
     }
 
     //get all borrowing trx for officer
-    @GetMapping("/allTrx")
+    @GetMapping("/allTrx/name")
     ResponseEntity<Object> getAllBorrowingTrx(@RequestHeader(value = "request-id", required = false) String requestId,
                                                     @RequestParam(value = "name") String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -98,7 +98,7 @@ public class BorrowingDetailController {
     }
 
     //get all borrowing trx "late" for officer
-    @GetMapping("/allLateTrx")
+    @GetMapping("/allLateTrx/name")
     ResponseEntity<Object> getAllLateBorrowingTrx(@RequestHeader(value = "request-id", required = false) String requestId,
                                               @RequestParam(value = "name") String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -171,7 +171,7 @@ public class BorrowingDetailController {
     }
 
     //get count all borrowing detail "dipinjam"
-    @GetMapping("/histories/userId")
+    @GetMapping("/count/all")
     ResponseEntity<Object> getCountAllBorrowing(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<Integer> responseInfo;
@@ -183,7 +183,7 @@ public class BorrowingDetailController {
     }
 
     //get count all borrowing detail "telat"
-    @GetMapping("/histories/userId")
+    @GetMapping("/count/all/late")
     ResponseEntity<Object> getCountAllLateBorrowing(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<Integer> responseInfo;
