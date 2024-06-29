@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tugasakhir.library.model.entity.Publisher;
-import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.publisher.PublisherRq;
 import tugasakhir.library.model.request.publisher.UpdatePublisherRq;
 import tugasakhir.library.model.response.ResponseInfo;
@@ -25,27 +24,16 @@ public class PublisherUsecase {
         try {
             List<Publisher> publishers;
             publishers = publisherRepository.getAllPublishers();
-            publishers.addAll(publisherRepository.getAllPublishers());
-            responseInfo.setSuccess(publishers);
-            log.info("[{}][SUCCESS GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
+            if (publishers.isEmpty()){
+                responseInfo.setBussinessError("Publishers is not found");
+                log.info("[{}][FAILED GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
+            } else {
+                responseInfo.setSuccess(publishers);
+                log.info("[{}][SUCCESS GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL PUBLISHERS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
-        }
-        return responseInfo;
-    }
-
-    public ResponseInfo<Publisher> getPublisherById(String publisherId) {
-        ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
-
-        try {
-            Publisher publisher;
-            publisher = publisherRepository.getPublisherById(publisherId);
-            responseInfo.setSuccess(publisher);
-            log.info("[{}][SUCCESS GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET PUBLISHER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -56,11 +44,36 @@ public class PublisherUsecase {
         try {
             List<Publisher> publishers;
             publishers = publisherRepository.getAllPublishersByName(publisherName);
-            responseInfo.setSuccess(publishers);
-            log.info("[{}][SUCCESS GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
+            if (publishers.isEmpty()){
+                responseInfo.setBussinessError(publisherName + " is not exist");
+                log.info("[{}][FAILED GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
+            } else {
+                responseInfo.setSuccess(publishers);
+                log.info("[{}][SUCCESS GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL PUBLISHERS BY NAME][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherName, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<Publisher> getPublisherById(String publisherId) {
+        ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
+
+        try {
+            Publisher publisher;
+            publisher = publisherRepository.getPublisherById(publisherId);
+            if (publisher == null){
+                responseInfo.setBussinessError(publisherId + " is not exist");
+                log.info("[{}][FAILED GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
+            } else {
+                responseInfo.setSuccess(publisher);
+                log.info("[{}][SUCCESS GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
+            }
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET PUBLISHER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherId, ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -69,15 +82,20 @@ public class PublisherUsecase {
         ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
 
         try {
-            Publisher publisher;
-            publisherRq.setPublisherId(publisherRepository.generatePublisherId());
-            publisher = PublisherMapperImpl.toPublisher(publisherRq);
-            publisherRepository.addPublisher(publisher);
-            responseInfo.setSuccess(publisher);
-            log.info("[{}][SUCCESS ADD NEW PUBLISHER]", getClass().getSimpleName());
+            if (publisherRepository.getPublisherByName(publisherRq.getPublisherName()) == null) {
+                Publisher publisher;
+                String id = publisherRepository.generatePublisherId();
+                publisher = PublisherMapperImpl.toPublisher(publisherRq, id);
+                publisherRepository.addPublisher(publisher);
+                responseInfo.setSuccess(publisher);
+                log.info("[{}][SUCCESS ADD NEW PUBLISHER]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(publisherRq.getPublisherName() + " is already exist");
+                log.info("[{}][FAILED ADD NEW PUBLISHER]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW PUBLISHER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -92,13 +110,14 @@ public class PublisherUsecase {
                 publisherRepository.updatePublisher(publisher);
 
                 responseInfo.setSuccess();
+                log.info("[{}][SUCCESS UPDATE PUBLISHER]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException();
+                responseInfo.setBussinessError(updatePublisherRq.getPublisherName() + " is not exist");
+                log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
             }
-            log.info("[{}][SUCCESS UPDATE PUBLISHER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE PUBLISHER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -113,7 +132,7 @@ public class PublisherUsecase {
             log.info("[{}][SUCCESS DELETE PUBLISHER][{}]", getClass().getSimpleName(), publisherId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE PUBLISHER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

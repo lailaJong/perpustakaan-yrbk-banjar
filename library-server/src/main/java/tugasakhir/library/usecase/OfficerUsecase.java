@@ -30,7 +30,7 @@ public class OfficerUsecase {
             log.info("[{}][SUCCESS GET ALL OFFICER][DATA SIZE: {}]", getClass().getSimpleName(), officers.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL OFFICER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -45,7 +45,7 @@ public class OfficerUsecase {
             log.info("[{}][SUCCESS GET OFFICER][ID: {}]", getClass().getSimpleName(), officerId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET OFFICER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), officerId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -62,7 +62,7 @@ public class OfficerUsecase {
             log.info("[{}][SUCCESS ADD NEW OFFICER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW OFFICER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -83,7 +83,7 @@ public class OfficerUsecase {
             log.info("[{}][SUCCESS UPDATE OFFICER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE OFFICER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -98,7 +98,7 @@ public class OfficerUsecase {
             log.info("[{}][SUCCESS DELETE OFFICER][{}]", getClass().getSimpleName(), officerId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE OFFICER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

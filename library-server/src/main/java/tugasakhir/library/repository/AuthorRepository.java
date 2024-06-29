@@ -15,6 +15,7 @@ import tugasakhir.library.model.entity.Author;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,11 +96,11 @@ public class AuthorRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_AUTHOR(), new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
-    // Get an author by name
+    // Get all author by name
     public List<Author> getAllAuthorsByName(String authorName) {
         try {
             authorName = "%".concat(authorName).concat("%");
@@ -108,7 +109,7 @@ public class AuthorRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -124,9 +125,14 @@ public class AuthorRepository {
     }
 
     public String generateAuthorId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_AUTHOR(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("AUT%03d", suffix);
+        try {
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_AUTHOR(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("AUT%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }
 

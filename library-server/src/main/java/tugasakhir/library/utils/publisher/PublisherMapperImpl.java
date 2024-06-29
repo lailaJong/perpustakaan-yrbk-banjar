@@ -13,12 +13,12 @@ import tugasakhir.library.model.request.publisher.UpdatePublisherRq;
  */
 public class PublisherMapperImpl{
 
-    public static Publisher toPublisher(PublisherRq publisherRq) {
+    public static Publisher toPublisher(PublisherRq publisherRq, String id) {
         if (publisherRq == null) {
             return null;
         }
         Publisher publisher = new Publisher();
-        publisher.setPublisherId(publisherRq.getPublisherId());
+        publisher.setPublisherId(id);
         publisher.setPublisherName(publisherRq.getPublisherName());
         return publisher;
     }

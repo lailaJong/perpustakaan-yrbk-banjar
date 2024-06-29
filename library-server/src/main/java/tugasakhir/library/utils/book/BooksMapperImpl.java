@@ -69,12 +69,12 @@ import tugasakhir.library.model.request.book.UpdateBookRq;
 
 public class BooksMapperImpl{
 
-    public static Book toBook(BookRq bookRq, String categoryId, String publisherId, String authorId, String bookShelfId) {
+    public static Book toBook(BookRq bookRq, String categoryId, String publisherId, String authorId, String bookShelfId, String bookId) {
         if (bookRq == null) {
             return null;
         }
         Book book = new Book();
-        book.setBookId(bookRq.getBookId());
+        book.setBookId(bookId);
         book.setBookTitle(bookRq.getBookTitle());
         book.setCategoryId(categoryId);
         book.setPublisherId(publisherId);

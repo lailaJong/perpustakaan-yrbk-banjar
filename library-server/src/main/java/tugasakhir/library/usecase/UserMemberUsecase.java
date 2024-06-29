@@ -43,7 +43,7 @@ public class UserMemberUsecase {
             log.info("[{}][SUCCESS GET USER MEMBER][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET USER MEMBER][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -72,7 +72,7 @@ public class UserMemberUsecase {
             log.info("[{}][SUCCESS UPDATE USER AND MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE USER AND MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

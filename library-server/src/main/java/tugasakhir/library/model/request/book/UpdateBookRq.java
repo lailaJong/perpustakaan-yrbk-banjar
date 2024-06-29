@@ -1,6 +1,7 @@
 package tugasakhir.library.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -91,14 +92,17 @@ public class UpdateBookRq {
     @JsonProperty("isbn")
     @NotBlank(message = "ISBN is mandatory")
     @Pattern(regexp = "^(97(8|9))?\\d{9}(\\d|X)$", message = "ISBN format is invalid")
+    @Schema(example = "97XXXXXX")
     private String isbn;
 
     @JsonProperty("number_of_pages")
     @Min(value = 1, message = "Number of pages must be at least 1")
+    @Schema(example = "int")
     private int numberOfPages;
 
     @JsonProperty("publication_year")
     @NotBlank(message = "Publication year is mandatory")
+    @Schema(example = "Year")
     @Pattern(regexp = "^\\d{4}$", message = "Publication year must be a valid year")
     private String publicationYear;
 

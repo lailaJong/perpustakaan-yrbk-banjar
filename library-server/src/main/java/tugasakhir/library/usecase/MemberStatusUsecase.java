@@ -30,7 +30,7 @@ public class MemberStatusUsecase {
             log.info("[{}][SUCCESS GET ALL MEMBER STATUS][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL MEMBER STATUS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -45,7 +45,7 @@ public class MemberStatusUsecase {
             log.info("[{}][SUCCESS GET MEMBER STATUS][ID: {}]", getClass().getSimpleName(), memberStatusId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER STATUS][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), memberStatusId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -59,7 +59,7 @@ public class MemberStatusUsecase {
             log.info("[{}][SUCCESS GET MEMBER STATUS][ID: {}]", getClass().getSimpleName(), memberStatusId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER STATUS][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), memberStatusId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -76,7 +76,7 @@ public class MemberStatusUsecase {
             log.info("[{}][SUCCESS ADD NEW MEMBER STATUS]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW MEMBER STATUS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -96,7 +96,7 @@ public class MemberStatusUsecase {
             log.info("[{}][SUCCESS UPDATE MEMBER STATUS]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE MEMBER STATUS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -111,7 +111,7 @@ public class MemberStatusUsecase {
             log.info("[{}][SUCCESS DELETE MEMBER STATUS][{}]", getClass().getSimpleName(), memberStatusId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE MEMBER STATUS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

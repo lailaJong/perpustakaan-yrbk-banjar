@@ -13,12 +13,12 @@ import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
  */
 public class BookStockMapperImpl {
 
-    public static BookStock toBookStock(BookStockRq bookStockRq) {
+    public static BookStock toBookStock(BookStockRq bookStockRq, String id) {
         if (bookStockRq == null) {
             return null;
         }
         BookStock bookStock = new BookStock();
-        bookStock.setBookStockId(bookStockRq.getBookStockId());
+        bookStock.setBookStockId(id);
         bookStock.setBookId(bookStockRq.getBookId());
         bookStock.setStock(bookStockRq.getStock());
         return bookStock;

@@ -30,7 +30,7 @@ public class CategoryUsecase {
             log.info("[{}][SUCCESS GET ALL CATEGORIES][DATA SIZE: {}]", getClass().getSimpleName(), categories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL CATEGORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -45,7 +45,7 @@ public class CategoryUsecase {
             log.info("[{}][SUCCESS GET CATEGORY][ID: {}]", getClass().getSimpleName(), categoryId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET CATEGORY][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), categoryId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -60,7 +60,7 @@ public class CategoryUsecase {
             log.info("[{}][SUCCESS GET CATEGORY][NAME: {}]", getClass().getSimpleName(), categoryName);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET CATEGORY][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), categoryName, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -77,7 +77,7 @@ public class CategoryUsecase {
             log.info("[{}][SUCCESS ADD NEW CATEGORY]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -98,7 +98,7 @@ public class CategoryUsecase {
             log.info("[{}][SUCCESS UPDATE CATEGORY]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -113,7 +113,7 @@ public class CategoryUsecase {
             log.info("[{}][SUCCESS DELETE CATEGORY][{}]", getClass().getSimpleName(), categoryId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

@@ -30,7 +30,7 @@ public class RoleUsecase {
             log.info("[{}][SUCCESS GET ALL ROLE][DATA SIZE: {}]", getClass().getSimpleName(), roles.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL ROLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -45,7 +45,7 @@ public class RoleUsecase {
             log.info("[{}][SUCCESS GET ROLE][ID: {}]", getClass().getSimpleName(), roleId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ROLE][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), roleId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -62,7 +62,7 @@ public class RoleUsecase {
             log.info("[{}][SUCCESS ADD NEW ROLE]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW ROLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -83,7 +83,7 @@ public class RoleUsecase {
             log.info("[{}][SUCCESS UPDATE ROLE]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE ROLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -98,7 +98,7 @@ public class RoleUsecase {
             log.info("[{}][SUCCESS DELETE ROLE][{}]", getClass().getSimpleName(), roleId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE ROLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

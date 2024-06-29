@@ -44,6 +44,14 @@ public class ResponseInfo<T> {
                 .setMessage(CompletionStatus.BUSINESS_ERROR.label);
     }
 
+    public void setBussinessError(String message) {
+        this.httpStatusCode = HttpStatus.BAD_REQUEST;
+        this.body = new ResponseBody<T>()
+                .setStatus(Status.ERROR.label)
+                .setCode("400")
+                .setMessage(message);
+    }
+
     public boolean isError() {
         return faults != null && !faults.isEmpty() && !httpStatusCode.is2xxSuccessful();
     }
@@ -58,7 +66,7 @@ public class ResponseInfo<T> {
                 .setReason(ex.getMessage());
     }
 
-    public void setCommonException(Exception ex) {
+    public void handleException(Exception ex) {
         if (ex instanceof CommonException exception) {
             setCommonException(exception);
         } else {

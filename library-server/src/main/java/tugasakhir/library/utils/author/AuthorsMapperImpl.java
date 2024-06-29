@@ -10,12 +10,12 @@ import tugasakhir.library.model.request.author.UpdateAuthorRq;
  */
 public class AuthorsMapperImpl{
 
-    public static Author toAuthor(AuthorRq authorRq) {
+    public static Author toAuthor(AuthorRq authorRq, String authorId) {
         if (authorRq == null) {
             return null;
         }
         Author author = new Author();
-        author.setAuthorId(authorRq.getAuthorId());
+        author.setAuthorId(authorId);
         author.setAuthorName(authorRq.getAuthorName());
         return author;
     }

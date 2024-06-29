@@ -23,11 +23,16 @@ public class AuthorController {
     private AuthorUsecase authorUsecase;
 
     @GetMapping("/all")
-    ResponseEntity<Object> getAllAuthors(@RequestHeader(value = "request-id", required = false) String requestId) {
+    ResponseEntity<Object> getAllAuthors(@RequestHeader(value = "request-id", required = false) String requestId,
+                                         @RequestParam(value = "name",  required = false) String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Author>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL AUTHORS][{}]", requestId);
-        responseInfo = authorUsecase.getAllAuthors();
+        if (name == null){
+            responseInfo = authorUsecase.getAllAuthors();
+        } else {
+            responseInfo = authorUsecase.getAllAuthorsByName(name);
+        }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
@@ -40,18 +45,6 @@ public class AuthorController {
         ResponseInfo<Author> responseInfo;
         log.info("[REQUEST RECEIVED - GET AUTHOR BY ID][{}][{}]", authorId, requestId);
         responseInfo = authorUsecase.getAuthorById(authorId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    @GetMapping("/name")
-    ResponseEntity<Object> getAuthorsByName(@RequestHeader(value = "request-id", required = false) String requestId,
-                                         @RequestParam(value = "authorName") String authorName) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Author>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET AUTHORS BY ID][{}][{}]", authorName, requestId);
-        responseInfo = authorUsecase.getAuthorsByName(authorName);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

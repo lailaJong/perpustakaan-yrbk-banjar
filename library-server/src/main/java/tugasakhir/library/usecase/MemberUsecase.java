@@ -8,7 +8,6 @@ import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.dto.TopBorrowerMember;
 import tugasakhir.library.model.dto.UpdateMemberStatusRq;
 import tugasakhir.library.model.entity.Member;
-import tugasakhir.library.model.entity.ScoreDetail;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
@@ -46,7 +45,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET ALL MEMBER][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -62,7 +61,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET ALL MEMBER NAMES][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL MEMBER NAMES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -77,7 +76,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET COUNT ALL MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT ALL MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -93,7 +92,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET TOP BORROWER MEMBER][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET TOP BORROWER MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -110,7 +109,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET ALL MEMBER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL MEMBER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -124,7 +123,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET ALL MEMBER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), members.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL MEMBER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -138,7 +137,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET MEMBER DETAIL][ID: {}]", getClass().getSimpleName(), memberId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER DETAIL][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), memberId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -153,7 +152,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET MEMBER DETAIL][STATUS: {}]", getClass().getSimpleName(), status);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER DETAIL][STATUS: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), status, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -168,7 +167,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET MEMBER][ID: {}]", getClass().getSimpleName(), memberId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), memberId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -183,7 +182,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET MEMBER][ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -198,7 +197,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS GET MEMBER][NAME: {}]", getClass().getSimpleName(), name);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET MEMBER][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), name, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -215,7 +214,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS ADD NEW MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -234,7 +233,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS ADD NEW MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -255,7 +254,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS UPDATE MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -278,7 +277,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS UPDATE MEMBER DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE MEMBER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -292,7 +291,7 @@ public class MemberUsecase {
             log.info("[{}][SUCCESS DELETE MEMBER][{}]", getClass().getSimpleName(), memberId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

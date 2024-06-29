@@ -16,6 +16,8 @@ import tugasakhir.library.model.entity.BookStock;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -131,7 +133,7 @@ public class BookStockRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS(), new BookStockDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -143,7 +145,7 @@ public class BookStockRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS_BY_BOOK_TITLE(), paramSource, new BookStockDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 

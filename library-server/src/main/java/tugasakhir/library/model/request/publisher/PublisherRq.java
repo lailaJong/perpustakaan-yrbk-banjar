@@ -12,8 +12,6 @@ import tugasakhir.library.utils.validation.ValidName;
 @Accessors(chain = true)
 @Schema
 public class PublisherRq {
-    @JsonProperty("publisher_id")
-    private String publisherId;
 
     @JsonProperty("publisher_name")
     @NotBlank(message = "Publisher name is mandatory")

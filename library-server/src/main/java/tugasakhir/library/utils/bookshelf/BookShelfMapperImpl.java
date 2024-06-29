@@ -14,12 +14,12 @@ import tugasakhir.library.model.request.bookshelf.UpdateBookShelfRq;
  */
 public class BookShelfMapperImpl{
 
-    public static BookShelf toBookShelf(BookShelfRq bookShelfRq) {
+    public static BookShelf toBookShelf(BookShelfRq bookShelfRq, String bookShelfId) {
         if (bookShelfRq == null) {
             return null;
         }
         BookShelf bookShelf = new BookShelf();
-        bookShelf.setBookShelfId(bookShelfRq.getBookShelfId());
+        bookShelf.setBookShelfId(bookShelfId);
         bookShelf.setBookShelfCode(bookShelfRq.getBookShelfCode());
         return bookShelf;
     }

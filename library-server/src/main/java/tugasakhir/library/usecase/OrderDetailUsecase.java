@@ -50,7 +50,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ALL ORDER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -67,7 +67,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ALL ORDER DETAILS OFFICER][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL ORDER DETAILS OFFICER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -84,7 +84,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ALL ORDER DETAILS BY USER ID][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL ORDER DETAILS BY USER ID][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -101,7 +101,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ALL ORDER DETAILS BY USER ID AND BOOK TITLE][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL ORDER DETAILS BY USER ID AND BOOK TITLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -116,7 +116,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET ORDER DETAIL][ID: {}]", getClass().getSimpleName(), orderId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ORDER DETAIL][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), orderId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -131,7 +131,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS GET COUNT ORDER DETAIL][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT ORDER DETAIL][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -172,7 +172,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS ADD NEW ORDER DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -221,7 +221,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS UPDATE ORDER DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -236,7 +236,7 @@ public class OrderDetailUsecase {
             log.info("[{}][SUCCESS DELETE ORDER DETAIL][{}]", getClass().getSimpleName(), orderId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

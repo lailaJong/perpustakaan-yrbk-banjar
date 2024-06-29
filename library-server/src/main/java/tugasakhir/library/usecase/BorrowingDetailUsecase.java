@@ -11,7 +11,6 @@ import tugasakhir.library.model.dto.BorrowingTrxOfficer;
 import tugasakhir.library.model.entity.BookStock;
 import tugasakhir.library.model.entity.Borrowing;
 import tugasakhir.library.model.entity.Member;
-import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.bookstock.UpdateBookStockRq;
 import tugasakhir.library.model.request.borrowingdetail.BorrowingDetailRq;
@@ -23,8 +22,6 @@ import tugasakhir.library.repository.MemberRepository;
 import tugasakhir.library.repository.MemberStatusRepository;
 import tugasakhir.library.utils.bookstock.BookStockMapperImpl;
 import tugasakhir.library.utils.borrowingdetail.BorrowingDetailMapperImpl;
-import tugasakhir.library.utils.orderdetail.OrderDetailMapperImpl;
-import tugasakhir.library.utils.orderdetail.TakingDate;
 import tugasakhir.library.utils.scoredetail.ScoreDetailMapperImpl;
 import tugasakhir.library.utils.validation.BenefitValidation;
 
@@ -56,7 +53,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), borrowingDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -72,7 +69,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING DETAILS BY USER ID][DATA SIZE: {}]", getClass().getSimpleName(), borrowingDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING DETAILS BY USER ID][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -89,7 +86,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING DETAILS BY USER ID AND BOOK TITLE][DATA SIZE: {}]", getClass().getSimpleName(), borrowingDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING DETAILS BY USER ID AND BOOK TITLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -105,7 +102,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES][DATA SIZE: {}]", getClass().getSimpleName(), borrowingHistories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -122,7 +119,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES BY NAME][DATA SIZE: {}]", getClass().getSimpleName(), borrowingHistories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES BY NAME][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -139,7 +136,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -156,7 +153,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES BY NAME][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES BY NAME][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -173,7 +170,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL LATE BORROWING HISTORIES][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL LATE BORROWING HISTORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -190,7 +187,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL LATE BORROWING HISTORIES BY NAME][DATA SIZE: {}]", getClass().getSimpleName(), borrowingTrxOfficers.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL LATE BORROWING HISTORIES BY NAME][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -206,7 +203,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES BY USER ID][DATA SIZE: {}]", getClass().getSimpleName(), borrowingHistories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES BY USER ID][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -222,7 +219,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET ALL BORROWING HISTORIES BY USER ID AND BOOK TITLE][DATA SIZE: {}]", getClass().getSimpleName(), borrowingHistories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BORROWING HISTORIES BY USER ID AND BOOK TITLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -237,7 +234,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET BORROWING DETAIL][ID: {}]", getClass().getSimpleName(), borrowingId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BORROWING DETAIL][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), borrowingId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -252,7 +249,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET COUNT BORROWING STATUS][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT BORROWING STATUS][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -267,7 +264,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET COUNT RETURN STATUS][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT RETURN STATUS][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -282,7 +279,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET COUNT ALL BORROWING]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT ALL BORROWING][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -297,7 +294,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS GET COUNT ALL LATE BORROWING]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT ALL LATE BORROWING][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -339,7 +336,7 @@ public class BorrowingDetailUsecase {
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -393,7 +390,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS UPDATE BORROWING DETAIL][POINT: {}][STOCK: {}]", getClass().getSimpleName(), finalPoint, finalStock);
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -408,7 +405,7 @@ public class BorrowingDetailUsecase {
             log.info("[{}][SUCCESS DELETE BORROWING DETAIL][{}]", getClass().getSimpleName(), borrowingId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

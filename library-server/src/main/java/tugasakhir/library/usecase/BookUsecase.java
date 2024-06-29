@@ -4,7 +4,6 @@ import tugasakhir.library.model.dto.BookDetail;
 import tugasakhir.library.model.dto.ListBook;
 import tugasakhir.library.model.dto.TopBorrowedBook;
 import tugasakhir.library.model.entity.Book;
-import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.book.BookRq;
 import tugasakhir.library.model.request.book.UpdateBookRq;
 import tugasakhir.library.model.response.ResponseInfo;
@@ -30,38 +29,21 @@ public class BookUsecase {
     @Autowired
     private BookShelfRepository bookShelfRepository;
 
-    public ResponseInfo<List<Book>> getAllBooks() {
-        ResponseInfo<List<Book>> responseInfo = new ResponseInfo<>();
-
-        try {
-            List<Book> books;
-            books = bookRepository.getAllBooks();
-            books.addAll(bookRepository.getAllBooks());
-            responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
-        }
-        return responseInfo;
-    }
-
-
-    public ResponseInfo<List<ListBook>> getAllBookTitles() {
-        ResponseInfo<List<ListBook>> responseInfo = new ResponseInfo<>();
-
-        try {
-            List<ListBook> books;
-            books = bookRepository.getAllBookTitles();
-            books.addAll(bookRepository.getAllBookTitles());
-            responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET ALL BOOK NAMES][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL BOOK NAMES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
-        }
-        return responseInfo;
-    }
+//    public ResponseInfo<List<Book>> getAllBooks() {
+//        ResponseInfo<List<Book>> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            List<Book> books;
+//            books = bookRepository.getAllBooks();
+//            books.addAll(bookRepository.getAllBooks());
+//            responseInfo.setSuccess(books);
+//            log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED GET ALL BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
 
     public ResponseInfo<List<BookDetail>> getAllBooksDetail() {
         ResponseInfo<List<BookDetail>> responseInfo = new ResponseInfo<>();
@@ -69,12 +51,56 @@ public class BookUsecase {
         try {
             List<BookDetail> books;
             books = bookRepository.getAllBooksDetail();
-            books.addAll(bookRepository.getAllBooksDetail());
-            responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            if (books.isEmpty()){
+                responseInfo.setBussinessError("Books is not found");
+                log.info("[{}][FAILED GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            } else {
+                responseInfo.setSuccess(books);
+                log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<BookDetail>> getBookByTitle(String bookTitle) {
+        ResponseInfo<List<BookDetail>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<BookDetail> books;
+            books = bookRepository.getBooksByBookTitle(bookTitle);
+            if (books.isEmpty()){
+                responseInfo.setBussinessError(bookTitle + " is not exist");
+                log.info("[{}][FAILED GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            } else {
+                responseInfo.setSuccess(books);
+                log.info("[{}][SUCCESS GET ALL BOOK][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            }
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET BOOK DETAIL][TITLE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookTitle, ex);
+            responseInfo.handleException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<ListBook>> getAllBookTitles() {
+        ResponseInfo<List<ListBook>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List<ListBook> books;
+            books = bookRepository.getAllBookTitles();
+            if (books.isEmpty()){
+                responseInfo.setBussinessError("Books is not found");
+                log.info("[{}][FAILED GET ALL BOOK NAMES][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            } else {
+                responseInfo.setSuccess(books);
+                log.info("[{}][SUCCESS GET ALL BOOK NAMES][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            }
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET ALL BOOK NAMES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -85,11 +111,16 @@ public class BookUsecase {
         try {
             int count = 0;
             count = bookRepository.getCountAllBook();
-            responseInfo.setSuccess(count);
-            log.info("[{}][SUCCESS GET COUNT ALL BOOK]", getClass().getSimpleName());
+            if (count == 0){
+                responseInfo.setBussinessError("Books is not found");
+                log.info("[{}][FAILED GET COUNT ALL BOOK]", getClass().getSimpleName());
+            } else {
+                responseInfo.setSuccess(count);
+                log.info("[{}][SUCCESS GET COUNT ALL BOOK]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED GET COUNT BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -101,12 +132,16 @@ public class BookUsecase {
         try {
             List<TopBorrowedBook> books;
             books = bookRepository.getTopBorrowedBook();
-            books.addAll(bookRepository.getTopBorrowedBook());
-            responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET TOP BORROWED BOOKS][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            if (books.isEmpty()){
+                responseInfo.setBussinessError("Books is not found");
+                log.info("[{}][FAILED GET TOP BORROWED BOOKS][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            } else {
+                responseInfo.setSuccess(books);
+                log.info("[{}][SUCCESS GET TOP BORROWED BOOKS][DATA SIZE: {}]", getClass().getSimpleName(), books.size());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED GET TOP BORROWED BOOKS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -117,47 +152,43 @@ public class BookUsecase {
         try {
             BookDetail bookDetail;
             bookDetail = bookRepository.getBookDetailById(bookId);
-            responseInfo.setSuccess(bookDetail);
-            log.info("[{}][SUCCESS GET BOOK][ID: {}]", getClass().getSimpleName(), bookId);
+            if (bookDetail == null){
+                responseInfo.setBussinessError(bookId + " is not exist");
+                log.info("[{}][FAILED GET BOOK][ID: {}]", getClass().getSimpleName(), bookId);
+            } else {
+                responseInfo.setSuccess(bookDetail);
+                log.info("[{}][SUCCESS GET BOOK][ID: {}]", getClass().getSimpleName(), bookId);
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BOOK][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
 
-    public ResponseInfo<List<BookDetail>> getBookByTitle(String bookTitle) {
-        ResponseInfo<List<BookDetail>> responseInfo = new ResponseInfo<>();
-
-        try {
-            List<BookDetail> books;
-            books = bookRepository.getBookByBookTitle(bookTitle);
-            responseInfo.setSuccess(books);
-            log.info("[{}][SUCCESS GET BOOK DETAIL][TITLE: {}]", getClass().getSimpleName(), bookTitle);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET BOOK DETAIL][TITLE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookTitle, ex);
-            responseInfo.setCommonException(ex);
-        }
-        return responseInfo;
-    }
 
     public ResponseInfo<Book> addNewBook(BookRq bookRq) {
         ResponseInfo<Book> responseInfo = new ResponseInfo<>();
 
         try {
-            bookRq.setBookId(bookRepository.generateBookId());
-            String authorId = authorRepository.getAuthorByName(bookRq.getAuthorName()).getAuthorId();
-            String categoryId = categoryRepository.getCategoryByName(bookRq.getCategoryName()).getCategoryId();
-            String publisherId = publisherRepository.getPublisherByName(bookRq.getPublisherName()).getPublisherId();
-            String bookShelfId = bookShelfRepository.getBookShelfByCode(bookRq.getBookShelfCode()).getBookShelfId();
+            if (bookRepository.getBookByBookTitle(bookRq.getBookTitle()) == null){
+                String bookId = bookRepository.generateBookId();
+                String authorId = authorRepository.getAuthorByName(bookRq.getAuthorName()).getAuthorId();
+                String categoryId = categoryRepository.getCategoryByName(bookRq.getCategoryName()).getCategoryId();
+                String publisherId = publisherRepository.getPublisherByName(bookRq.getPublisherName()).getPublisherId();
+                String bookShelfId = bookShelfRepository.getBookShelfByCode(bookRq.getBookShelfCode()).getBookShelfId();
 
-            Book book = BooksMapperImpl.toBook(bookRq, categoryId, publisherId, authorId, bookShelfId);
-            bookRepository.addBook(book);
-            responseInfo.setSuccess(book);
-            log.info("[{}][SUCCESS ADD NEW BOOK]", getClass().getSimpleName());
+                Book book = BooksMapperImpl.toBook(bookRq, categoryId, publisherId, authorId, bookShelfId, bookId);
+                bookRepository.addBook(book);
+                responseInfo.setSuccess(book);
+                log.info("[{}][SUCCESS ADD NEW BOOK]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(bookRq.getBookTitle() + " is already exist");
+                log.info("[{}][FAILED ADD NEW BOOK]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -177,17 +208,17 @@ public class BookUsecase {
                 bookRepository.updateBook(book);
 
                 responseInfo.setSuccess();
+                log.info("[{}][SUCCESS UPDATE BOOK]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException();
+                responseInfo.setBussinessError(updateBooksRq.getBookId() + " is not exist");
+                log.info("[{}][FAILED UPDATE BOOK]", getClass().getSimpleName());
             }
-            log.info("[{}][SUCCESS UPDATE BOOK]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
-
 
     public ResponseInfo<Object> deleteBook(String bookId) {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
@@ -198,7 +229,7 @@ public class BookUsecase {
             log.info("[{}][SUCCESS DELETE BOOK][{}]", getClass().getSimpleName(), bookId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

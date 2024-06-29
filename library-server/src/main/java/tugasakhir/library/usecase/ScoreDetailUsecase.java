@@ -30,7 +30,7 @@ public class ScoreDetailUsecase {
             log.info("[{}][SUCCESS GET ALL SCORE DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), scoreDetails.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL SCORE DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -45,7 +45,7 @@ public class ScoreDetailUsecase {
             log.info("[{}][SUCCESS GET SCORE DETAIL][ID: {}]", getClass().getSimpleName(), scoreDetailId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET SCORE DETAIL][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), scoreDetailId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -62,7 +62,7 @@ public class ScoreDetailUsecase {
             log.info("[{}][SUCCESS ADD NEW SCORE DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW SCORE DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -83,7 +83,7 @@ public class ScoreDetailUsecase {
             log.info("[{}][SUCCESS UPDATE SCORE DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE SCORE DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -98,7 +98,7 @@ public class ScoreDetailUsecase {
             log.info("[{}][SUCCESS DELETE SCORE DETAIL][{}]", getClass().getSimpleName(), scoreDetailId);
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE SCORE DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

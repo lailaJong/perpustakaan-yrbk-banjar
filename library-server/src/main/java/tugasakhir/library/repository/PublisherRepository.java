@@ -15,6 +15,7 @@ import tugasakhir.library.model.entity.Publisher;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -106,7 +107,7 @@ public class PublisherRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_PUBLISHER(), new PublisherRepository.PublisherRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -118,13 +119,18 @@ public class PublisherRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_PUBLISHER_BY_NAME(), paramSource, new PublisherRowMapper());
         } catch (Exception e) {
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
     public String generatePublisherId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_PUBLISHER(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("PUB%03d", suffix);
+        try {
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_PUBLISHER(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("PUB%03d", suffix);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }

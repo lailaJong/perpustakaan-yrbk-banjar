@@ -15,6 +15,7 @@ import tugasakhir.library.model.entity.BookShelf;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,7 +96,7 @@ public class BookShelfRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOKSHELF(), new BookShelfRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -107,7 +108,7 @@ public class BookShelfRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_SHELF_BY_CODE(), paramSource, new BookShelfRowMapper());
         } catch (Exception e) {
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -123,8 +124,13 @@ public class BookShelfRepository {
     }
 
     public String generateBookShelfId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BOOKSHELF(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("BKS%03d", suffix);
+        try {
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BOOKSHELF(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("BKS%03d", suffix);
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }

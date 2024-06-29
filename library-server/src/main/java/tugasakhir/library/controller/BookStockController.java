@@ -36,7 +36,7 @@ public class BookStockController {
 
     @GetMapping("/all")
     ResponseEntity<Object> getAllBookStockDetail(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                 @RequestParam(value = "bookTitle") String bookTitle) {
+                                                 @RequestParam(value = "bookTitle", required = false) String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BookStockDetail>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BOOK STOCK DETAILS][{}]", requestId);
@@ -63,16 +63,16 @@ public class BookStockController {
                 .body(responseInfo.getBody());
     }
 
-    @PostMapping("/create")
-    ResponseEntity<Object> createBookStock(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestBody @Valid BookStockRq bookStockRq) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        log.info("[REQUEST RECEIVED - ADD NEW BOOK STOCK][{}][PAYLOAD: {}]", requestId, bookStockRq);
-        ResponseInfo<BookStock> responseInfo = bookStockUsecase.addNewBookStock(bookStockRq);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
+//    @PostMapping("/create")
+//    ResponseEntity<Object> createBookStock(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                       @RequestBody @Valid BookStockRq bookStockRq) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        log.info("[REQUEST RECEIVED - ADD NEW BOOK STOCK][{}][PAYLOAD: {}]", requestId, bookStockRq);
+//        ResponseInfo<BookStock> responseInfo = bookStockUsecase.addNewBookStock(bookStockRq);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
 
     @PutMapping("/update")
     ResponseEntity<Object> updateBookStock(@RequestHeader(value = "request-id", required = false) String requestId,
