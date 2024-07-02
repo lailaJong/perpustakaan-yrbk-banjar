@@ -13,12 +13,12 @@ import tugasakhir.library.model.request.category.UpdateCategoryRq;
  */
 public class CategoryMapperImpl{
 
-    public static Category toCategory(CategoryRq categoryRq) {
+    public static Category toCategory(CategoryRq categoryRq, String id) {
         if (categoryRq == null) {
             return null;
         }
         Category category = new Category();
-        category.setCategoryId(categoryRq.getCategoryId());
+        category.setCategoryId(id);
         category.setCategoryName(categoryRq.getCategoryName());
         return category;
     }

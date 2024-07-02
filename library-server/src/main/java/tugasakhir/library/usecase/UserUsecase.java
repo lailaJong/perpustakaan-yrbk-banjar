@@ -73,12 +73,17 @@ public class UserUsecase {
 
         try {
             User user;
-            userRq.setUserId(userRepository.generateUserId());
-            userRq.setRoleId(roleRepository.getRoleByName("Member").getRoleId());
-            user = UserMapperImpl.toUser(userRq);
-            userRepository.addUser(user);
-            responseInfo.setSuccess(user);
-            log.info("[{}][SUCCESS ADD NEW USER]", getClass().getSimpleName());
+            if (userRepository.getUserByUsername(userRq.getUsername()) == null){
+                String userId = userRepository.generateUserId();
+                String roleId = roleRepository.getRoleByName("Member").getRoleId();
+                user = UserMapperImpl.toUser(userRq, userId, roleId);
+                userRepository.addUser(user);
+                responseInfo.setSuccess(user);
+                log.info("[{}][SUCCESS ADD NEW USER]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(userRq.getUsername() + " is already exist");
+                log.info("[{}][FAILED ADD NEW USER]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -86,40 +91,39 @@ public class UserUsecase {
         return responseInfo;
     }
 
-    public ResponseInfo<Object> updateUser(UpdateUserRq updateUserRq) {
-        ResponseInfo<Object> responseInfo = new ResponseInfo<>();
-
-        try {
-            User user = userRepository.getUserById(updateUserRq.getUserId());
-            if (user != null) {
-                UserMapperImpl.updateUserFromUpdateUserRq(updateUserRq, user);
-                userRepository.updateUser(user);
-
-                responseInfo.setSuccess();
-            } else {
-                throw new NotFoundException();
-            }
-            log.info("[{}][SUCCESS UPDATE USER]", getClass().getSimpleName());
-        } catch (Exception ex) {
-            log.info("[{}][FAILED UPDATE USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
-
-
-    public ResponseInfo<Object> deleteUser(String userId) {
-        ResponseInfo<Object> responseInfo = new ResponseInfo<>();
-
-        try {
-            userRepository.deleteUser(userId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE USER][{}]", getClass().getSimpleName(), userId);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED DELETE USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
+//    public ResponseInfo<Object> updateUser(UpdateUserRq updateUserRq) {
+//        ResponseInfo<Object> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            User user = userRepository.getUserById(updateUserRq.getUserId());
+//            if (user != null) {
+//                UserMapperImpl.updateUserFromUpdateUserRq(updateUserRq, user);
+//                userRepository.updateUser(user);
+//
+//                responseInfo.setSuccess();
+//            } else {
+//                throw new NotFoundException();
+//            }
+//            log.info("[{}][SUCCESS UPDATE USER]", getClass().getSimpleName());
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED UPDATE USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
+//
+//    public ResponseInfo<Object> deleteUser(String userId) {
+//        ResponseInfo<Object> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            userRepository.deleteUser(userId);
+//            responseInfo.setSuccess();
+//            log.info("[{}][SUCCESS DELETE USER][{}]", getClass().getSimpleName(), userId);
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED DELETE USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
 
 }

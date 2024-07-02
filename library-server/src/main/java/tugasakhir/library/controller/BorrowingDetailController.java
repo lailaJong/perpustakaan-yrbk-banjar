@@ -26,64 +26,71 @@ public class BorrowingDetailController {
     @Autowired
     private BorrowingDetailUsecase borrowingDetailUsecase;
 
-    @GetMapping("/all")
-    ResponseEntity<Object> getAllBorrowingDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Borrowing>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS][{}]", requestId);
-        responseInfo = borrowingDetailUsecase.getAllBorrowingDetails();
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
     //get all borrowing with status "dipinjam" by user id
-    @GetMapping("/all/userId")
+    @GetMapping("/user/all/trx/userId")
     ResponseEntity<Object> getAllBorrowingDetailsByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                          @RequestParam(value = "userId") String userId) {
+                                                          @RequestParam(value = "userId") String userId,
+                                                          @RequestParam(value = "bookTitle", required = false) String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BorrowingDetail>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS BY USER ID][{}][{}]", userId, requestId);
-        responseInfo = borrowingDetailUsecase.getAllBorrowingDetailsByUserId(userId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    //get all borrowing with status "dipinjam" by user id and book title
-    @GetMapping("/all/userId/bookTitle")
-    ResponseEntity<Object> getAllBorrowingDetailsByUserIdAndBookTitle(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                                      @RequestParam(value = "userId") String userId,
-                                                                      @RequestParam(value = "bookTitle") String bookTitle) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BorrowingDetail>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS BY USER ID AND BOOK TITLE][{}][{}][{}]", userId, bookTitle, requestId);
-        responseInfo = borrowingDetailUsecase.getAllBorrowingDetailsByUserIdAndBookTitle(userId, bookTitle);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    @GetMapping("/all/name")
-    ResponseEntity<Object> getAllBorrowingHistories(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                    @RequestParam(value = "name") String name) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BorrowingHistories>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORIES][{}]", requestId);
-        if (name == null){
-            responseInfo = borrowingDetailUsecase.getAllBorrowingHistories();
+        if (bookTitle == null){
+            responseInfo = borrowingDetailUsecase.getAllBorrowingDetailsByUserId(userId);
         } else {
-            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByMemberName(name);
+            responseInfo = borrowingDetailUsecase.getAllBorrowingDetailsByUserIdAndBookTitle(userId, bookTitle);
         }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
     }
 
+    @GetMapping("/user/histories/userId")
+    ResponseEntity<Object> getAllBorrowingHistoriesByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                            @RequestParam(value = "userId") String userId,
+                                                            @RequestParam(value = "bookTitle", required = false) String bookTitle) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<List<BorrowingHistoriesUser>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORIES USER][{}][{}][{}]", userId, bookTitle, requestId);
+        if (bookTitle == null){
+            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByUserId(userId);
+        } else {
+            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByUserIdAndBookTitle(userId, bookTitle);
+        }
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get count borrowing status by user id for jumlah koleksi dipinjam in dashboard member
+    @GetMapping("/user/count/userId")
+    ResponseEntity<Object> getCountBorrowingAndLateStatusByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                                  @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET BORROWING AND LATE STATUS BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = borrowingDetailUsecase.getCountBorrowingStatusByUserId(userId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    //get count return & lost status by user id for total riwayat peminjaman in dashboard member
+    @GetMapping("/user/count/histories/userId")
+    ResponseEntity<Object> getCountAllBorrowingHistoryByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                               @RequestParam(value = "userId") String userId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Integer> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORY BY USER ID][{}][{}]", userId, requestId);
+        responseInfo = borrowingDetailUsecase.getCountAllBorrowingHistoryByUserId(userId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
     //get all borrowing trx for officer
-    @GetMapping("/allTrx/name")
+    @GetMapping("/officer/all/trx")
     ResponseEntity<Object> getAllBorrowingTrx(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                    @RequestParam(value = "name") String name) {
+                                              @RequestParam(value = "name", required = false) String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BorrowingTrxOfficer>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BORROWING TRX][{}]", requestId);
@@ -98,9 +105,9 @@ public class BorrowingDetailController {
     }
 
     //get all borrowing trx "late" for officer
-    @GetMapping("/allLateTrx/name")
+    @GetMapping("/officer/all/late/trx")
     ResponseEntity<Object> getAllLateBorrowingTrx(@RequestHeader(value = "request-id", required = false) String requestId,
-                                              @RequestParam(value = "name") String name) {
+                                                  @RequestParam(value = "name") String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BorrowingTrxOfficer>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL LATE BORROWING TRX][{}]", requestId);
@@ -114,64 +121,24 @@ public class BorrowingDetailController {
                 .body(responseInfo.getBody());
     }
 
-    @GetMapping("/userId")
-    ResponseEntity<Object> getAllBorrowingHistoriesByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                    @RequestParam(value = "userId") String userId,
-                                                    @RequestParam(value = "bookTitle") String bookTitle) {
+    @GetMapping("/officer/all/histories")
+    ResponseEntity<Object> getAllBorrowingHistories(@RequestHeader(value = "request-id", required = false) String requestId,
+                                                    @RequestParam(value = "name", required = false) String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BorrowingHistoriesUser>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORIES USER][{}][{}][{}]", userId, bookTitle, requestId);
-        if (bookTitle == null){
-            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByUserId(userId);
+        ResponseInfo<List<BorrowingHistories>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORIES][{}]", requestId);
+        if (name == null){
+            responseInfo = borrowingDetailUsecase.getAllBorrowingHistories();
         } else {
-            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByUserIdAndBookTitle(userId, bookTitle);
+            responseInfo = borrowingDetailUsecase.getAllBorrowingHistoriesByMemberName(name);
         }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
     }
 
-    @GetMapping("/id")
-    ResponseEntity<Object> getBorrowingDetailById(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "borrowingId") String borrowingId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Borrowing> responseInfo;
-        log.info("[REQUEST RECEIVED - GET BORROWING DETAIL BY ID][{}][{}]", borrowingId, requestId);
-        responseInfo = borrowingDetailUsecase.getBorrowingDetailById(borrowingId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-
-    //get count borrowing status by user id for jumlah koleksi dipinjam in dashboard member
-    @GetMapping("/count/userId")
-    ResponseEntity<Object> getCountBorrowingAndLateStatusByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                                  @RequestParam(value = "userId") String userId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Integer> responseInfo;
-        log.info("[REQUEST RECEIVED - GET BORROWING AND LATE STATUS BY USER ID][{}][{}]", userId, requestId);
-        responseInfo = borrowingDetailUsecase.getCountBorrowingStatusByUserId(userId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    //get count return & lost status by user id for total riwayat peminjaman in dashboard member
-    @GetMapping("/histories/userId")
-    ResponseEntity<Object> getCountAllBorrowingHistoryByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                                  @RequestParam(value = "userId") String userId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Integer> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BORROWING HISTORY BY USER ID][{}][{}]", userId, requestId);
-        responseInfo = borrowingDetailUsecase.getCountAllBorrowingHistoryByUserId(userId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
     //get count all borrowing detail "dipinjam"
-    @GetMapping("/count/all")
+    @GetMapping("/officer/count/all/trx")
     ResponseEntity<Object> getCountAllBorrowing(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<Integer> responseInfo;
@@ -183,7 +150,7 @@ public class BorrowingDetailController {
     }
 
     //get count all borrowing detail "telat"
-    @GetMapping("/count/all/late")
+    @GetMapping("/officer/count/all/late/trx")
     ResponseEntity<Object> getCountAllLateBorrowing(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<Integer> responseInfo;
@@ -216,15 +183,52 @@ public class BorrowingDetailController {
                 .body(responseInfo.getBody());
     }
 
-    @DeleteMapping("/delete")
-    ResponseEntity<Object> deleteBorrowingDetail(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "borrowingId") String borrowingId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        log.info("[REQUEST RECEIVED - DELETE BORROWING DETAIL][{}][BORROWING ID: {}]", requestId, borrowingId);
-        ResponseInfo<Object> responseInfo = borrowingDetailUsecase.deleteBorrowingDetail(borrowingId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
+//    @DeleteMapping("/delete")
+//    ResponseEntity<Object> deleteBorrowingDetail(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                       @RequestParam(value = "borrowingId") String borrowingId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        log.info("[REQUEST RECEIVED - DELETE BORROWING DETAIL][{}][BORROWING ID: {}]", requestId, borrowingId);
+//        ResponseInfo<Object> responseInfo = borrowingDetailUsecase.deleteBorrowingDetail(borrowingId);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
+
+    //get all borrowing with status "dipinjam" by user id and book title
+//    @GetMapping("/all/userId/bookTitle")
+//    ResponseEntity<Object> getAllBorrowingDetailsByUserIdAndBookTitle(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                                                      @RequestParam(value = "userId") String userId,
+//                                                                      @RequestParam(value = "bookTitle") String bookTitle) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<List<BorrowingDetail>> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS BY USER ID AND BOOK TITLE][{}][{}][{}]", userId, bookTitle, requestId);
+//        responseInfo = borrowingDetailUsecase.getAllBorrowingDetailsByUserIdAndBookTitle(userId, bookTitle);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
+
+//    @GetMapping("/id")
+//    ResponseEntity<Object> getBorrowingDetailById(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                       @RequestParam(value = "borrowingId") String borrowingId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<Borrowing> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET BORROWING DETAIL BY ID][{}][{}]", borrowingId, requestId);
+//        responseInfo = borrowingDetailUsecase.getBorrowingDetailById(borrowingId);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
+
+//    @GetMapping("/all")
+//    ResponseEntity<Object> getAllBorrowingDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<List<Borrowing>> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS][{}]", requestId);
+//        responseInfo = borrowingDetailUsecase.getAllBorrowingDetails();
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
 
 }

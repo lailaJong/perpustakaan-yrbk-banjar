@@ -17,6 +17,8 @@ import tugasakhir.library.model.entity.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -136,7 +138,7 @@ public class OrderDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAIL(), new OrderRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -150,7 +152,7 @@ public class OrderDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID(), parameterSource, new OrderDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -178,13 +180,18 @@ public class OrderDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE(), parameterSource, new OrderDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
     public String generateOrderDetailId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_ORDER_DETAIL(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("ORD%03d", suffix);
+        try{
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_ORDER_DETAIL(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("ORD%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }

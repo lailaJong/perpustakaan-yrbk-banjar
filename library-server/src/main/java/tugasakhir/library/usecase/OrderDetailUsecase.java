@@ -39,22 +39,6 @@ public class OrderDetailUsecase {
     @Autowired
     private ApplicationProperties applicationProperties;
 
-    public ResponseInfo<List<Order>> getAllOrderDetails() {
-        ResponseInfo<List<Order>> responseInfo = new ResponseInfo<>();
-
-        try {
-            List<Order> orderDetails;
-            orderDetails = orderDetailRepository.getAllOrderDetails();
-            orderDetails.addAll(orderDetailRepository.getAllOrderDetails());
-            responseInfo.setSuccess(orderDetails);
-            log.info("[{}][SUCCESS GET ALL ORDER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
-
     //get order details officer
     public ResponseInfo<List<OrderDetailOfficer>> getAllOrderDetailsOfficer() {
         ResponseInfo<List<OrderDetailOfficer>> responseInfo = new ResponseInfo<>();
@@ -62,7 +46,6 @@ public class OrderDetailUsecase {
         try {
             List<OrderDetailOfficer> orderDetails;
             orderDetails = orderDetailRepository.getAllOrderDetailsOfficer();
-            orderDetails.addAll(orderDetailRepository.getAllOrderDetailsOfficer());
             responseInfo.setSuccess(orderDetails);
             log.info("[{}][SUCCESS GET ALL ORDER DETAILS OFFICER][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
@@ -79,7 +62,6 @@ public class OrderDetailUsecase {
         try {
             List<OrderDetail> orderDetails;
             orderDetails = orderDetailRepository.getAllOrderDetailsByUserId(userId);
-            orderDetails.addAll(orderDetailRepository.getAllOrderDetailsByUserId(userId));
             responseInfo.setSuccess(orderDetails);
             log.info("[{}][SUCCESS GET ALL ORDER DETAILS BY USER ID][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
@@ -96,7 +78,6 @@ public class OrderDetailUsecase {
         try {
             List<OrderDetail> orderDetails;
             orderDetails = orderDetailRepository.getAllOrderDetailsByUserIdAndBookTitle(userId, bookTitle);
-            orderDetails.addAll(orderDetailRepository.getAllOrderDetailsByUserIdAndBookTitle(userId, bookTitle));
             responseInfo.setSuccess(orderDetails);
             log.info("[{}][SUCCESS GET ALL ORDER DETAILS BY USER ID AND BOOK TITLE][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
         } catch (Exception ex) {
@@ -146,11 +127,11 @@ public class OrderDetailUsecase {
             isQuotasAvailable = benefitValidation.isQuotasAvailable(orderDetailRq.getUserId());
             if (isQuotasAvailable){
                 Order orderDetail;
-                orderDetailRq.setOrderId(orderDetailRepository.generateOrderDetailId());
+                String id = orderDetailRepository.generateOrderDetailId();
                 orderDetailRq.setOrderDate(new Date());
                 orderDetailRq.setTakingDate(TakingDate.setTakingDates(orderDetailRq.getOrderDate()));
                 orderDetailRq.setStatus(applicationProperties.getOrderedStatus());
-                orderDetail = OrderDetailMapperImpl.toOrderDetail(orderDetailRq);
+                orderDetail = OrderDetailMapperImpl.toOrderDetail(orderDetailRq, id);
                 orderDetailRepository.addOrderDetail(orderDetail);
                 //kurangi stok buku by book id
                 BookStock bookStock = bookStockRepository.getBookStockByBookId(orderDetailRq.getBookId());
@@ -166,10 +147,11 @@ public class OrderDetailUsecase {
                     throw new NotFoundException("Data of the book stock is not found");
                 }
                 responseInfo.setSuccess(orderDetail);
+                log.info("[{}][SUCCESS ADD NEW ORDER DETAIL]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException("Quota is not available, remaining quota is 0!");
+                responseInfo.setBussinessError("Quota is not available, remaining quota is 0!");
+                log.info("[{}][FAILED ADD NEW ORDER DETAIL]", getClass().getSimpleName());
             }
-            log.info("[{}][SUCCESS ADD NEW ORDER DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -214,11 +196,11 @@ public class OrderDetailUsecase {
                 OrderDetailMapperImpl.updateOrderDetailFromUpdateOrderDetailRq(updateOrderDetailRq, orderDetail);
                 orderDetailRepository.updateOrderDetail(orderDetail);
 
-                responseInfo.setSuccess();
+                responseInfo.setSuccess("Order is not found");
+                log.info("[{}][SUCCESS UPDATE ORDER DETAIL]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException(updateOrderDetailRq.getOrderId() + " IS NOT FOUND");
             }
-            log.info("[{}][SUCCESS UPDATE ORDER DETAIL]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -241,4 +223,19 @@ public class OrderDetailUsecase {
         return responseInfo;
     }
 
+//    public ResponseInfo<List<Order>> getAllOrderDetails() {
+//        ResponseInfo<List<Order>> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            List<Order> orderDetails;
+//            orderDetails = orderDetailRepository.getAllOrderDetails();
+//            orderDetails.addAll(orderDetailRepository.getAllOrderDetails());
+//            responseInfo.setSuccess(orderDetails);
+//            log.info("[{}][SUCCESS GET ALL ORDER DETAIL][DATA SIZE: {}]", getClass().getSimpleName(), orderDetails.size());
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED GET ALL ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
 }

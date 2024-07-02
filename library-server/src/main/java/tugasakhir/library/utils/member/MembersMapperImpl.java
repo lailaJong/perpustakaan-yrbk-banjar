@@ -23,15 +23,15 @@ import java.util.List;
  */
 public class MembersMapperImpl {
 
-    public static Member toMember(MemberRq memberRq) {
+    public static Member toMember(MemberRq memberRq, String memberId, String userId, String memberStatusId, String scoreDetailId) {
         if (memberRq == null) {
             return null;
         }
         Member member = new Member();
-        member.setMemberId(memberRq.getMemberId());
-        member.setUserId(memberRq.getUserId());
-        member.setMemberStatusId(memberRq.getMemberStatusId());
-        member.setScoreDetailId(memberRq.getScoreDetailId());
+        member.setMemberId(memberId);
+        member.setUserId(userId);
+        member.setMemberStatusId(memberStatusId);
+        member.setScoreDetailId(scoreDetailId);
         member.setName(memberRq.getName());
         member.setGender(memberRq.getGender());
         member.setPhoneNumber(memberRq.getPhoneNumber());

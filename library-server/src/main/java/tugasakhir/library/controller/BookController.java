@@ -137,15 +137,15 @@ public class BookController {
                 .body(responseInfo.getBody());
     }
 
-    @DeleteMapping("/delete")
-    ResponseEntity<Object> deleteBooks(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "bookId") String bookId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        log.info("[REQUEST RECEIVED - DELETE BOOK][{}][BOOK ID: {}]", requestId, bookId);
-        ResponseInfo<Object> responseInfo = bookUsecase.deleteBook(bookId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
+//    @DeleteMapping("/delete")
+//    ResponseEntity<Object> deleteBooks(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                       @RequestParam(value = "bookId") String bookId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        log.info("[REQUEST RECEIVED - DELETE BOOK][{}][BOOK ID: {}]", requestId, bookId);
+//        ResponseInfo<Object> responseInfo = bookUsecase.deleteBook(bookId);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
 
 }

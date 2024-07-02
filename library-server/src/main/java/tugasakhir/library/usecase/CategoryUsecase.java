@@ -25,26 +25,10 @@ public class CategoryUsecase {
         try {
             List<Category> categories;
             categories = categoryRepository.getAllCategories();
-            categories.addAll(categoryRepository.getAllCategories());
             responseInfo.setSuccess(categories);
             log.info("[{}][SUCCESS GET ALL CATEGORIES][DATA SIZE: {}]", getClass().getSimpleName(), categories.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL CATEGORIES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
-
-    public ResponseInfo<Category> getCategoryById(String categoryId) {
-        ResponseInfo<Category> responseInfo = new ResponseInfo<>();
-
-        try {
-            Category category;
-            category = categoryRepository.getCategoryById(categoryId);
-            responseInfo.setSuccess(category);
-            log.info("[{}][SUCCESS GET CATEGORY][ID: {}]", getClass().getSimpleName(), categoryId);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET CATEGORY][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), categoryId, ex);
             responseInfo.handleException(ex);
         }
         return responseInfo;
@@ -65,16 +49,36 @@ public class CategoryUsecase {
         return responseInfo;
     }
 
+    public ResponseInfo<Category> getCategoryById(String categoryId) {
+        ResponseInfo<Category> responseInfo = new ResponseInfo<>();
+
+        try {
+            Category category;
+            category = categoryRepository.getCategoryById(categoryId);
+            responseInfo.setSuccess(category);
+            log.info("[{}][SUCCESS GET CATEGORY][ID: {}]", getClass().getSimpleName(), categoryId);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET CATEGORY][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), categoryId, ex);
+            responseInfo.handleException(ex);
+        }
+        return responseInfo;
+    }
+
     public ResponseInfo<Category> addNewCategory(CategoryRq categoryRq) {
         ResponseInfo<Category> responseInfo = new ResponseInfo<>();
 
         try {
             Category category;
-            categoryRq.setCategoryId(categoryRepository.generateCategoryId());
-            category = CategoryMapperImpl.toCategory(categoryRq);
-            categoryRepository.addCategory(category);
-            responseInfo.setSuccess(category);
-            log.info("[{}][SUCCESS ADD NEW CATEGORY]", getClass().getSimpleName());
+            if (categoryRepository.getCategoryByName(categoryRq.getCategoryName()) == null) {
+                String id = categoryRepository.generateCategoryId();
+                category = CategoryMapperImpl.toCategory(categoryRq, id);
+                categoryRepository.addCategory(category);
+                responseInfo.setSuccess(category);
+                log.info("[{}][SUCCESS ADD NEW CATEGORY]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(categoryRq.getCategoryName() + " is already exist");
+                log.info("[{}][FAILED ADD NEW CATEGORY]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -92,10 +96,10 @@ public class CategoryUsecase {
                 categoryRepository.updateCategory(category);
 
                 responseInfo.setSuccess();
+                log.info("[{}][SUCCESS UPDATE CATEGORY]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException();
+                throw new NotFoundException(updateCategoryRq.getCategoryId() + " IS NOT FOUND");
             }
-            log.info("[{}][SUCCESS UPDATE CATEGORY]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

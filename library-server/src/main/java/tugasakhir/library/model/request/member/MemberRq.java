@@ -15,17 +15,6 @@ import java.util.Date;
 @Accessors(chain = true)
 @Schema
 public class MemberRq {
-    @JsonProperty("member_id")
-    private String memberId;
-
-    @JsonProperty("user_id")
-    private String userId;
-
-    @JsonProperty("member_status_id")
-    private String memberStatusId;
-
-    @JsonProperty("score_detail_id")
-    private String scoreDetailId;
 
     @JsonProperty("name")
     @NotBlank(message = "Name is mandatory")

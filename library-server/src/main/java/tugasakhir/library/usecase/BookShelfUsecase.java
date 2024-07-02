@@ -25,13 +25,8 @@ public class BookShelfUsecase {
         try {
             List<BookShelf> bookShelves;
             bookShelves = bookShelfRepository.getAllBookShelves();
-            if (bookShelves.isEmpty()) {
-                responseInfo.setBussinessError("Bookshelves is not found");
-                log.info("[{}][FAILED GET ALL BOOK SHELVES][DATA SIZE: {}]", getClass().getSimpleName(), bookShelves.size());
-            } else {
-                responseInfo.setSuccess(bookShelves);
-                log.info("[{}][SUCCESS GET ALL BOOK SHELVES][DATA SIZE: {}]", getClass().getSimpleName(), bookShelves.size());
-            }
+            responseInfo.setSuccess(bookShelves);
+            log.info("[{}][SUCCESS GET ALL BOOK SHELVES][DATA SIZE: {}]", getClass().getSimpleName(), bookShelves.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK SHELVES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -45,13 +40,8 @@ public class BookShelfUsecase {
         try {
             List <BookShelf> bookShelves;
             bookShelves = bookShelfRepository.getAllBookShelfByCode(code);
-            if (bookShelves.isEmpty()) {
-                responseInfo.setBussinessError(code + " is not found");
-                log.info("[{}][FAILED GET ALL BOOK SHELVES][CODE: {}]", getClass().getSimpleName(), code);
-            } else {
-                responseInfo.setSuccess(bookShelves);
-                log.info("[{}][SUCCESS GET ALL BOOK SHELF][CODE: {}]", getClass().getSimpleName(), code);
-            }
+            responseInfo.setSuccess(bookShelves);
+            log.info("[{}][SUCCESS GET ALL BOOK SHELF][CODE: {}]", getClass().getSimpleName(), code);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK SHELF][CODE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), code, ex);
             responseInfo.handleException(ex);
@@ -65,13 +55,8 @@ public class BookShelfUsecase {
         try {
             BookShelf bookShelf;
             bookShelf = bookShelfRepository.getBookShelfById(bookShelfId);
-            if (bookShelf == null) {
-                responseInfo.setBussinessError(bookShelfId + " is not exist");
-                log.info("[{}][FAILED GET BOOK SHELF][ID: {}]", getClass().getSimpleName(), bookShelfId);
-            } else {
-                responseInfo.setSuccess(bookShelf);
-                log.info("[{}][SUCCESS GET BOOK SHELF][ID: {}]", getClass().getSimpleName(), bookShelfId);
-            }
+            responseInfo.setSuccess(bookShelf);
+            log.info("[{}][SUCCESS GET BOOK SHELF][ID: {}]", getClass().getSimpleName(), bookShelfId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BOOK SHELF][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookShelfId, ex);
             responseInfo.handleException(ex);
@@ -113,8 +98,7 @@ public class BookShelfUsecase {
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE BOOK SHELF]", getClass().getSimpleName());
             } else {
-                responseInfo.setBussinessError(updateBookShelfRq.getBookShelfCode() + " is already exist");
-                log.info("[{}][FAILED UPDATE BOOK SHELF]", getClass().getSimpleName());
+                throw new NotFoundException(updateBookShelfRq.getBookShelfCode() + " IS NOT FOUND");
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);

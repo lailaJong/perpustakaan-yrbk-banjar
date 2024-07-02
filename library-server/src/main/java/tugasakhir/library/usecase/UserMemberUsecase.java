@@ -53,23 +53,17 @@ public class UserMemberUsecase {
 
         try {
             User user = userRepository.getUserById(updateUserMemberRq.getUserId());
-            if (user != null) {
-                UserMapperImpl.updateUserFromUpdateUserRq(updateUserMemberRq, user);
-                userRepository.updateUser(user);
-                responseInfo.setSuccess();
-            } else {
-                throw new NotFoundException("Data of the user is not found");
-            }
-
             Member member = memberRepository.getMemberByUserId(updateUserMemberRq.getUserId());
-            if (member != null) {
+            if (user != null && member != null) {
+                UserMapperImpl.updateUserFromUpdateUserRq(updateUserMemberRq, user);
                 MembersMapperImpl.updateMemberFromUpdateMemberRq(updateUserMemberRq, member);
+                userRepository.updateUser(user);
                 memberRepository.updateMember(member);
                 responseInfo.setSuccess();
+                log.info("[{}][SUCCESS UPDATE USER AND MEMBER]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException("Data of the member is not found");
+                throw new NotFoundException(member.getMemberId() + " IS NOT FOUND");
             }
-            log.info("[{}][SUCCESS UPDATE USER AND MEMBER]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE USER AND MEMBER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

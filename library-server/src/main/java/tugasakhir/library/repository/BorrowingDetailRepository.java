@@ -19,6 +19,7 @@ import tugasakhir.library.model.entity.Borrowing;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -170,26 +171,26 @@ public class BorrowingDetailRepository {
     }
 
     // Delete a borrowing detail
-    public void deleteBorrowingDetail(String borrowingId) {
-        try{
-            log.info("[DELETE BORROWING DETAIL BY ID][{}][{}]", borrowingId, applicationProperties.getDELETE_BORROWING_DETAIL_BY_ID());
-            SqlParameterSource paramSource = new MapSqlParameterSource("borrowingId", borrowingId);
-            jdbcTemplate.update(applicationProperties.getDELETE_BORROWING_DETAIL_BY_ID(), paramSource);
-        }catch (Exception e){
-            log.error(e.getMessage());
-        }
-    }
+//    public void deleteBorrowingDetail(String borrowingId) {
+//        try{
+//            log.info("[DELETE BORROWING DETAIL BY ID][{}][{}]", borrowingId, applicationProperties.getDELETE_BORROWING_DETAIL_BY_ID());
+//            SqlParameterSource paramSource = new MapSqlParameterSource("borrowingId", borrowingId);
+//            jdbcTemplate.update(applicationProperties.getDELETE_BORROWING_DETAIL_BY_ID(), paramSource);
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//        }
+//    }
 
     // Get all borrowing details
-    public List<Borrowing> getAllBorrowingDetails() {
-        try{
-            log.info("[GET ALL BORROWING DETAIL][{}]", applicationProperties.getGET_ALL_BORROWING_DETAIL());
-            return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAIL(), new BorrowingRowMapper());
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
-        }
-    }
+//    public List<Borrowing> getAllBorrowingDetails() {
+//        try{
+//            log.info("[GET ALL BORROWING DETAIL][{}]", applicationProperties.getGET_ALL_BORROWING_DETAIL());
+//            return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAIL(), new BorrowingRowMapper());
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//            return null;
+//        }
+//    }
 
     // Get all borrowing details by user id
     public List<BorrowingDetail> getAllBorrowingDetailsByUserId(String userId) {
@@ -201,7 +202,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_USER_ID(), paramSource, new BorrowingDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -217,7 +218,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_USER_ID_AND_BOOK_TITLE(), paramSource, new BorrowingDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -231,7 +232,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS(), paramSource, new BorrowingHistoriesRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -247,7 +248,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME(), paramSource, new BorrowingHistoriesRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -260,7 +261,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_TRX(), paramSource, new BorrowingTrxRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -275,7 +276,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_TRX_BY_MEMBER_NAME(), paramSource, new BorrowingTrxRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -288,7 +289,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_LATE_BORROWING_TRX(), paramSource, new BorrowingTrxRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -303,7 +304,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_LATE_BORROWING_TRX_BY_MEMBER_NAME(), paramSource, new BorrowingTrxRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -318,7 +319,7 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_USER_BY_USER_ID(), paramSource, new BorrowingHistoriesUserRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -335,14 +336,19 @@ public class BorrowingDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BORROWING_DETAILS_USER_BY_USER_ID_AND_BOOK_TILTE(), paramSource, new BorrowingHistoriesUserRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
     public String generateBorrowingDetailId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BORROWING_DETAIL(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("BRW%03d", suffix);
+        try{
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BORROWING_DETAIL(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("BRW%03d", suffix);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
     //get count all borrowing

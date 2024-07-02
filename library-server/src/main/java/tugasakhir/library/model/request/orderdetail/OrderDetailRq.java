@@ -13,8 +13,6 @@ import java.util.Date;
 @Accessors(chain = true)
 @Schema
 public class OrderDetailRq {
-    @JsonProperty("order_id")
-    private String orderId;
 
     @JsonProperty("user_id")
     @NotBlank(message = "User ID is mandatory")

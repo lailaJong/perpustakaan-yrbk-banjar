@@ -42,13 +42,8 @@ public class BookStockUsecase {
         try {
             List<BookStockDetail> bookStocks;
             bookStocks = bookStockRepository.getAllBookStockDetails();
-            if (bookStocks.isEmpty()) {
-                responseInfo.setBussinessError("Book Stock is not found");
-                log.info("[{}][FAILED GET ALL BOOK STOCK DETAILS]", getClass().getSimpleName());
-            } else {
-                responseInfo.setSuccess(bookStocks);
-                log.info("[{}][SUCCESS GET ALL BOOK STOCK DETAILS][DATA SIZE: {}]", getClass().getSimpleName(), bookStocks.size());
-            }
+            responseInfo.setSuccess(bookStocks);
+            log.info("[{}][SUCCESS GET ALL BOOK STOCK DETAILS][DATA SIZE: {}]", getClass().getSimpleName(), bookStocks.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK STOCK DETAILS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -62,13 +57,8 @@ public class BookStockUsecase {
         try {
             List<BookStockDetail> bookStocks;
             bookStocks = bookStockRepository.getAllBookStockDetailsByBookTitle(bookTitle);
-            if (bookStocks.isEmpty()) {
-                responseInfo.setBussinessError("Book Stock is not found");
-                log.info("[{}][FAILED GET ALL BOOK STOCK DETAILS]", getClass().getSimpleName());
-            } else {
-                responseInfo.setSuccess(bookStocks);
-                log.info("[{}][SUCCESS GET ALL BOOK STOCK DETAILS BY BOOK TITLE][{}][DATA SIZE: {}]", getClass().getSimpleName(), bookTitle, bookStocks.size());
-            }
+            responseInfo.setSuccess(bookStocks);
+            log.info("[{}][SUCCESS GET ALL BOOK STOCK DETAILS BY BOOK TITLE][{}][DATA SIZE: {}]", getClass().getSimpleName(), bookTitle, bookStocks.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK STOCK DETAILS BY BOOK TITLE][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -82,13 +72,8 @@ public class BookStockUsecase {
         try {
             BookStock bookStock;
             bookStock = bookStockRepository.getBookStockById(bookStockId);
-            if (bookStock == null){
-                responseInfo.setBussinessError(bookStockId + " is not exist");
-                log.info("[{}][FAILED GET BOOK STOCK][ID: {}]", getClass().getSimpleName(), bookStockId);
-            } else {
-                responseInfo.setSuccess(bookStock);
-                log.info("[{}][SUCCESS GET BOOK STOCK][ID: {}]", getClass().getSimpleName(), bookStockId);
-            }
+            responseInfo.setSuccess(bookStock);
+            log.info("[{}][SUCCESS GET BOOK STOCK][ID: {}]", getClass().getSimpleName(), bookStockId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BOOK STOCK][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookStockId, ex);
             responseInfo.handleException(ex);
@@ -130,8 +115,7 @@ public class BookStockUsecase {
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE BOOK STOCK]", getClass().getSimpleName());
             } else {
-                responseInfo.setBussinessError(updateBookStockRq.getBookId() + " is not exist");
-                log.info("[{}][FAILED UPDATE BOOK STOCK]", getClass().getSimpleName());
+                throw new NotFoundException(updateBookStockRq.getBookId() + " IS NOT FOUND");
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK STOCK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);

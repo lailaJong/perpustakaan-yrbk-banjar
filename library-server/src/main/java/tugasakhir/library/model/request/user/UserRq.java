@@ -12,12 +12,6 @@ import tugasakhir.library.utils.validation.UsernameConstraint;
 @Accessors(chain = true)
 @Schema
 public class UserRq {
-    @JsonProperty("user_id")
-    private String userId;
-
-    @JsonProperty("role_id")
-    private String roleId;
-
     @JsonProperty("username")
     @NotBlank(message = "Username is mandatory")
     @Pattern(regexp = "^[a-z0-9_]+$", message = "Username must contain only lowercase letters, numbers, and underscores without spaces")

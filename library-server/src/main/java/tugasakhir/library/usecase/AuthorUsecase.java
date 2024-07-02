@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tugasakhir.library.model.entity.Author;
+import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.author.AuthorRq;
 import tugasakhir.library.model.request.author.UpdateAuthorRq;
 import tugasakhir.library.model.response.ResponseInfo;
@@ -24,13 +25,8 @@ public class AuthorUsecase {
         try {
             List<Author> authors;
             authors = authorRepository.getAllAuthors();
-            if (authors.isEmpty()){
-                responseInfo.setBussinessError("Authors is not found");
-                log.info("[{}][SUCCESS GET ALL AUTHOR][DATA SIZE: {}]", getClass().getSimpleName(), authors.size());
-            } else {
-                responseInfo.setSuccess(authors);
-                log.info("[{}][FAILED GET ALL AUTHOR][DATA SIZE: {}]", getClass().getSimpleName(), authors.size());
-            }
+            responseInfo.setSuccess(authors);
+            log.info("[{}][SUCCESS GET ALL AUTHOR][DATA SIZE: {}]", getClass().getSimpleName(), authors.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -44,13 +40,8 @@ public class AuthorUsecase {
         try {
             List <Author> author;
             author = authorRepository.getAllAuthorsByName(authorName);
-            if (author.isEmpty()){
-                responseInfo.setBussinessError(authorName + " is not exist");
-                log.info("[{}][SUCCESS GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
-            } else {
-                responseInfo.setSuccess(author);
-                log.info("[{}][FAILED GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
-            }
+            responseInfo.setSuccess(author);
+            log.info("[{}][SUCCESS GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET AUTHORS BY NAME][{}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorName, ex);
             responseInfo.handleException(ex);
@@ -64,13 +55,8 @@ public class AuthorUsecase {
         try {
             Author author;
             author = authorRepository.getAuthorById(authorId);
-            if (author == null){
-                responseInfo.setBussinessError(authorId + " is not exist");
-                log.info("[{}][SUCCESS GET AUTHOR][ID: {}]", getClass().getSimpleName(), authorId);
-            } else {
-                responseInfo.setSuccess(author);
-                log.info("[{}][FAILED GET AUTHOR][ID: {}]", getClass().getSimpleName(), authorId);
-            }
+            responseInfo.setSuccess(author);
+            log.info("[{}][SUCCESS GET AUTHOR][ID: {}]", getClass().getSimpleName(), authorId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET AUTHOR][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorId, ex);
             responseInfo.handleException(ex);
@@ -112,8 +98,7 @@ public class AuthorUsecase {
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE AUTHOR]", getClass().getSimpleName());
             } else {
-                responseInfo.setBussinessError(updateAuthorRq.getAuthorName() + " is not exist");
-                log.info("[{}][FAILED UPDATE AUTHOR]", getClass().getSimpleName());
+                throw new NotFoundException(updateAuthorRq.getAuthorId() + " IS NOT FOUND");
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);

@@ -27,11 +27,11 @@ public class ApplicationProperties {
             "VALUES (:memberId, :userId, :memberStatusId, :scoreDetailId, :name, :gender, :phoneNumber, :placeOfBirth, :dateOfBirth, :address, point, registrationDate)";
     private String GET_ALL_MEMBER = "SELECT * FROM member";
     private String GET_ALL_MEMBER_NAMES = "SELECT member_id, name FROM member";
-    private String GET_ALL_MEMBER_BY_NAME = "SELECT * FROM member where name LIKE :name";
+    private String GET_ALL_MEMBER_BY_NAME = "SELECT * FROM member where LOWER(name) LIKE LOWER(:name)";
     private String GET_MEMBER_BY_ID = "SELECT * FROM member WHERE member_id = :memberId";
     private String GET_MEMBER_BY_USER_ID = "SELECT * FROM member WHERE user_id = :userId";
     private String GET_MEMBER_BY_STATUS_ID = "SELECT * FROM member WHERE member_status_id = :statusId";
-    private String GET_MEMBER_BY_NAME = "SELECT * FROM member WHERE name = :name";
+    private String GET_MEMBER_BY_NAME = "SELECT * FROM member WHERE LOWER(name) = LOWER(:name)";
     private String UPDATE_MEMBER_BY_ID = "UPDATE member SET user_id = :userId, member_status_id = :memberStatusId, score_detail_id = :scoreDetailId, name = :name, gender = :gender, " +
             "phone_number = :phoneNumber, place_of_birth = :placeOfBirth, date_of_birth = :dateOfBirth, address = :address, point = :point, registration_date = :registrationDate WHERE member_id = :memberId";
     private String DELETE_MEMBER_BY_ID = "DELETE FROM member WHERE member_id = :memberId";
@@ -119,23 +119,23 @@ public class ApplicationProperties {
     private String GET_ALL_BORROWING_DETAILS_BY_USER_ID = "SELECT b.borrowing_id, bk.book_title, b.status, b.borrowing_date, b.return_date " +
             "FROM borrowing b INNER JOIN book bk ON b.book_id = bk.book_id WHERE b.status = :status";
     private String GET_ALL_BORROWING_DETAILS_BY_USER_ID_AND_BOOK_TITLE = "SELECT b.borrowing_id, bk.book_title, b.status, b.borrowing_date, b.return_date " +
-            "FROM borrowing b INNER JOIN book bk ON b.book_id = bk.book_id WHERE b.status = :status AND bk.book_title LIKE :bookTitle";
+            "FROM borrowing b INNER JOIN book bk ON b.book_id = bk.book_id WHERE b.status = :status AND LOWER(bk.book_title) LIKE LOWER(:bookTitle)";
     private String GET_ALL_BORROWING_DETAILS_BY_STATUS = "SELECT bd.borrowingId, m.title, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
             "bd.status = :returnedStatus OR bd.status = :lostStatus";
     private String GET_ALL_BORROWING_DETAILS_USER_BY_USER_ID = "SELECT bd.borrowingId, b.bookTitle, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Book b ON bd.bookId = b.bookId WHERE " +
             "bd.userId = :userId AND bd.status = :returnedStatus OR bd.status = :lostStatus";
     private String GET_ALL_BORROWING_DETAILS_USER_BY_USER_ID_AND_BOOK_TILTE = "SELECT bd.borrowingId, b.bookTitle, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Book b ON bd.bookId = b.bookId WHERE " +
-            "bd.userId = :userId AND bd.status = :returnedStatus OR bd.status = :lostStatus AND b.bookTitle LIKE :bookTitle";
+            "bd.userId = :userId AND bd.status = :returnedStatus OR bd.status = :lostStatus AND LOWER(b.bookTitle) LIKE LOWER(:bookTitle)";
     private String GET_ALL_BORROWING_DETAILS_BY_STATUS_AND_MEMBER_NAME = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate, bd.actualReturnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
-            "bd.status = :returnedStatus OR bd.status = :lostStatus  AND m.name LIKE :name";
+            "bd.status = :returnedStatus OR bd.status = :lostStatus  AND LOWER(m.name) LIKE LOWER(:name)";
     private String GET_ALL_BORROWING_TRX = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
             "bd.status = :borrowedStatus";
     private String GET_ALL_BORROWING_TRX_BY_MEMBER_NAME = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
-            "bd.status = :borrowedStatus AND m.name LIKE :name";
+            "bd.status = :borrowedStatus AND LOWER(m.name) LIKE LOWER(:name)";
     private String GET_ALL_LATE_BORROWING_TRX = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
             "bd.return_date < CURRENT_DATE";
     private String GET_ALL_LATE_BORROWING_TRX_BY_MEMBER_NAME = "SELECT bd.borrowingId, m.name, bd.bookId, bd.status, bd.borrowingDate, bd.returnDate FROM BorrowingDetail bd JOIN Member m ON bd.userId = m.userId WHERE " +
-            "bd.return_date < CURRENT_DATE AND m.name LIKE :name";
+            "bd.return_date < CURRENT_DATE AND LOWER(m.name) LIKE LOWER(:name)";
     private String GET_COUNT_ALL_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail";
     private String GET_COUNT_ALL_BORROWING_DETAIL_DIPINJAM = "SELECT COUNT(*) FROM borrowing_detail where status = :borrowedStatus";
     private String GET_COUNT_ALL_LATE_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail WHERE return_date < CURRENT_DATE";
@@ -146,8 +146,8 @@ public class ApplicationProperties {
     private String DELETE_CATEGORY_BY_ID = "DELETE FROM category WHERE category_id = :categoryId";
     private String GET_ALL_CATEGORIES = "SELECT * FROM category";
     private String GET_COUNT_ALL_CATEGORY = "SELECT COUNT(*) FROM category";
-    private String GET_CATEGORY_BY_NAME = "SELECT * FROM category WHERE category_name = :categoryName";
-    private String GET_ALL_CATEGORY_BY_NAME = "SELECT * FROM category WHERE category_name LIKE :categoryName";
+    private String GET_CATEGORY_BY_NAME = "SELECT * FROM category WHERE LOWER(category_name) = LOWER(:categoryName)";
+    private String GET_ALL_CATEGORY_BY_NAME = "SELECT * FROM category WHERE LOWER(category_name) LIKE LOWER(:categoryName)";
     //MEMBER STATUS
     private String INSERT_MEMBER_STATUS = "INSERT INTO member_status (member_status_id, status) VALUES (:memberStatusId, :status)";
     private String GET_MEMBER_STATUS_BY_ID = "SELECT * FROM member_status WHERE member_status_id = :memberStatusId";
@@ -176,7 +176,7 @@ public class ApplicationProperties {
     private String GET_ALL_ORDER_DETAILS_BY_USER_ID = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
             "FROM order o INNER JOIN book b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status";
     private String GET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE = "SELECT o.order_id, b.book_title, o.status, o.order_date, o.taking_date " +
-            "FROM order o INNER JOIN book b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status AND b.book_title LIKE :bookTitle";
+            "FROM order o INNER JOIN book b ON o.book_id = b.book_id WHERE o.user_id = :userId AND o.status = :status AND LOWER(b.book_title) LIKE LOWER(:bookTitle)";
     private String GET_COUNT_ALL_ORDER_DETAIL = "SELECT COUNT(*) FROM order_detail";
     //PUBLISHER
     private String INSERT_PUBLISHER = "INSERT INTO publisher (publisher_id, publisher_name) VALUES (:publisherId, :publisherName)";

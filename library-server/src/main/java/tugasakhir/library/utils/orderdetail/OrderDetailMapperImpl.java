@@ -10,12 +10,12 @@ import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
  */
 public class OrderDetailMapperImpl{
 
-    public static Order toOrderDetail(OrderDetailRq orderDetailRq) {
+    public static Order toOrderDetail(OrderDetailRq orderDetailRq, String id) {
         if (orderDetailRq == null) {
             return null;
         }
         Order orderDetail = new Order();
-        orderDetail.setOrderId(orderDetailRq.getOrderId());
+        orderDetail.setOrderId(id);
         orderDetail.setUserId(orderDetailRq.getUserId());
         orderDetail.setBookId(orderDetailRq.getBookId());
         orderDetail.setOrderDate(orderDetailRq.getOrderDate());

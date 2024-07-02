@@ -15,6 +15,8 @@ import tugasakhir.library.model.entity.Category;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,7 +97,7 @@ public class CategoryRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_CATEGORIES(), new CategoryRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -107,7 +109,7 @@ public class CategoryRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_CATEGORY_BY_NAME(), paramSource, new CategoryRowMapper());
         } catch (Exception e) {
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -123,8 +125,13 @@ public class CategoryRepository {
     }
 
     public String generateCategoryId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_CATEGORY(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("CTG%03d", suffix);
+        try {
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_CATEGORY(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("CTG%03d", suffix);
+        }  catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }
