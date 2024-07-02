@@ -37,6 +37,10 @@ public class OrderDetailUsecase {
     @Autowired
     private BookStockRepository bookStockRepository;
     @Autowired
+    private BenefitValidation benefitValidation;
+    @Autowired
+    private BorrowingDetailRq borrowingDetailRq;
+    @Autowired
     private ApplicationProperties applicationProperties;
 
     //get order details officer
@@ -106,8 +110,7 @@ public class OrderDetailUsecase {
         ResponseInfo<Integer> responseInfo = new ResponseInfo<>();
 
         try {
-            int count = 0;
-            count = orderDetailRepository.getCountOrderDetailByUserId(userId);
+            int count = orderDetailRepository.getCountOrderDetailByUserId(userId);
             responseInfo.setSuccess(count);
             log.info("[{}][SUCCESS GET COUNT ORDER DETAIL][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
@@ -122,8 +125,7 @@ public class OrderDetailUsecase {
 
         try {
             //tambahkan validasi check sisa quota
-            BenefitValidation benefitValidation = new BenefitValidation();
-            boolean isQuotasAvailable = false;
+            boolean isQuotasAvailable;
             isQuotasAvailable = benefitValidation.isQuotasAvailable(orderDetailRq.getUserId());
             if (isQuotasAvailable){
                 Order orderDetail;
@@ -181,8 +183,6 @@ public class OrderDetailUsecase {
                 }else {
                         //tambahkan borrowing detail
                         Borrowing borrowingDetail;
-                        BenefitValidation benefitValidation = new BenefitValidation();
-                        BorrowingDetailRq borrowingDetailRq = new BorrowingDetailRq();
                         borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
                         borrowingDetailRq.setUserId(updateOrderDetailRq.getUserId());
                         borrowingDetailRq.setBookId(updateOrderDetailRq.getBookId());

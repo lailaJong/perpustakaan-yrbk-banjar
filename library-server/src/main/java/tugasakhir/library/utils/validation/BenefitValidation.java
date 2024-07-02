@@ -34,21 +34,19 @@ public class BenefitValidation {
     private ApplicationProperties applicationProperties;
 
     public int getTotalTime(String userId){
-        int totalTime = 0;
         String scoreId = memberRepository.getScoreId(userId);
         ScoreDetail scoreDetail = scoreDetailRepository.getScoreDetailById(scoreId);
         int benefitTime = scoreDetail.getExtraBorrowTime();
-        totalTime = applicationProperties.getRegularTime() + benefitTime;
+        int totalTime = applicationProperties.getRegularTime() + benefitTime;
         log.info(String.valueOf(totalTime));
         return totalTime;
     }
 
     public int getTotalQuota(String userId){
-        int totalQuota = 0;
         String scoreId = memberRepository.getScoreId(userId);
         ScoreDetail scoreDetail = scoreDetailRepository.getScoreDetailById(scoreId);
         int benefitQuota = scoreDetail.getExtraBooksQuota();
-        totalQuota = applicationProperties.getRegularQuota() + benefitQuota;
+        int totalQuota = applicationProperties.getRegularQuota() + benefitQuota;
         log.info(String.valueOf(totalQuota));
         return totalQuota;
     }

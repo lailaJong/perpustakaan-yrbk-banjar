@@ -42,6 +42,9 @@ public class BorrowingDetailUsecase {
     @Autowired
     private ApplicationProperties applicationProperties;
 
+    @Autowired
+    private BenefitValidation benefitValidation;
+
     public ResponseInfo<List<BorrowingDetail>> getAllBorrowingDetailsByUserId(String userId) {
         ResponseInfo<List<BorrowingDetail>> responseInfo = new ResponseInfo<>();
 
@@ -263,7 +266,6 @@ public class BorrowingDetailUsecase {
 
         try {
             //tambahkan validasi check sisa quota
-            BenefitValidation benefitValidation = new BenefitValidation();
             boolean isQuotasAvailable = false;
             isQuotasAvailable = benefitValidation.isQuotasAvailable(borrowingDetailRq.getUserId());
             if (isQuotasAvailable){
