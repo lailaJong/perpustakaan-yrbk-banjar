@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utility/api';
 import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,7 +11,7 @@ const Peminjaman = () => {
     useEffect(() => {
         const fetchLoans = async () => {
             try {
-                const response = await axios.get('/api/loans');
+                const response = await api.get('/api/loans');
                 setLoans(response.data);
             } catch (error) {
                 console.error('Error fetching loans:', error);

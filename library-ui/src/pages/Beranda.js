@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utility/api';
 import { Container, Grid, Paper, Typography } from '@mui/material';
 import StatCard from '../components/StatCard';
 import BookList from '../components/BookList';
@@ -15,10 +15,10 @@ const Beranda = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const statsResponse = await axios.get('/api/stats');
-                const popularBooksResponse = await axios.get('/api/popular-books');
-                const topBorrowersResponse = await axios.get('/api/top-borrowers');
-                const recentOrdersResponse = await axios.get('/api/recent-orders');
+                const statsResponse = await api.get('/api/stats');
+                const popularBooksResponse = await api.get('/api/popular-books');
+                const topBorrowersResponse = await api.get('/api/top-borrowers');
+                const recentOrdersResponse = await api.get('/api/recent-orders');
 
                 setStats(statsResponse.data);
                 setPopularBooks(popularBooksResponse.data);
