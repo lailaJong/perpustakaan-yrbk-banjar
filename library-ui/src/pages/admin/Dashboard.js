@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import api from '../utility/api';
+import api from '../../utility/api';
 import { Container, Grid, Paper, Typography } from '@mui/material';
-import StatCard from '../components/StatCard';
-import BookList from '../components/BookList';
-import BorrowerList from '../components/BorrowerList';
-import OrderList from '../components/OrderList';
+import StatCard from '../../components/StatCard';
+import BookList from '../../components/BookList';
+import BorrowerList from '../../components/BorrowerList';
+import OrderList from '../../components/OrderList';
 
-const Beranda = () => {
+const Dashboard = () => {
     const [stats, setStats] = useState({});
     const [popularBooks, setPopularBooks] = useState([]);
     const [topBorrowers, setTopBorrowers] = useState([]);
@@ -33,36 +33,36 @@ const Beranda = () => {
     }, []);
 
     return (
-        <Container maxWidth="lg">
-            <Typography variant="h4" gutterBottom>
+        <Container maxWidth='lg'>
+            <Typography variant='h4' gutterBottom>
                 Dashboard
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title="Total Koleksi" count={stats.totalCollection} />
+                    <StatCard title='Total Koleksi' count={stats.totalCollection} detailLink='/admin/collection' />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title="Total Pemustaka" count={stats.totalMembers} />
+                    <StatCard title='Total Pemustaka' count={stats.totalMembers} detailLink='#' />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title="Total Transaksi Peminjaman" count={stats.totalLoanTransactions} />
+                    <StatCard title='Total Transaksi Peminjaman' count={stats.totalLoanTransactions} detailLink='#' />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title="Total Buku Telat Kembali" count={stats.totalOverdueBooks} />
+                    <StatCard title='Total Buku Telat Kembali' count={stats.totalOverdueBooks} detailLink='#' />
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Paper>
-                        <BookList title="Daftar Buku Paling Diminati" books={popularBooks} />
+                        <BookList title='Daftar Buku Paling Diminati' books={popularBooks} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Paper>
-                        <BorrowerList title="Daftar Peminjam Buku Teratas" borrowers={topBorrowers} />
+                        <BorrowerList title='Daftar Peminjam Buku Teratas' borrowers={topBorrowers} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
                     <Paper>
-                        <OrderList title="Daftar Pesanan Buku Terkini" orders={recentOrders} />
+                        <OrderList title='Daftar Pesanan Buku Terkini' orders={recentOrders} />
                     </Paper>
                 </Grid>
             </Grid>
@@ -70,4 +70,4 @@ const Beranda = () => {
     );
 };
 
-export default Beranda;
+export default Dashboard;

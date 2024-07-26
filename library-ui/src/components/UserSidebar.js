@@ -2,14 +2,13 @@ import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, ListItemButton, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import CategoryIcon from '@mui/icons-material/Category';
+import BookIcon from '@mui/icons-material/Book';
 import HistoryIcon from '@mui/icons-material/History';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CategoryIcon from '@mui/icons-material/Category';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
-import Groups3Icon from '@mui/icons-material/Groups3';
-import PrintIcon from '@mui/icons-material/Print';
-import HorizontalSplitIcon from '@mui/icons-material/HorizontalSplit';
-import logo from '../assets/logo-rbk.jpg'; // Add the appropriate path for your logo
+import logo from '../assets/logo-rbk.jpg';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,7 +51,7 @@ const ActiveListItemButton = styled(ListItemButton)(({ theme }) => ({
   },
 }));
 
-const Sidebar = ({ open, handleDrawerToggle }) => {
+const UserSidebar = ({ open, handleDrawerToggle, userRole }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -63,12 +62,11 @@ const Sidebar = ({ open, handleDrawerToggle }) => {
 
   const menuItems = [
     { text: 'Beranda', icon: <HomeIcon />, link: '/' },
-    { text: 'Data Stok Buku', icon: <StackedBarChartIcon />, link: '/admin/books-stock' },
-    { text: 'Data Penulis', icon: <Groups3Icon />, link: '/admin/authors' },
-    { text: 'Data Penerbit', icon: <PrintIcon />, link: '/admin/publishers' },
-    { text: 'Data Kategori', icon: <CategoryIcon />, link: '/admin/books-categories' },
-    { text: 'Data Rak Buku', icon: <HorizontalSplitIcon />, link: '/admin/bookshelves' },
-    { text: 'Riwayat Transaksi Peminjaman', icon: <HistoryIcon />, link: '/admin/borrowing-transaction-history' },
+    { text: 'Profil', icon: <AccountCircleIcon />, link: '/user/profile' },
+    { text: 'Katalog', icon: <CategoryIcon />, link: '/user/catalog' },
+    { text: 'Koleksi Dipinjam', icon: <LocalLibraryIcon />, link: '/user/borrowing-collection' },
+    { text: 'Koleksi Dipesan', icon: <BookIcon />, link: '/user/ordering-collection' },
+    { text: 'Riwayat Peminjaman', icon: <HistoryIcon />, link: '/user/borrowing-history' },
   ];
 
   return (
@@ -85,29 +83,23 @@ const Sidebar = ({ open, handleDrawerToggle }) => {
           )}
         </TitleContainer>
         <List>
-          {/* {menuItems.map((item, index) => (
-            item.roles.includes(userRole) && (
-              <ListItem key={index} disablePadding>
-                <ListItemButton component={RouterLink} to={item.link}>
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  {open && <ListItemText primary={item.text} />}
-                </ListItemButton>
-              </ListItem>
-            )
-          ))} */}
           {menuItems.map((item, index) => {
             const isActive = location.pathname === item.link;
             return (
               <ListItem key={index} disablePadding>
-                {isActive ? (<ActiveListItemButton component={RouterLink} to={item.link}>
-                  <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
-                  {open && <ListItemText primary={item.text} />}
-                </ActiveListItemButton>) : (<ListItemButton component={RouterLink} to={item.link}>
-                  <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
-                  {open && <ListItemText primary={item.text} />}
-                </ListItemButton>)}
+                {isActive ? (
+                  <ActiveListItemButton component={RouterLink} to={item.link}>
+                    <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
+                    {open && <ListItemText primary={item.text} />}
+                  </ActiveListItemButton>
+                ) : (
+                  <ListItemButton component={RouterLink} to={item.link}>
+                    <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
+                    {open && <ListItemText primary={item.text} />}
+                  </ListItemButton>
+                )}
               </ListItem>
-            )
+            );
           })}
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
@@ -121,4 +113,4 @@ const Sidebar = ({ open, handleDrawerToggle }) => {
   );
 };
 
-export default Sidebar;
+export default UserSidebar;

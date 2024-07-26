@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import api from '../utility/api';
+import api from '../../utility/api';
 import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 
-const Peminjaman = () => {
+const UserBorrowingCollection = () => {
     const [loans, setLoans] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -22,19 +22,19 @@ const Peminjaman = () => {
     }, []);
 
     return (
-        <Container maxWidth="lg">
-            <Typography variant="h4" gutterBottom>
+        <Container maxWidth='lg'>
+            <Typography variant='h4' gutterBottom>
                 Peminjaman
             </Typography>
-            <Button variant="contained" color="primary" startIcon={<AddIcon />} sx={{ marginBottom: 2 }}>
+            <Button variant='contained' color='primary' startIcon={<AddIcon />} sx={{ marginBottom: 2 }}>
                 Tambah Peminjaman
             </Button>
             <TextField
-                variant="outlined"
-                placeholder="cari berdasarkan nama pemustaka"
+                variant='outlined'
+                placeholder='cari berdasarkan nama pemustaka'
                 InputProps={{
                     startAdornment: (
-                        <InputAdornment position="start">
+                        <InputAdornment position='start'>
                             <SearchIcon />
                         </InputAdornment>
                     ),
@@ -71,7 +71,7 @@ const Peminjaman = () => {
                                 <TableCell>{loan.borrowDate}</TableCell>
                                 <TableCell>{loan.returnDate}</TableCell>
                                 <TableCell>
-                                    <Button variant="contained" color="success">Selesai</Button>
+                                    <Button variant='contained' color='success'>Selesai</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -82,4 +82,4 @@ const Peminjaman = () => {
     );
 };
 
-export default Peminjaman;
+export default UserBorrowingCollection;

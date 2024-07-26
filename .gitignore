@@ -17,6 +17,7 @@ library-ui/node_modules/
 .idea
 
 # misc
+.zip
 .DS_Store
 .env.local
 .env.development.local

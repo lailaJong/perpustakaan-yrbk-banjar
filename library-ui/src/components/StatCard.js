@@ -1,13 +1,14 @@
 import React from 'react';
 import { Card, CardContent, Typography, Link } from '@mui/material';
 
-const StatCard = ({ title, count }) => {
+const StatCard = ({ title, count, subInfo, detailLink }) => {
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6">{title}</Typography>
-                <Typography variant="h4">{count}</Typography>
-                <Link href="#" underline="always">Lihat Detail</Link>
+                <Typography variant='h6'>{title}</Typography>
+                <Typography variant='h4'>{count}</Typography>
+                <Typography variant='subtitle1'>{subInfo}</Typography>
+                <Link href={detailLink} underline='always'>Lihat Detail</Link>
             </CardContent>
         </Card>
     );

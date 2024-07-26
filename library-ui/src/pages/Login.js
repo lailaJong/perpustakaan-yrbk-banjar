@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
-import { Container, TextField, Button, Typography, Box, Link } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, Link } from '@mui/material';
 import { styled } from '@mui/system';
 import backgroundImage from '../assets/backgroud-website.jpg';
 
@@ -18,7 +18,7 @@ const Background = styled('div')({
 });
 
 const LoginBox = styled('div')({
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: '2rem',
     borderRadius: '8px',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
@@ -26,55 +26,97 @@ const LoginBox = styled('div')({
     width: '100%'
 });
 
-const Login = () => {
+const Title = styled(Typography)({
+    position: 'absolute',
+    top: '16px',
+    left: '16px',
+    fontWeight: 'bold',
+    fontSize: '24px',
+    color: 'white',
+    zIndex: 10
+});
+
+const Login = ({ setToken, setLoading }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        if (email === '' || password === '') {
+            setError('Username/Password harus diisi di field tersebut');
+            return;
+        }
+        
         try {
             const response = await axios.post(`${baseUrl}/api/login`, { email, password });
             const token = response.data.token;
+
             localStorage.setItem('token-library-app', token);
-            navigate('/dashboard');
+            setToken(token);
+            setLoading(true);
+            navigate('/');
         } catch (error) {
             console.error('Login failed:', error);
+            setError('Login failed. Please try again.');
+        }
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleLogin();
         }
     };
 
     return (
         <Background>
+            <Title>RUANG BACA KOMUNITAS</Title>
             <LoginBox>
-                <Typography variant="h4" gutterBottom>
+                <Typography variant='h4' gutterBottom>
                     Login Keanggotaan
                 </Typography>
                 <TextField
-                    label="Email"
-                    variant="outlined"
+                    label='Email'
+                    variant='outlined'
                     fullWidth
-                    margin="normal"
+                    margin='normal'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onKeyPress={handleKeyPress}
                 />
                 <TextField
-                    label="Password"
-                    type="password"
-                    variant="outlined"
+                    label='Password'
+                    type='password'
+                    variant='outlined'
                     fullWidth
-                    margin="normal"
+                    margin='normal'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={handleKeyPress}
                 />
-                <Box display="flex" justifyContent="space-between" alignItems="center" marginTop="1rem">
-                    <Link href="#" variant="body2">
-                        Daftar menjadi anggota
-                    </Link>
-                    <Button variant="contained" color="primary">
-                        Daftar
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={handleLogin}>
+                {error && (
+                    <Typography variant='body2' color='error'>
+                        {error}
+                    </Typography>
+                )}
+                <Box display='flex' justifyContent='center' alignItems='center' marginTop='1rem'>
+                    <Button variant='contained' color='primary' onClick={handleLogin}>
                         Login
                     </Button>
+                </Box>
+                <Box display='flex' justifyContent='center' alignItems='center' marginTop='1rem'>
+                    <Grid container spacing={1} alignItems='center' justifyContent='center'>
+                        <Grid item>
+                            <Typography variant='body2'>
+                                Daftar menjadi anggota
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Link component={RouterLink} to='/terms-and-conditions' variant='body2'>
+                                Di sini
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
             </LoginBox>
         </Background>
