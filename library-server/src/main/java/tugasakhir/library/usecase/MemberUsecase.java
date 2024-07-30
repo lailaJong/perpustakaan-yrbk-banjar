@@ -140,7 +140,8 @@ public class MemberUsecase {
         ResponseInfo<Member> responseInfo = new ResponseInfo<>();
         try {
             Member member;
-            if (memberRepository.getMemberByName(memberRq.getName()) == null){
+            boolean isExist = memberRepository.existsByMemberName(memberRq.getName());
+            if (!isExist){
                 String memberId = memberRepository.generateMemberId();
                 String userId = userRepository.getUserByUsername(userRq.getUsername()).getUserId();
                 String memberStatusId = memberStatusRepository.getMemberStatusByStatus("ACTIVE").getMemberStatusId();

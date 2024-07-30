@@ -17,9 +17,7 @@ import tugasakhir.library.model.entity.Member;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Putri Mele
@@ -52,7 +50,7 @@ public class MemberRepository {
             member.setDateOfBirth(rs.getDate("date_of_birth"));
             member.setAddress(rs.getString("address"));
             member.setPoint(rs.getInt("point"));
-            member.setRegristrationDate(rs.getDate("registration_date"));
+            member.setRegistrationDate(rs.getDate("registration_date"));
             return member;
         }
     }
@@ -80,11 +78,11 @@ public class MemberRepository {
     // Add a member
     public void addMember(Member member) {
         try{
-            log.info("[ADD MEMBER][{}]", applicationProperties.getINSERT_MEMBER());
+            log.info("[ADD MEMBER][{}][{}]", applicationProperties.getINSERT_MEMBER(), member);
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(member);
             jdbcTemplate.update(applicationProperties.getINSERT_MEMBER(), paramSource);
         }catch (Exception e){
-            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -112,14 +110,13 @@ public class MemberRepository {
     }
 
 
-    public Member getMemberByName(String memberName) {
+    public Member getMemberByName(String memberName) throws RuntimeException {
         try{
             log.info("[GET MEMBER BY NAME][{}][{}]", memberName, applicationProperties.getGET_MEMBER_BY_NAME());
             SqlParameterSource paramSource = new MapSqlParameterSource("memberName", memberName);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_BY_NAME(), paramSource, new MemberRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -170,15 +167,14 @@ public class MemberRepository {
         }
     }
 
-    public String generateMemberId() {
+    public String generateMemberId() throws RuntimeException {
         try{
             log.info("[GENERATE MEMBER ID][{}]", applicationProperties.getGET_COUNT_ALL_MEMBER());
             int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
             int suffix = count + 1;
             return String.format("MBR%03d", suffix);
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -212,6 +208,20 @@ public class MemberRepository {
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
+        }
+    }
+
+    public boolean existsByMemberName(String name) {
+        try{
+            log.info("[CHECK MEMBER NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_MEMBER_NAME(), name);
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", name);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_MEMBER_NAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 

@@ -24,7 +24,7 @@ public class ApplicationProperties {
     private String GET_COUNT_ALL_AUTHOR = "SELECT COUNT(*) FROM author";
     //MEMBER
     private String INSERT_MEMBER = "INSERT INTO member (member_id, user_id, member_status_id, score_detail_id, name, gender, phone_number, place_of_birth, date_of_birth, address, point, registration_date) " +
-            "VALUES (:memberId, :userId, :memberStatusId, :scoreDetailId, :name, :gender, :phoneNumber, :placeOfBirth, :dateOfBirth, :address, point, registrationDate)";
+            "VALUES (:memberId, :userId, :memberStatusId, :scoreDetailId, :name, :gender, :phoneNumber, :placeOfBirth, :dateOfBirth, :address, :point, :registrationDate)";
     private String GET_ALL_MEMBER = "SELECT * FROM member";
     private String GET_ALL_MEMBER_NAMES = "SELECT member_id, name FROM member";
     private String GET_ALL_MEMBER_BY_NAME = "SELECT * FROM member where LOWER(name) LIKE LOWER(:name)";
@@ -44,6 +44,7 @@ public class ApplicationProperties {
             "GROUP BY m.name " +
             "ORDER BY total_borrowings DESC " +
             "LIMIT 5";
+    private String GET_EXIST_MEMBER_NAME = "SELECT COUNT(*) FROM member WHERE name = :name";
     //BOOK
     private String INSERT_BOOK = "INSERT INTO book (book_id, book_title, category_id, publisher_id, author_id, book_shelf_id, language, isbn, number_of_pages, publication_year, synopsis, stock)" +
             "VALUES (:bookId, :bookTitle, :categoryId, :publisherId, :authorId, :bookShelfId, :language, :isbn, :numberOfPages, :publicationYear, :synopsis, :stock)";
@@ -203,15 +204,16 @@ public class ApplicationProperties {
     private String GET_ALL_SCORE_DETAIL = "SELECT * FROM score_detail";
     private String GET_COUNT_ALL_SCORE_DETAIL = "SELECT COUNT(*) FROM score_detail";
     //USER
-    private String INSERT_USER = "INSERT INTO user (user_id, role_id, username, password) VALUES (:userId, :roleId, :username, :password)";
-    private String GET_USER_BY_ID = "SELECT * FROM user WHERE user_id = :userId";
-    private String GET_USER_BY_USERNAME = "SELECT * FROM user WHERE username = :username";
-    private String UPDATE_USER_BY_ID = "UPDATE user SET role_id = :roleId, username = :username, password = :password WHERE user_id = :userId";
-    private String DELETE_USER_BY_ID = "DELETE FROM user WHERE user_id = :userId";
-    private String GET_ALL_USER = "SELECT * FROM user";
-    private String GET_COUNT_ALL_USER = "SELECT COUNT(*) FROM user";
-    private String GET_EXIST_USERNAME = "SELECT COUNT(*) FROM user WHERE username = :username";
+    private String INSERT_USER = "INSERT INTO public.user (user_id, role_id, username, password) VALUES (:userId, :roleId, :username, :password)";
+    private String GET_USER_BY_ID = "SELECT * FROM public.user WHERE user_id = :userId";
+    private String GET_USER_BY_USERNAME = "SELECT * FROM public.user WHERE username = :username";
+    private String UPDATE_USER_BY_ID = "UPDATE public.user SET role_id = :roleId, username = :username, password = :password WHERE user_id = :userId";
+    private String DELETE_USER_BY_ID = "DELETE FROM public.user WHERE user_id = :userId";
+    private String GET_ALL_USER = "SELECT * FROM public.user";
+    private String GET_COUNT_ALL_USER = "SELECT COUNT(*) FROM public.user";
+    private String GET_EXIST_USERNAME = "SELECT COUNT(*) FROM public.user WHERE username = :username";
     //OTHERS
+    private String memberRole = "Member";
     private String orderedStatus = "Dipesan";
     private String cancelledStatus = "Dibatalkan";
     private String completedStatus = "Selesai";

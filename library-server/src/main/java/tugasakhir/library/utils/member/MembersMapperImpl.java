@@ -1,6 +1,7 @@
 package tugasakhir.library.utils.member;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.entity.Member;
 import tugasakhir.library.model.entity.MemberStatus;
@@ -13,8 +14,9 @@ import tugasakhir.library.repository.MemberStatusRepository;
 import tugasakhir.library.repository.ScoreDetailRepository;
 import tugasakhir.library.repository.UserRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,7 +41,7 @@ public class MembersMapperImpl {
         member.setDateOfBirth(memberRq.getDateOfBirth());
         member.setAddress(memberRq.getAddress());
         member.setPoint(memberRq.getPoint());
-        member.setRegristrationDate(memberRq.getRegristrationDate());
+        member.setRegistrationDate(memberRq.getRegistrationDate());
         return member;
     }
 
@@ -79,10 +81,14 @@ public class MembersMapperImpl {
             member.setPoint( updateMemberRq.getPoint() );
         }
         if ( updateMemberRq.getRegristrationDate() != null ) {
-            member.setRegristrationDate( updateMemberRq.getRegristrationDate() );
+            member.setRegistrationDate( updateMemberRq.getRegristrationDate() );
         }
     }
-    public static void updateMemberFromUpdateMemberRq(UpdateUserMemberRq updateUserMemberRq, Member member) {
+    public static void updateMemberFromUpdateMemberRq(UpdateUserMemberRq updateUserMemberRq, Member member) throws ParseException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        mapper.setDateFormat(dateFormat);
         if ( updateUserMemberRq == null ) {
             return;
         }
@@ -103,7 +109,7 @@ public class MembersMapperImpl {
             member.setPlaceOfBirth( updateUserMemberRq.getPlaceOfBirth() );
         }
         if ( updateUserMemberRq.getDateOfBirth() != null ) {
-            member.setDateOfBirth( updateUserMemberRq.getDateOfBirth() );
+            member.setDateOfBirth(dateFormat.parse(updateUserMemberRq.getDateOfBirth()));
         }
         if ( updateUserMemberRq.getAddress() != null ) {
             member.setAddress( updateUserMemberRq.getAddress() );

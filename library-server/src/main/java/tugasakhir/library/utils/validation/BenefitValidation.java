@@ -2,6 +2,7 @@ package tugasakhir.library.utils.validation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.entity.ScoreDetail;
 import tugasakhir.library.repository.BorrowingDetailRepository;
@@ -18,6 +19,7 @@ import java.util.Date;
  */
 
 @Slf4j
+@Component
 public class BenefitValidation {
     @Autowired
     private MemberRepository memberRepository;

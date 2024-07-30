@@ -39,8 +39,6 @@ public class OrderDetailUsecase {
     @Autowired
     private BenefitValidation benefitValidation;
     @Autowired
-    private BorrowingDetailRq borrowingDetailRq;
-    @Autowired
     private ApplicationProperties applicationProperties;
 
     //get order details officer
@@ -183,6 +181,7 @@ public class OrderDetailUsecase {
                 }else {
                         //tambahkan borrowing detail
                         Borrowing borrowingDetail;
+                        BorrowingDetailRq borrowingDetailRq = new BorrowingDetailRq();
                         borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
                         borrowingDetailRq.setUserId(updateOrderDetailRq.getUserId());
                         borrowingDetailRq.setBookId(updateOrderDetailRq.getBookId());

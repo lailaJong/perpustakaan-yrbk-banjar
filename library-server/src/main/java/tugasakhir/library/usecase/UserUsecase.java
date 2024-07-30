@@ -3,6 +3,7 @@ package tugasakhir.library.usecase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.entity.User;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.user.UpdateUserRq;
@@ -21,6 +22,9 @@ public class UserUsecase {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     public ResponseInfo<List<User>> getAllUsers() {
         ResponseInfo<List<User>> responseInfo = new ResponseInfo<>();
@@ -69,13 +73,15 @@ public class UserUsecase {
     }
 
     public ResponseInfo<User> addNewUser(UserRq userRq) {
+        log.info("[ADD NEW USER][{}]", userRq);
         ResponseInfo<User> responseInfo = new ResponseInfo<>();
 
         try {
             User user;
-            if (userRepository.getUserByUsername(userRq.getUsername()) == null){
+            boolean isExist = userRepository.existsByUsername(userRq.getUsername());
+            if (!isExist){
                 String userId = userRepository.generateUserId();
-                String roleId = roleRepository.getRoleByName("Member").getRoleId();
+                String roleId = roleRepository.getRoleByName(applicationProperties.getMemberRole()).getRoleId();
                 user = UserMapperImpl.toUser(userRq, userId, roleId);
                 userRepository.addUser(user);
                 responseInfo.setSuccess(user);

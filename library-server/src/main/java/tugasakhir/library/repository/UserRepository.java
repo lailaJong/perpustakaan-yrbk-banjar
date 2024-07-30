@@ -3,6 +3,7 @@ package tugasakhir.library.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -48,13 +49,13 @@ public class UserRepository {
     }
 
     // Add an user
-    public void addUser(User user) {
+    public void addUser(User user) throws RuntimeException {
         try{
-            log.info("[ADD USER][{}]", applicationProperties.getINSERT_USER());
+            log.info("[ADD USER][{}][{}]", applicationProperties.getINSERT_USER(), user);
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(user);
             jdbcTemplate.update(applicationProperties.getINSERT_USER(), paramSource);
         }catch (Exception e){
-            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -72,12 +73,11 @@ public class UserRepository {
 
     public User getUserByUsername(String username) {
         try{
-            log.info("[GET USER BY USERNAME][{}][{}}]", username, applicationProperties.getGET_USER_BY_USERNAME());
+            log.info("[GET USER BY USERNAME][{}][{}}]", applicationProperties.getGET_USER_BY_USERNAME(), username);
             SqlParameterSource paramSource = new MapSqlParameterSource("username", username);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_USER_BY_USERNAME(), paramSource, new UserRepository.UserRowMapper());
+            return jdbcTemplate.queryForObject(applicationProperties.getGET_USER_BY_USERNAME(), paramSource, new UserRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -114,25 +114,24 @@ public class UserRepository {
         }
     }
 
-    public String generateUserId() {
+    public String generateUserId() throws RuntimeException {
         try{
             log.info("[GENERATE USER ID][{}]", applicationProperties.getGET_COUNT_ALL_USER());
             int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_USER(), (SqlParameterSource) null, Integer.class);
             int suffix = count + 1;
             return String.format("USR%03d", suffix);
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     public boolean existsByUsername(String username) {
         try{
-            log.info("[GET EXIST USERNAME][{}][{}]", username, applicationProperties.getGET_EXIST_USERNAME());
+            log.info("[CHECK USERNAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_USERNAME(), username);
             Map<String, Object> params = new HashMap<>();
             params.put("username", username);
-
             int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_USERNAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
             return count > 0;
         }catch (Exception e){
             log.error(e.getMessage());
