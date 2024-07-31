@@ -62,12 +62,13 @@ public class PublisherUsecase {
         ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
 
         try {
-            Publisher publisher;
-            publisher = publisherRepository.getPublisherById(publisherId);
-            if (publisher == null){
+            boolean isExist = publisherRepository.existsByPublisherId(publisherId);
+            if (!isExist){
                 responseInfo.setBussinessError(publisherId + " is not exist");
                 log.info("[{}][FAILED GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
             } else {
+                Publisher publisher;
+                publisher = publisherRepository.getPublisherById(publisherId);
                 responseInfo.setSuccess(publisher);
                 log.info("[{}][SUCCESS GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
             }
@@ -82,8 +83,9 @@ public class PublisherUsecase {
         ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
 
         try {
-            if (publisherRepository.getPublisherByName(publisherRq.getPublisherName()) == null) {
-                Publisher publisher;
+            Publisher publisher;
+            boolean isExist = publisherRepository.existsByPublisherName(publisherRq.getPublisherName());
+            if (!isExist){
                 String id = publisherRepository.generatePublisherId();
                 publisher = PublisherMapperImpl.toPublisher(publisherRq, id);
                 publisherRepository.addPublisher(publisher);
@@ -104,8 +106,9 @@ public class PublisherUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            Publisher publisher = publisherRepository.getPublisherById(updatePublisherRq.getPublisherId());
-            if (publisher != null) {
+            boolean isExist = publisherRepository.existsByPublisherId(updatePublisherRq.getPublisherId());
+            if (isExist){
+                Publisher publisher = publisherRepository.getPublisherById(updatePublisherRq.getPublisherId());
                 PublisherMapperImpl.updatePublisherFromUpdatePublisherRq(updatePublisherRq, publisher);
                 publisherRepository.updatePublisher(publisher);
 
@@ -127,9 +130,15 @@ public class PublisherUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            publisherRepository.deletePublisher(publisherId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE PUBLISHER][{}]", getClass().getSimpleName(), publisherId);
+            boolean isExist = publisherRepository.existsByPublisherId(publisherId);
+            if (isExist){
+                publisherRepository.deletePublisher(publisherId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE PUBLISHER][{}]", getClass().getSimpleName(), publisherId);
+            } else {
+                responseInfo.setBussinessError(publisherId + " is not exist");
+                log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE PUBLISHER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

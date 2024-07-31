@@ -24,7 +24,7 @@ public class PublisherController {
 
     @GetMapping("/all")
     ResponseEntity<Object> getAllPublishers(@RequestHeader(value = "request-id", required = false) String requestId,
-                                            @RequestParam(value = "publisherName") String publisherName) {
+                                            @RequestParam(value = "publisherName", required = false) String publisherName) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Publisher>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL PUBLISHERS][{}]", requestId);

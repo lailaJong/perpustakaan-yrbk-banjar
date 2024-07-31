@@ -1,6 +1,7 @@
 package tugasakhir.library.model.request.publisher;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -12,10 +13,12 @@ import tugasakhir.library.utils.validation.ValidName;
 public class UpdatePublisherRq {
     @JsonProperty("publisher_id")
     @NotBlank(message = "Publisher ID is mandatory")
+    @Schema(example = "String")
     private String publisherId;
 
     @JsonProperty("publisher_name")
     @NotBlank(message = "Publisher name is mandatory")
     @Pattern(regexp = "^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*(?:[.()])?$", message = "Invalid publisher name format")
+    @Schema(example = "String")
     private String publisherName;
 }

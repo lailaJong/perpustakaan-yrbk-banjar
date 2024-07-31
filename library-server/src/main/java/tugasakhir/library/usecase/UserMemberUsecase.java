@@ -33,10 +33,12 @@ public class UserMemberUsecase {
         try {
             User user;
             Member member;
-            user = userRepository.getUserById(userId);
-            if (user == null) {
-                throw new NotFoundException(userId + " IS NOT FOUND");
+            boolean isExist = userRepository.existsByUserId(userId);
+            if (!isExist) {
+                responseInfo.setBussinessError(userId + " is not exist");
+                log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
             } else {
+                user = userRepository.getUserById(userId);
                 member = memberRepository.getMemberByUserId(userId);
                 if (member != null) {
                 UserMember userMember = new UserMember()
@@ -51,7 +53,8 @@ public class UserMemberUsecase {
                 responseInfo.setSuccess(userMember);
                 log.info("[{}][SUCCESS GET USER MEMBER][USER ID: {}]", getClass().getSimpleName(), userId);
                 } else {
-                    throw new NotFoundException(member.getMemberId() + " IS NOT FOUND");
+                    responseInfo.setBussinessError(member.getMemberId() + " is not exist");
+                    log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
                 }
             }
         } catch (Exception ex) {
@@ -65,10 +68,12 @@ public class UserMemberUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            User user = userRepository.getUserById(updateUserMemberRq.getUserId());
-            if (user == null) {
-                throw new NotFoundException(updateUserMemberRq.getUserId() + " IS NOT FOUND");
+            boolean isExist = userRepository.existsByUserId(updateUserMemberRq.getUserId());
+            if (!isExist) {
+                responseInfo.setBussinessError(updateUserMemberRq.getUserId() + " is not exist");
+                log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
             } else {
+                User user = userRepository.getUserById(updateUserMemberRq.getUserId());
                 Member member = memberRepository.getMemberByUserId(updateUserMemberRq.getUserId());
                 if (member != null) {
                     UserMapperImpl.updateUserFromUpdateUserRq(updateUserMemberRq, user);
@@ -78,7 +83,8 @@ public class UserMemberUsecase {
                     responseInfo.setSuccess();
                     log.info("[{}][SUCCESS UPDATE USER AND MEMBER]", getClass().getSimpleName());
                 } else {
-                    throw new NotFoundException(member.getMemberId() + " IS NOT FOUND");
+                    responseInfo.setBussinessError(member.getMemberId() + " is not exist");
+                    log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
                 }
             }
         } catch (Exception ex) {

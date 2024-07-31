@@ -188,6 +188,9 @@ public class ApplicationProperties {
     private String GET_COUNT_ALL_PUBLISHER = "SELECT COUNT(*) FROM publisher";
     private String GET_PUBLISHER_BY_NAME = "SELECT * FROM publisher WHERE LOWER(publisher_name) = LOWER(:publisherName)";
     private String GET_ALL_PUBLISHER_BY_NAME = "SELECT * FROM publisher WHERE LOWER(publisher_name) LIKE LOWER(:publisherName)";
+    private String GET_EXIST_PUBLISHER_NAME = "SELECT COUNT(*) FROM publisher WHERE publisher_name = :publisherName";
+    private String GET_EXIST_PUBLISHER_ID = "SELECT COUNT(*) FROM publisher WHERE publisher_id = :publisherId";
+
     //ROLE
     private String INSERT_ROLE = "INSERT INTO role (role_id, role_name) VALUES (:roleId, :roleName)";
     private String GET_ROLE_BY_ID = "SELECT * FROM role WHERE role_id = :roleId";
@@ -212,6 +215,7 @@ public class ApplicationProperties {
     private String GET_ALL_USER = "SELECT * FROM public.user";
     private String GET_COUNT_ALL_USER = "SELECT COUNT(*) FROM public.user";
     private String GET_EXIST_USERNAME = "SELECT COUNT(*) FROM public.user WHERE username = :username";
+    private String GET_EXIST_USER_ID = "SELECT COUNT(*) FROM public.user WHERE user_id = :userId";
     //OTHERS
     private String memberRole = "Member";
     private String orderedStatus = "Dipesan";

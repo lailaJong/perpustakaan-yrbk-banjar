@@ -138,4 +138,18 @@ public class UserRepository {
             return false;
         }
     }
+
+    public boolean existsByUserId(String userId) {
+        try{
+            log.info("[CHECK USER ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_USER_ID(), userId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId", userId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_USER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
 }

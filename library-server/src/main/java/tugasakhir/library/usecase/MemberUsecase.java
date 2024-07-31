@@ -175,7 +175,8 @@ public class MemberUsecase {
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE MEMBER DETAIL]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateMemberStatusRq.getMemberId() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateMemberStatusRq.getMemberId() + " is not exist");
+                log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE MEMBER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
