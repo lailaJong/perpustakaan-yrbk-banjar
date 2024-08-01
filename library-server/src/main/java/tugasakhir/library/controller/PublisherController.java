@@ -27,7 +27,7 @@ public class PublisherController {
                                             @RequestParam(value = "publisherName", required = false) String publisherName) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Publisher>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL PUBLISHERS][{}]", requestId);
+        log.info("[REQUEST RECEIVED - GET ALL PUBLISHERS][{}][{}]", requestId, publisherName);
         if (publisherName == null) {
             responseInfo = publisherUsecase.getAllPublishers();
         } else {

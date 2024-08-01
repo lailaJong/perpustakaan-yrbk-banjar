@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import tugasakhir.library.model.dto.ListMember;
 import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.dto.TopBorrowerMember;
-import tugasakhir.library.model.dto.UpdateMemberStatusRq;
 import tugasakhir.library.model.entity.Member;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
+import tugasakhir.library.model.request.memberstatus.UpdateMemberStatusRq;
 import tugasakhir.library.model.request.user.UserRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.MemberRepository;
@@ -164,8 +164,9 @@ public class MemberUsecase {
     public ResponseInfo<Object> updateMemberStatus(UpdateMemberStatusRq updateMemberStatusRq) {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
         try {
-            Member member = memberRepository.getMemberById(updateMemberStatusRq.getMemberId());
-            if (member != null) {
+            boolean isExist = memberRepository.existByMemberId(updateMemberStatusRq.getMemberId());
+            if (isExist) {
+                Member member = memberRepository.getMemberById(updateMemberStatusRq.getMemberId());
                 if (memberStatusRepository.getMemberStatusById(member.getMemberStatusId()).getStatus().equalsIgnoreCase("DEACTIVE")){
                     member.setPoint(0);
                     member.setScoreDetailId(ScoreDetailMapperImpl.getScoreDetailId(0));

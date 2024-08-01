@@ -33,30 +33,19 @@ public class UserMemberUsecase {
         try {
             User user;
             Member member;
-            boolean isExist = userRepository.existsByUserId(userId);
-            if (!isExist) {
-                responseInfo.setBussinessError(userId + " is not exist");
-                log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
-            } else {
-                user = userRepository.getUserById(userId);
-                member = memberRepository.getMemberByUserId(userId);
-                if (member != null) {
-                UserMember userMember = new UserMember()
-                        .setName(member.getName())
-                        .setUsername(user.getUsername())
-                        .setGender(member.getGender())
-                        .setPhoneNumber(member.getPhoneNumber())
-                        .setPlaceOfBirth(member.getPlaceOfBirth())
-                        .setDateOfBirth(member.getDateOfBirth())
-                        .setAddress(member.getAddress())
-                        .setRegistrationDate(member.getRegistrationDate());
-                responseInfo.setSuccess(userMember);
-                log.info("[{}][SUCCESS GET USER MEMBER][USER ID: {}]", getClass().getSimpleName(), userId);
-                } else {
-                    responseInfo.setBussinessError(member.getMemberId() + " is not exist");
-                    log.info("[{}][FAILED UPDATE PUBLISHER]", getClass().getSimpleName());
-                }
-            }
+            user = userRepository.getUserById(userId);
+            member = memberRepository.getMemberByUserId(userId);
+            UserMember userMember = new UserMember()
+                    .setName(member.getName())
+                    .setUsername(user.getUsername())
+                    .setGender(member.getGender())
+                    .setPhoneNumber(member.getPhoneNumber())
+                    .setPlaceOfBirth(member.getPlaceOfBirth())
+                    .setDateOfBirth(member.getDateOfBirth())
+                    .setAddress(member.getAddress())
+                    .setRegistrationDate(member.getRegistrationDate());
+            responseInfo.setSuccess(userMember);
+            log.info("[{}][SUCCESS GET USER MEMBER][USER ID: {}]", getClass().getSimpleName(), userId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET USER MEMBER][USER ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
             responseInfo.handleException(ex);

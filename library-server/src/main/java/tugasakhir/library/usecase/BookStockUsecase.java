@@ -81,41 +81,43 @@ public class BookStockUsecase {
         return responseInfo;
     }
 
-//    public ResponseInfo<BookStock> addNewBookStock(BookStockRq bookStockRq) {
-//        ResponseInfo<BookStock> responseInfo = new ResponseInfo<>();
-//
-//        try {
-//            BookStock bookStock;
-//            if (bookStockRepository.getBookStockByBookId(bookStockRq.getBookId()) == null) {
-//                String id = bookStockRepository.generateBookStockId();
-//                bookStock = BookStockMapperImpl.toBookStock(bookStockRq, id);
-//                bookStockRepository.addBookStock(bookStock);
-//                responseInfo.setSuccess(bookStock);
-//                log.info("[{}][SUCCESS ADD NEW BOOK STOCK]", getClass().getSimpleName());
-//            } else {
-//                responseInfo.setBussinessError(bookStock);
-//                log.info("[{}][SUCCESS ADD NEW BOOK STOCK]", getClass().getSimpleName());
-//            }
-//        } catch (Exception ex) {
-//            log.info("[{}][FAILED ADD NEW BOOK STOCK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-//            responseInfo.handleException(ex);
-//        }
-//        return responseInfo;
-//    }
+    public ResponseInfo<BookStock> addNewBookStock(BookStockRq bookStockRq) {
+        ResponseInfo<BookStock> responseInfo = new ResponseInfo<>();
+
+        try {
+            BookStock bookStock;
+            if (bookStockRepository.getBookStockByBookId(bookStockRq.getBookId()) == null) {
+                String id = bookStockRepository.generateBookStockId();
+                bookStock = BookStockMapperImpl.toBookStock(bookStockRq, id);
+                bookStockRepository.addBookStock(bookStock);
+                responseInfo.setSuccess(bookStock);
+                log.info("[{}][SUCCESS ADD NEW BOOK STOCK]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(bookStockRq.getBookId() + " is already exist");
+                log.info("[{}][FAILED ADD NEW BOOK STOCK]", getClass().getSimpleName());
+            }
+        } catch (Exception ex) {
+            log.info("[{}][FAILED ADD NEW BOOK STOCK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+            responseInfo.handleException(ex);
+        }
+        return responseInfo;
+    }
 
     public ResponseInfo<Object> updateBookStock(UpdateBookStockRq updateBookStockRq) {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            BookStock bookStock = bookStockRepository.getBookStockById(updateBookStockRq.getBookStockId());
-            if (bookStock != null) {
+            boolean isEmpty = bookStockRepository.existsByBookStockId(updateBookStockRq.getBookStockId());
+            if (!isEmpty) {
+                BookStock bookStock = bookStockRepository.getBookStockById(updateBookStockRq.getBookStockId());
                 BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
                 bookStockRepository.updateBookStock(bookStock);
 
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE BOOK STOCK]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateBookStockRq.getBookId() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateBookStockRq.getBookStockId() + " is not exist");
+                log.info("[{}][FAILED UPDATE BOOK STOCK]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK STOCK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -129,9 +131,15 @@ public class BookStockUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            bookStockRepository.deleteBookStock(bookStockId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE BOOK STOCK][{}]", getClass().getSimpleName(), bookStockId);
+            boolean isEmpty = bookStockRepository.existsByBookStockId(bookStockId);
+            if (!isEmpty) {
+                bookStockRepository.deleteBookStock(bookStockId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE BOOK STOCK][{}]", getClass().getSimpleName(), bookStockId);
+            } else {
+                responseInfo.setBussinessError(bookStockId + " is not exist");
+                log.info("[{}][FAILED DELETE BOOK STOCK]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE BOOK STOCK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

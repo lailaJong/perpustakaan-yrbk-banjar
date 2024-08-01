@@ -27,7 +27,7 @@ public class AuthorController {
                                          @RequestParam(value = "name",  required = false) String name) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Author>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL AUTHORS][{}]", requestId);
+        log.info("[REQUEST RECEIVED - GET ALL AUTHORS][{}][{}]", requestId, name);
         if (name == null){
             responseInfo = authorUsecase.getAllAuthors();
         } else {

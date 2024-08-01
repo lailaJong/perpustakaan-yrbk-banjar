@@ -43,7 +43,7 @@ public class BookController {
                                               @RequestParam(value = "bookTitle", required = false) String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BookDetail>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
+        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}][{}]", requestId, bookTitle);
         if (bookTitle == null){
             responseInfo = bookUsecase.getAllBooksDetail();
         } else {

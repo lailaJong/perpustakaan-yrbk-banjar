@@ -63,30 +63,37 @@ public class UpdateBookRq {
 
     @JsonProperty("book_id")
     @NotBlank(message = "Book ID is mandatory")
+    @Schema(example = "String")
     private String bookId;
 
     @JsonProperty("book_title")
     @NotBlank(message = "Book title is mandatory")
+    @Schema(example = "String")
     private String bookTitle;
 
     @JsonProperty("category_name")
     @NotBlank(message = "Category Name is mandatory")
+    @Schema(example = "String")
     private String categoryName;
 
     @JsonProperty("publisher_name")
     @NotBlank(message = "Publisher Name is mandatory")
+    @Schema(example = "String")
     private String publisherName;
 
     @JsonProperty("author_name")
     @NotBlank(message = "Author Name is mandatory")
+    @Schema(example = "String")
     private String authorName;
 
     @JsonProperty("bookshelf_code")
     @NotBlank(message = "Bookshelf Code is mandatory")
+    @Schema(example = "String")
     private String bookShelfCode;
 
     @JsonProperty("language")
     @NotBlank(message = "Language is mandatory")
+    @Schema(example = "String")
     private String language;
 
     @JsonProperty("isbn")

@@ -16,7 +16,9 @@ import tugasakhir.library.model.entity.BookShelf;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -131,6 +133,34 @@ public class BookShelfRepository {
         }catch (Exception e) {
             log.error(e.getMessage());
             return null;
+        }
+    }
+
+    public boolean existsByBookShelfCode(String bookShelfCode) {
+        try{
+            log.info("[CHECK BOOK SHELF CODE IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_BOOK_SHELF_CODE(), bookShelfCode);
+            Map<String, Object> params = new HashMap<>();
+            params.put("bookShelfCode", bookShelfCode);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_BOOK_SHELF_CODE(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existsByBookShelfId(String bookShelfId) {
+        try{
+            log.info("[CHECK BOOK SHELF ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_BOOK_SHELF_CODE(), bookShelfId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("bookShelfId", bookShelfId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_BOOK_SHELF_CODE(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 }

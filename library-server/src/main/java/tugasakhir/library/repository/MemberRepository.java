@@ -225,6 +225,20 @@ public class MemberRepository {
         }
     }
 
+    public boolean existByMemberId(String memberId) {
+        try{
+            log.info("[CHECK MEMBER ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_MEMBER_ID(), memberId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("memberId", memberId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_MEMBER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
     //get point
 //    public int getMemberPoint(String userId) {
 //        try{

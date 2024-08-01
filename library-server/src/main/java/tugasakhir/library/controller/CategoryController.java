@@ -27,7 +27,7 @@ public class CategoryController {
                                             @RequestParam(value = "categoryName", required = false) String categoryName) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Category>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL CATEGORIES][{}]", requestId);
+        log.info("[REQUEST RECEIVED - GET ALL CATEGORIES][{}][{}]", requestId, categoryName);
         if (categoryName == null){
             responseInfo = categoryUsecase.getAllCategories();
         } else {

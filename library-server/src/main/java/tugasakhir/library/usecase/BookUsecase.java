@@ -7,6 +7,7 @@ import tugasakhir.library.model.entity.Book;
 import tugasakhir.library.model.exception.NotFoundException;
 import tugasakhir.library.model.request.book.BookRq;
 import tugasakhir.library.model.request.book.UpdateBookRq;
+import tugasakhir.library.model.request.bookstock.BookStockRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ public class BookUsecase {
     private CategoryRepository categoryRepository;
     @Autowired
     private BookShelfRepository bookShelfRepository;
+    @Autowired
+    private BookStockUsecase bookStockUsecase;
 
     public ResponseInfo<List<BookDetail>> getAllBooksDetail() {
         ResponseInfo<List<BookDetail>> responseInfo = new ResponseInfo<>();
@@ -126,7 +129,8 @@ public class BookUsecase {
         ResponseInfo<Book> responseInfo = new ResponseInfo<>();
 
         try {
-            if (bookRepository.getBookByBookTitle(bookRq.getBookTitle()) == null){
+            boolean isExist = bookRepository.existsByBookTitle(bookRq.getBookTitle());
+            if (!isExist){
                 String bookId = bookRepository.generateBookId();
                 String authorId = authorRepository.getAuthorByName(bookRq.getAuthorName()).getAuthorId();
                 String categoryId = categoryRepository.getCategoryByName(bookRq.getCategoryName()).getCategoryId();
@@ -135,6 +139,11 @@ public class BookUsecase {
 
                 Book book = BooksMapperImpl.toBook(bookRq, categoryId, publisherId, authorId, bookShelfId, bookId);
                 bookRepository.addBook(book);
+
+                BookStockRq bookStockRq = new BookStockRq()
+                        .setBookId(bookId)
+                        .setStock(bookRq.getStock());
+                bookStockUsecase.addNewBookStock(bookStockRq);
                 responseInfo.setSuccess(book);
                 log.info("[{}][SUCCESS ADD NEW BOOK]", getClass().getSimpleName());
             } else {
@@ -152,8 +161,9 @@ public class BookUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            Book book = bookRepository.getBookById(updateBooksRq.getBookId());
-            if (book != null) {
+            boolean isExist = bookRepository.existsByBookId(updateBooksRq.getBookId());
+            if (isExist) {
+                Book book = bookRepository.getBookById(updateBooksRq.getBookId());
                 String authorId = authorRepository.getAuthorByName(updateBooksRq.getAuthorName()).getAuthorId();
                 String categoryId = categoryRepository.getCategoryByName(updateBooksRq.getCategoryName()).getCategoryId();
                 String publisherId = publisherRepository.getPublisherByName(updateBooksRq.getPublisherName()).getPublisherId();
@@ -165,7 +175,8 @@ public class BookUsecase {
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE BOOK]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateBooksRq.getBookId() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateBooksRq.getBookId() + " is not exist");
+                log.info("[{}][FAILED UPDATE BOOK]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);

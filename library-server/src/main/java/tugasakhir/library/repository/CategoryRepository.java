@@ -15,9 +15,8 @@ import tugasakhir.library.model.entity.Category;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 import java.util.Collections;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Putri Mele
@@ -132,6 +131,36 @@ public class CategoryRepository {
         }  catch (Exception e) {
             log.error(e.getMessage());
             return null;
+        }
+    }
+
+    public boolean existsByCategoryName(String categoryName) {
+        try{
+            log.info("[CHECK CATEGORY NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_CATEGORY_NAME(), categoryName);
+            Map<String, Object> params = new HashMap<>();
+            params.put("categoryName", categoryName);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_CATEGORY_NAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+
+
+    public boolean existsByCategoryId(String categoryId) {
+        try{
+            log.info("[CHECK CATEGORY ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_CATEGORY_ID(), categoryId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("categoryId", categoryId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_CATEGORY_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 }

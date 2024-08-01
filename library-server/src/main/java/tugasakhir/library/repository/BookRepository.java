@@ -19,7 +19,9 @@ import tugasakhir.library.model.entity.Book;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -287,6 +289,34 @@ public class BookRepository {
         } catch (Exception e) {
             log.error(e.getMessage());
             return Collections.emptyList();
+        }
+    }
+
+    public boolean existsByBookTitle(String bookTitle) {
+        try{
+            log.info("[CHECK BOOK TITLE IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_BOOK_TITLE(), bookTitle);
+            Map<String, Object> params = new HashMap<>();
+            params.put("bookTitle", bookTitle);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_BOOK_TITLE(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existsByBookId(String bookId) {
+        try{
+            log.info("[CHECK BOOK ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_BOOK_BY_ID(), bookId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("bookId", bookId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_BOOK_BY_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 }

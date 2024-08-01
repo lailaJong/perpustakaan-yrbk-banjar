@@ -17,9 +17,8 @@ import tugasakhir.library.model.entity.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 import java.util.Collections;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Putri Mele
@@ -192,6 +191,20 @@ public class OrderDetailRepository {
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
+        }
+    }
+
+    public boolean existsByOrderId(String orderId) {
+        try{
+            log.info("[CHECK ORDER ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_ORDER_ID(), orderId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("orderId", orderId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_ORDER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 }

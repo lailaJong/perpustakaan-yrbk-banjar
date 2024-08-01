@@ -69,7 +69,8 @@ public class BookShelfUsecase {
 
         try {
             BookShelf bookShelf;
-            if (bookShelfRepository.getBookShelfByCode(bookShelfRq.getBookShelfCode()) == null){
+            boolean isExist = bookShelfRepository.existsByBookShelfCode(bookShelfRq.getBookShelfCode());
+            if (!isExist){
                 String bookShelfId = bookShelfRepository.generateBookShelfId();
                 bookShelf = BookShelfMapperImpl.toBookShelf(bookShelfRq, bookShelfId);
                 bookShelfRepository.addBookShelf(bookShelf);
@@ -77,7 +78,7 @@ public class BookShelfUsecase {
                 log.info("[{}][SUCCESS ADD NEW BOOK SHELF]", getClass().getSimpleName());
             } else {
                 responseInfo.setBussinessError(bookShelfRq.getBookShelfCode() + " is already exist");
-                log.info("[{}][SUCCESS ADD NEW BOOK SHELF]", getClass().getSimpleName());
+                log.info("[{}][FAILED ADD NEW BOOK SHELF]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -90,15 +91,17 @@ public class BookShelfUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            BookShelf bookShelf = bookShelfRepository.getBookShelfById(updateBookShelfRq.getBookShelfId());
-            if (bookShelf != null) {
+            boolean isExist = bookShelfRepository.existsByBookShelfId(updateBookShelfRq.getBookShelfId());
+            if (isExist) {
+                BookShelf bookShelf = bookShelfRepository.getBookShelfById(updateBookShelfRq.getBookShelfId());
                 BookShelfMapperImpl.updateBookShelfFromUpdateBookShelfRq(updateBookShelfRq, bookShelf);
                 bookShelfRepository.updateBookShelf(bookShelf);
 
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE BOOK SHELF]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateBookShelfRq.getBookShelfCode() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateBookShelfRq.getBookShelfId() + " is not exist");
+                log.info("[{}][FAILED UPDATE BOOK SHELF]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -112,9 +115,15 @@ public class BookShelfUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            bookShelfRepository.deleteBookShelf(bookShelfId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE BOOK SHELF][{}]", getClass().getSimpleName(), bookShelfId);
+            boolean isExist = bookShelfRepository.existsByBookShelfId(bookShelfId);
+            if (isExist) {
+                bookShelfRepository.deleteBookShelf(bookShelfId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE BOOK SHELF][{}]", getClass().getSimpleName(), bookShelfId);
+            } else {
+                responseInfo.setBussinessError(bookShelfId + " is not exist");
+                log.info("[{}][FAILED DELETE BOOK SHELF]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

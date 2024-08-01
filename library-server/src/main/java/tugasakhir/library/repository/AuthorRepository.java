@@ -16,7 +16,9 @@ import tugasakhir.library.model.entity.Author;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -132,6 +134,34 @@ public class AuthorRepository {
         }catch (Exception e){
             log.error(e.getMessage());
             return null;
+        }
+    }
+
+    public boolean existsByAuthorName(String authorName) {
+        try{
+            log.info("[CHECK AUTHOR NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_AUTHOR_NAME(), authorName);
+            Map<String, Object> params = new HashMap<>();
+            params.put("authorName", authorName);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_AUTHOR_NAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existsByAuthorId(String authorId) {
+        try{
+            log.info("[CHECK AUTHOR ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_USER_ID(), authorId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("authorId", authorId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_USER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 }

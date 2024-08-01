@@ -68,7 +68,8 @@ public class AuthorUsecase {
         ResponseInfo<Author> responseInfo = new ResponseInfo<>();
 
         try {
-            if (authorRepository.getAuthorByName(authorRq.getAuthorName()) == null){
+            boolean isExist = authorRepository.existsByAuthorName(authorRq.getAuthorName());
+            if (!isExist){
                 Author author;
                 String authorId = authorRepository.generateAuthorId();
                 author = AuthorsMapperImpl.toAuthor(authorRq, authorId);
@@ -90,15 +91,17 @@ public class AuthorUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            Author author = authorRepository.getAuthorById(updateAuthorRq.getAuthorId());
-            if (author != null) {
+            boolean isExist = authorRepository.existsByAuthorId(updateAuthorRq.getAuthorId());
+            if (isExist){
+                Author author = authorRepository.getAuthorById(updateAuthorRq.getAuthorId());
                 AuthorsMapperImpl.updateAuthorFromUpdateAuthorRq(updateAuthorRq, author);
                 authorRepository.updateAuthor(author);
 
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE AUTHOR]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateAuthorRq.getAuthorId() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateAuthorRq.getAuthorId() + " is not exist");
+                log.info("[{}][FAILED UPDATE AUTHOR]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -112,9 +115,15 @@ public class AuthorUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            authorRepository.deleteAuthor(authorId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE AUTHOR][{}]", getClass().getSimpleName(), authorId);
+            boolean isExist = authorRepository.existsByAuthorId(authorId);
+            if (isExist){
+                authorRepository.deleteAuthor(authorId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE AUTHOR][{}]", getClass().getSimpleName(), authorId);
+            } else {
+                responseInfo.setBussinessError(authorId + " is not exist");
+                log.info("[{}][FAILED DELETE AUTHOR]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

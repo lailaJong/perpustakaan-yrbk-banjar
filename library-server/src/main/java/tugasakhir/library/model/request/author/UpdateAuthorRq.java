@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 public class UpdateAuthorRq {
     @JsonProperty("author_id")
     @NotBlank(message = "Author ID is mandatory")
+    @Schema(example = "String")
     private String authorId;
 
     @JsonProperty("author_name")

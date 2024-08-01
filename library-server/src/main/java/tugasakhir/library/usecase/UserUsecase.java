@@ -26,51 +26,51 @@ public class UserUsecase {
     @Autowired
     private ApplicationProperties applicationProperties;
 
-    public ResponseInfo<List<User>> getAllUsers() {
-        ResponseInfo<List<User>> responseInfo = new ResponseInfo<>();
+//    public ResponseInfo<List<User>> getAllUsers() {
+//        ResponseInfo<List<User>> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            List<User> users;
+//            users = userRepository.getAllUsers();
+//            users.addAll(userRepository.getAllUsers());
+//            responseInfo.setSuccess(users);
+//            log.info("[{}][SUCCESS GET ALL USER][DATA SIZE: {}]", getClass().getSimpleName(), users.size());
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED GET ALL USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
 
-        try {
-            List<User> users;
-            users = userRepository.getAllUsers();
-            users.addAll(userRepository.getAllUsers());
-            responseInfo.setSuccess(users);
-            log.info("[{}][SUCCESS GET ALL USER][DATA SIZE: {}]", getClass().getSimpleName(), users.size());
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET ALL USER][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
+//    public ResponseInfo<User> getUserById(String userId) {
+//        ResponseInfo<User> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            User user;
+//            user = userRepository.getUserById(userId);
+//            responseInfo.setSuccess(user);
+//            log.info("[{}][SUCCESS GET USER][ID: {}]", getClass().getSimpleName(), userId);
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED GET USER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
 
-    public ResponseInfo<User> getUserById(String userId) {
-        ResponseInfo<User> responseInfo = new ResponseInfo<>();
-
-        try {
-            User user;
-            user = userRepository.getUserById(userId);
-            responseInfo.setSuccess(user);
-            log.info("[{}][SUCCESS GET USER][ID: {}]", getClass().getSimpleName(), userId);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET USER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userId, ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
-
-    public ResponseInfo<User> getUserByUsername(String userName) {
-        ResponseInfo<User> responseInfo = new ResponseInfo<>();
-
-        try {
-            User user;
-            user = userRepository.getUserByUsername(userName);
-            responseInfo.setSuccess(user);
-            log.info("[{}][SUCCESS GET USER][USERNAME: {}]", getClass().getSimpleName(), userName);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET USER][USERNAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userName, ex);
-            responseInfo.handleException(ex);
-        }
-        return responseInfo;
-    }
+//    public ResponseInfo<User> getUserByUsername(String userName) {
+//        ResponseInfo<User> responseInfo = new ResponseInfo<>();
+//
+//        try {
+//            User user;
+//            user = userRepository.getUserByUsername(userName);
+//            responseInfo.setSuccess(user);
+//            log.info("[{}][SUCCESS GET USER][USERNAME: {}]", getClass().getSimpleName(), userName);
+//        } catch (Exception ex) {
+//            log.info("[{}][FAILED GET USER][USERNAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), userName, ex);
+//            responseInfo.handleException(ex);
+//        }
+//        return responseInfo;
+//    }
 
     public ResponseInfo<User> addNewUser(UserRq userRq) {
         log.info("[ADD NEW USER][{}]", userRq);

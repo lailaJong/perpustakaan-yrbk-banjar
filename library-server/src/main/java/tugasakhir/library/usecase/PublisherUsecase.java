@@ -24,13 +24,8 @@ public class PublisherUsecase {
         try {
             List<Publisher> publishers;
             publishers = publisherRepository.getAllPublishers();
-            if (publishers.isEmpty()){
-                responseInfo.setBussinessError("Publishers is not found");
-                log.info("[{}][FAILED GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
-            } else {
-                responseInfo.setSuccess(publishers);
-                log.info("[{}][SUCCESS GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
-            }
+            responseInfo.setSuccess(publishers);
+            log.info("[{}][SUCCESS GET ALL PUBLISHERS][DATA SIZE: {}]", getClass().getSimpleName(), publishers.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL PUBLISHERS][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);
@@ -44,13 +39,8 @@ public class PublisherUsecase {
         try {
             List<Publisher> publishers;
             publishers = publisherRepository.getAllPublishersByName(publisherName);
-            if (publishers.isEmpty()){
-                responseInfo.setBussinessError(publisherName + " is not exist");
-                log.info("[{}][FAILED GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
-            } else {
-                responseInfo.setSuccess(publishers);
-                log.info("[{}][SUCCESS GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
-            }
+            responseInfo.setSuccess(publishers);
+            log.info("[{}][SUCCESS GET ALL PUBLISHERS BY NAME][NAME: {}]", getClass().getSimpleName(), publisherName);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL PUBLISHERS BY NAME][NAME: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherName, ex);
             responseInfo.handleException(ex);
@@ -62,16 +52,10 @@ public class PublisherUsecase {
         ResponseInfo<Publisher> responseInfo = new ResponseInfo<>();
 
         try {
-            boolean isExist = publisherRepository.existsByPublisherId(publisherId);
-            if (!isExist){
-                responseInfo.setBussinessError(publisherId + " is not exist");
-                log.info("[{}][FAILED GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
-            } else {
-                Publisher publisher;
-                publisher = publisherRepository.getPublisherById(publisherId);
-                responseInfo.setSuccess(publisher);
-                log.info("[{}][SUCCESS GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
-            }
+            Publisher publisher;
+            publisher = publisherRepository.getPublisherById(publisherId);
+            responseInfo.setSuccess(publisher);
+            log.info("[{}][SUCCESS GET PUBLISHER][ID: {}]", getClass().getSimpleName(), publisherId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET PUBLISHER][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), publisherId, ex);
             responseInfo.handleException(ex);
@@ -125,7 +109,6 @@ public class PublisherUsecase {
         return responseInfo;
     }
 
-
     public ResponseInfo<Object> deletePublisher(String publisherId) {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
@@ -145,5 +128,4 @@ public class PublisherUsecase {
         }
         return responseInfo;
     }
-
 }

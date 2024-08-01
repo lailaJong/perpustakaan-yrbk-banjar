@@ -27,7 +27,7 @@ public class BookShelfController {
                                              @RequestParam(value = "code", required = false) String code) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BookShelf>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOK SHELF][{}]", requestId);
+        log.info("[REQUEST RECEIVED - GET ALL BOOK SHELF][{}][{}]", requestId, code);
         if (code == null) {
             responseInfo = bookShelfUsecase.getAllBookShelves();
         } else {

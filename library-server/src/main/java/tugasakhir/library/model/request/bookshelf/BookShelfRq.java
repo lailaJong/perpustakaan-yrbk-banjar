@@ -14,6 +14,7 @@ import tugasakhir.library.utils.validation.BookShelfCode;
 public class BookShelfRq {
     @JsonProperty("bookshelf_code")
     @NotBlank(message = "Bookshelf code is mandatory")
+    @Schema(example = "String")
     @BookShelfCode
     private String bookShelfCode;
 }

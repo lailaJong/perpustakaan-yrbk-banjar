@@ -125,32 +125,32 @@ public class OrderDetailUsecase {
             //tambahkan validasi check sisa quota
             boolean isQuotasAvailable;
             isQuotasAvailable = benefitValidation.isQuotasAvailable(orderDetailRq.getUserId());
-            if (isQuotasAvailable){
+            BookStock bookStock = bookStockRepository.getBookStockByBookId(orderDetailRq.getBookId());
+            if (isQuotasAvailable && bookStock != null){
                 Order orderDetail;
                 String id = orderDetailRepository.generateOrderDetailId();
-                orderDetailRq.setOrderDate(new Date());
-                orderDetailRq.setTakingDate(TakingDate.setTakingDates(orderDetailRq.getOrderDate()));
-                orderDetailRq.setStatus(applicationProperties.getOrderedStatus());
-                orderDetail = OrderDetailMapperImpl.toOrderDetail(orderDetailRq, id);
+                Date orderDate = new Date();
+                Date takingDate = TakingDate.setTakingDates(orderDate);
+                orderDetail = OrderDetailMapperImpl.toOrderDetail(orderDetailRq, id, orderDate, takingDate, applicationProperties.getOrderedStatus());
                 orderDetailRepository.addOrderDetail(orderDetail);
                 //kurangi stok buku by book id
-                BookStock bookStock = bookStockRepository.getBookStockByBookId(orderDetailRq.getBookId());
-                if (bookStock != null) {
-                    log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
-                    UpdateBookStockRq updateBookStockRq = null;
-                    updateBookStockRq.setBookStockId(bookStock.getBookStockId());
-                    updateBookStockRq.setBookId(bookStock.getBookId());
-                    updateBookStockRq.setStock((bookStock.getStock()-1));
-                    BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
-                    bookStockRepository.updateBookStock(bookStock);
-                } else {
-                    throw new NotFoundException("Data of the book stock is not found");
-                }
+                log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
+                UpdateBookStockRq updateBookStockRq = null;
+                updateBookStockRq.setBookStockId(bookStock.getBookStockId());
+                updateBookStockRq.setBookId(bookStock.getBookId());
+                updateBookStockRq.setStock((bookStock.getStock()-1));
+                BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
+                bookStockRepository.updateBookStock(bookStock);
                 responseInfo.setSuccess(orderDetail);
                 log.info("[{}][SUCCESS ADD NEW ORDER DETAIL]", getClass().getSimpleName());
             } else {
-                responseInfo.setBussinessError("Quota is not available, remaining quota is 0!");
-                log.info("[{}][FAILED ADD NEW ORDER DETAIL]", getClass().getSimpleName());
+                if (!isQuotasAvailable){
+                    responseInfo.setBussinessError("Quota is not available, remaining quota is 0!");
+                    log.info("[{}][FAILED ADD NEW ORDER DETAIL]", getClass().getSimpleName());
+                } else {
+                    responseInfo.setBussinessError("Data of the book stock is not found!");
+                    log.info("[{}][FAILED ADD NEW ORDER DETAIL]", getClass().getSimpleName());
+                }
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -163,12 +163,14 @@ public class OrderDetailUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
+            boolean isExist = orderDetailRepository.existsByOrderId(updateOrderDetailRq.getOrderId());
+            if (isExist){
             Order orderDetail = orderDetailRepository.getOrderDetailById(updateOrderDetailRq.getOrderId());
-            if (orderDetail != null) {
                 if (updateOrderDetailRq.getStatus().equalsIgnoreCase(applicationProperties.getCancelledStatus())){
                     //tambahkan stok buku by book id
-                    BookStock bookStock = bookStockRepository.getBookStockByBookId(updateOrderDetailRq.getBookId());
-                    if (bookStock != null) {
+                    boolean isStockExist = bookStockRepository.existsByBookId(updateOrderDetailRq.getBookId());
+                    if (isStockExist) {
+                        BookStock bookStock = bookStockRepository.getBookStockByBookId(updateOrderDetailRq.getBookId());
                         UpdateBookStockRq updateBookStockRq = null;
                         updateBookStockRq.setBookStockId(bookStock.getBookStockId());
                         updateBookStockRq.setBookId(bookStock.getBookId());
@@ -176,7 +178,8 @@ public class OrderDetailUsecase {
                         BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
                         bookStockRepository.updateBookStock(bookStock);
                     } else {
-                        throw new NotFoundException("Data of the book stock is not found");
+                        responseInfo.setBussinessError("Data of the book stock is not found");
+                        log.info("[{}][FAILED DELETE ORDER DETAIL]", getClass().getSimpleName());
                     }
                 }else {
                         //tambahkan borrowing detail
@@ -198,7 +201,8 @@ public class OrderDetailUsecase {
                 responseInfo.setSuccess("Order is not found");
                 log.info("[{}][SUCCESS UPDATE ORDER DETAIL]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateOrderDetailRq.getOrderId() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateOrderDetailRq.getOrderId() + " is not found!");
+                log.info("[{}][FAILED UPDATE ORDER DETAIL]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -212,9 +216,15 @@ public class OrderDetailUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            orderDetailRepository.deleteOrderDetail(orderId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE ORDER DETAIL][{}]", getClass().getSimpleName(), orderId);
+            boolean isExist = orderDetailRepository.existsByOrderId(orderId);
+            if (isExist){
+                orderDetailRepository.deleteOrderDetail(orderId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE ORDER DETAIL][{}]", getClass().getSimpleName(), orderId);
+            } else {
+                responseInfo.setBussinessError(orderId + " is not found!");
+                log.info("[{}][FAILED DELETE ORDER DETAIL]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE ORDER DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

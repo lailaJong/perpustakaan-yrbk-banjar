@@ -1,8 +1,15 @@
 package tugasakhir.library.utils.orderdetail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.Data;
 import tugasakhir.library.model.entity.Order;
 import tugasakhir.library.model.request.orderdetail.OrderDetailRq;
 import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Putri Mele
@@ -10,7 +17,7 @@ import tugasakhir.library.model.request.orderdetail.UpdateOrderDetailRq;
  */
 public class OrderDetailMapperImpl{
 
-    public static Order toOrderDetail(OrderDetailRq orderDetailRq, String id) {
+    public static Order toOrderDetail(OrderDetailRq orderDetailRq, String id, Date orderDate, Date takingDate, String status) {
         if (orderDetailRq == null) {
             return null;
         }
@@ -18,13 +25,17 @@ public class OrderDetailMapperImpl{
         orderDetail.setOrderId(id);
         orderDetail.setUserId(orderDetailRq.getUserId());
         orderDetail.setBookId(orderDetailRq.getBookId());
-        orderDetail.setOrderDate(orderDetailRq.getOrderDate());
-        orderDetail.setTakingDate(orderDetailRq.getTakingDate());
-        orderDetail.setStatus(orderDetailRq.getStatus());
+        orderDetail.setOrderDate(orderDate);
+        orderDetail.setTakingDate(takingDate);
+        orderDetail.setStatus(status);
         return orderDetail;
     }
 
-    public static void updateOrderDetailFromUpdateOrderDetailRq(UpdateOrderDetailRq updateOrderDetailRq, Order orderDetail) {
+    public static void updateOrderDetailFromUpdateOrderDetailRq(UpdateOrderDetailRq updateOrderDetailRq, Order orderDetail) throws ParseException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        mapper.setDateFormat(dateFormat);
         if ( updateOrderDetailRq == null ) {
             return;
         }
@@ -36,10 +47,10 @@ public class OrderDetailMapperImpl{
             orderDetail.setBookId( updateOrderDetailRq.getBookId() );
         }
         if ( updateOrderDetailRq.getOrderDate() != null ) {
-            orderDetail.setOrderDate( updateOrderDetailRq.getOrderDate() );
+            orderDetail.setOrderDate(dateFormat.parse( updateOrderDetailRq.getOrderDate() ));
         }
         if ( updateOrderDetailRq.getTakingDate() != null ) {
-            orderDetail.setTakingDate( updateOrderDetailRq.getTakingDate() );
+            orderDetail.setTakingDate(dateFormat.parse( updateOrderDetailRq.getTakingDate() ));
         }
         if ( updateOrderDetailRq.getStatus() != null ) {
             orderDetail.setStatus( updateOrderDetailRq.getStatus() );

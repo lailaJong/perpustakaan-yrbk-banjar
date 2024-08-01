@@ -69,7 +69,8 @@ public class CategoryUsecase {
 
         try {
             Category category;
-            if (categoryRepository.getCategoryByName(categoryRq.getCategoryName()) == null) {
+            boolean isExist = categoryRepository.existsByCategoryName(categoryRq.getCategoryName());
+            if (!isExist) {
                 String id = categoryRepository.generateCategoryId();
                 category = CategoryMapperImpl.toCategory(categoryRq, id);
                 categoryRepository.addCategory(category);
@@ -90,15 +91,17 @@ public class CategoryUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            Category category = categoryRepository.getCategoryById(updateCategoryRq.getCategoryId());
-            if (category != null) {
+            boolean isExist = categoryRepository.existsByCategoryId(updateCategoryRq.getCategoryId());
+            if (isExist) {
+                Category category = categoryRepository.getCategoryById(updateCategoryRq.getCategoryId());
                 CategoryMapperImpl.updateCategoryFromUpdateCategoryRq(updateCategoryRq, category);
                 categoryRepository.updateCategory(category);
 
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE CATEGORY]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException(updateCategoryRq.getCategoryId() + " IS NOT FOUND");
+                responseInfo.setBussinessError(updateCategoryRq.getCategoryId() + " is not exist");
+                log.info("[{}][FAILED UPDATE CATEGORY]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -112,9 +115,15 @@ public class CategoryUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            categoryRepository.deleteCategory(categoryId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE CATEGORY][{}]", getClass().getSimpleName(), categoryId);
+            boolean isExist = categoryRepository.existsByCategoryId(categoryId);
+            if (isExist) {
+                categoryRepository.deleteCategory(categoryId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE CATEGORY][{}]", getClass().getSimpleName(), categoryId);
+            } else {
+                responseInfo.setBussinessError(categoryId + " is not exist");
+                log.info("[{}][FAILED DELETE CATEGORY]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE CATEGORY][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
             responseInfo.handleException(ex);

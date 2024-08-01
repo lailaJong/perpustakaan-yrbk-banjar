@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import tugasakhir.library.model.dto.ListMember;
 import tugasakhir.library.model.dto.MemberDetail;
 import tugasakhir.library.model.dto.TopBorrowerMember;
-import tugasakhir.library.model.dto.UpdateMemberStatusRq;
 import tugasakhir.library.model.entity.Member;
 import tugasakhir.library.model.request.member.MemberRq;
 import tugasakhir.library.model.request.member.UpdateMemberRq;
+import tugasakhir.library.model.request.memberstatus.UpdateMemberStatusRq;
 import tugasakhir.library.model.response.ResponseInfo;
 import tugasakhir.library.usecase.MemberUsecase;
 
