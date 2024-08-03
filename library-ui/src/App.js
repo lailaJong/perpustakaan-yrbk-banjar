@@ -36,6 +36,14 @@ import UserCatalogDetail from './pages/user/UserCatalogDetail';
 import CollectionList from './pages/admin/CollectionList';
 import CollectionDetail from './pages/admin/CollectionDetail';
 import Header from './components/Header';
+import AddBook from './pages/admin/AddBook';
+import EditBook from './pages/admin/EditBook';
+import UsersList from './pages/admin/UsersList';
+import UserDetail from './pages/admin/UserDetail';
+import BorrowingTransactionList from './pages/admin/BorrowingTransactionList';
+import LateReturnList from './pages/admin/LateReturnList';
+import AddBorrowingTransaction from './pages/admin/AddBorrowingTransaction';
+import AddUser from './pages/admin/AddUser';
 
 const MainContent = styled(Box)(({ open }) => ({
   flexGrow: 1,
@@ -105,6 +113,38 @@ const App = () => {
         <Route
           path='/admin/collection/detail/:id'
           element={<ProtectedRoute element={() => <ProtectedLayout component={<CollectionDetail />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/collection/add'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<AddBook />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/collection/edit/:id'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<EditBook />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/users'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<UsersList />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/users/detail/:id'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<UserDetail />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/users/add'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<AddUser />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/borrowing-transaction-list'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<BorrowingTransactionList />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/borrowing-transaction-list/add'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<AddBorrowingTransaction />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
+        />
+        <Route
+          path='/admin/late-return-list'
+          element={<ProtectedRoute element={() => <ProtectedLayout component={<LateReturnList />} open={open} handleDrawerToggle={handleDrawerToggle} userRole={userRole} />} roles={['admin']} token={token} />}
         />
         <Route
           path='/admin/books-stock'

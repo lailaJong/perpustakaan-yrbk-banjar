@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Paper, Typography, Button, Box, Grid } from '@mui/material';
+import { Container, Paper, Typography, Button, Box, Grid, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import api from '../../utility/api';
+import defaultAvatar from '../../assets/rabbit-mammal-animals.png';
 
 const BookImage = styled('img')({
+    minWidth: '150px',
     width: '100%',
+    minHeight: '150px',
     height: 'auto',
     objectFit: 'cover',
     borderRadius: '8px',
@@ -22,8 +25,10 @@ const Synopsis = styled(Typography)({
 
 const CollectionDetail = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { id: bookId } = useParams();
     const [book, setBook] = useState({
+        id: '',
         title: '',
         author: '',
         publisher: '',
@@ -37,10 +42,14 @@ const CollectionDetail = () => {
         synopsis: '',
         imageUrl: '',
     });
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     useEffect(() => {
         const fetchBookDetail = async () => {
             try {
+                if (location.state?.showSnackbar) {
+                    setSnackbarOpen(true);
+                }
                 const response = await api.get(`/api/books/${bookId}`);
                 setBook(response.data);
             } catch (error) {
@@ -49,17 +58,33 @@ const CollectionDetail = () => {
         };
 
         fetchBookDetail();
-    }, [bookId]);
+    }, [bookId, location.state]);
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    };
+
+    console.log(`Collection Detail : ${book}`);
 
     return (
         <Container maxWidth="lg">
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                    Detail koleksi berhasil diperbarui!
+                </Alert>
+            </Snackbar>
             <Box component={Paper} p={4} mt={4} boxShadow={3}>
                 <Typography variant="h4" gutterBottom>
                     Detail Koleksi
                 </Typography>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={4}>
-                        <BookImage src={book.imageUrl || 'placeholder-image-url'} alt={book.title} />
+                        <BookImage src={book.imageUrl || defaultAvatar} alt={book.title} />
                     </Grid>
                     <Grid item xs={12} sm={8}>
                         <Typography variant="h4" color="primary" gutterBottom>
@@ -91,11 +116,11 @@ const CollectionDetail = () => {
                     </Synopsis>
                 </Box>
                 <Box mt={3} display="flex" justifyContent="space-between" width="100%">
-                    <Button variant="contained" size="large" sx={{ mt: 2 }} onClick={() => navigate(-1)}>
+                    <Button variant="contained" size="large" sx={{ mt: 2 }} onClick={() => navigate('/admin/collection')}>
                         <Typography variant="button">Back</Typography>
                     </Button>
-                    <Button variant="contained" color="secondary" size="large" sx={{ mt: 2 }} onClick={() => navigate('/admin/collection')}>
-                        <Typography variant="button">Pesan</Typography>
+                    <Button variant="contained" color="secondary" size="large" sx={{ mt: 2 }} onClick={() => navigate(`/admin/collection/edit/${book.id}`, { state: { from: location } })}>
+                        <Typography variant="button">Edit</Typography>
                     </Button>
                 </Box>
             </Box>

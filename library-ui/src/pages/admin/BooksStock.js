@@ -1,6 +1,6 @@
 // src/pages/BooksStock.js
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, TextField, InputAdornment, IconButton, Box, Button, Snackbar } from '@mui/material';
+import { Container, Typography, TextField, InputAdornment, IconButton, Box, Button, Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
 import EditBookStockDialog from './EditBookStockDialog'; // Import the dialog component
@@ -15,7 +15,6 @@ const StockTable = styled('table')({
 const StockTableHeader = styled('th')({
   border: '1px solid #ddd',
   padding: '8px',
-  textAlign: 'left',
   backgroundColor: '#f2f2f2',
 });
 
@@ -30,7 +29,7 @@ const StockTableRow = styled('tr')({
 const StockTableCell = styled('td')({
   border: '1px solid #ddd',
   padding: '8px',
-  textAlign: 'left',
+  textAlign: 'center',
 });
 
 const EditButton = styled(Button)({
@@ -141,7 +140,7 @@ const BooksStock = () => {
               <StockTableCell>{book.title}</StockTableCell>
               <StockTableCell>{book.totalStock}</StockTableCell>
               <StockTableCell>
-                <Box display="flex" gap="8px">
+                <Box display="flex" gap="8px" justifyContent='center'>
                   <EditButton variant="contained" onClick={() => handleEdit(book)}>
                     Edit
                   </EditButton>
@@ -166,14 +165,12 @@ const BooksStock = () => {
         open={isSnackbarOpen}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
-        message={`Stok buku "${selectedBook?.title}" telah diperbarui!`}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Position the snackbar in the top right
-        action={
-          <Button color="inherit" size="small" onClick={handleSnackbarClose}>
-            Oke
-          </Button>
-        }
-      />
+      >
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {`Stok buku "${selectedBook?.title}" telah diperbarui!`}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

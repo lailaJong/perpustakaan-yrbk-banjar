@@ -93,9 +93,11 @@ const Bookshelves = () => {
                         ),
                     }}
                 />
-                <AddButton variant="contained" onClick={handleAdd} startIcon={<AddIcon />}>
-                    Tambah Rak
-                </AddButton>
+                <Box marginLeft="16px">
+                    <AddButton variant="contained" onClick={handleAdd} startIcon={<AddIcon />}>
+                        Tambah Rak
+                    </AddButton>
+                </Box>
             </Box>
             <Table>
                 <TableHead>

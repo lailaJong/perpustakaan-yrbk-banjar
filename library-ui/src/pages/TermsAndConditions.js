@@ -3,6 +3,7 @@ import { Typography, Checkbox, FormControlLabel, Button, Box, Grid } from '@mui/
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/backgroud-website.jpg';
+import TitleBanner from '../components/TitleBanner';
 
 const Background = styled('div')({
     backgroundImage: `url(${backgroundImage})`,
@@ -25,15 +26,6 @@ const TermBox = styled('div')({
     textAlign: 'left'
 });
 
-const Title = styled(Typography)({
-    position: 'absolute',
-    top: '16px',
-    left: '16px',
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: '24px'
-});
-
 const TermsAndConditions = () => {
     const navigate = useNavigate();
     const [checked, setChecked] = React.useState(false);
@@ -50,7 +42,7 @@ const TermsAndConditions = () => {
 
     return (
         <Background>
-            <Title>Ruang Baca Komunitas</Title>
+            <TitleBanner title={'RUANG BACA KOMUNITAS'} />
             <TermBox>
                 <Typography variant='h4' gutterBottom sx={{textAlign: 'center'}}>
                     Persyaratan Pendaftaran

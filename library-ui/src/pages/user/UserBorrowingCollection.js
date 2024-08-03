@@ -1,8 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utility/api';
-import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, TextField, InputAdornment } from '@mui/material';
+import { Container, Typography, TextField, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+import { styled } from '@mui/material/styles';
+
+const OrderTable = styled('table')({
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: '16px',
+});
+
+const OrderTableHeader = styled('th')({
+    border: '1px solid #ddd',
+    padding: '8px',
+    textAlign: 'left',
+    backgroundColor: '#f2f2f2',
+});
+
+const OrderTableRow = styled('tr')({
+    border: '1px solid #ddd',
+    padding: '8px',
+    '&:nth-of-type(even)': {
+        backgroundColor: '#f9f9f9',
+    },
+});
+
+const OrderTableCell = styled('td')({
+    border: '1px solid #ddd',
+    padding: '8px',
+    textAlign: 'left',
+});
 
 const UserBorrowingCollection = () => {
     const [loans, setLoans] = useState([]);
@@ -21,63 +48,59 @@ const UserBorrowingCollection = () => {
         fetchLoans();
     }, []);
 
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const filteredLoans = loans.filter((loan) =>
+        loan.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <Container maxWidth='lg'>
-            <Typography variant='h4' gutterBottom>
-                Peminjaman
+        <Container maxWidth="lg">
+            <Typography variant="h4" gutterBottom>
+                Koleksi Dipinjam
             </Typography>
-            <Button variant='contained' color='primary' startIcon={<AddIcon />} sx={{ marginBottom: 2 }}>
-                Tambah Peminjaman
-            </Button>
             <TextField
-                variant='outlined'
-                placeholder='cari berdasarkan nama pemustaka'
+                variant="outlined"
+                placeholder="cari buku berdasarkan judul"
+                fullWidth
+                margin="normal"
+                value={searchTerm}
+                onChange={handleSearch}
                 InputProps={{
-                    startAdornment: (
-                        <InputAdornment position='start'>
-                            <SearchIcon />
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            <IconButton>
+                                <SearchIcon />
+                            </IconButton>
                         </InputAdornment>
                     ),
                 }}
-                sx={{ marginBottom: 3 }}
-                fullWidth
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Pemustaka</TableCell>
-                            <TableCell>ID Buku</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Tanggal Pinjam</TableCell>
-                            <TableCell>Tanggal Kembali</TableCell>
-                            <TableCell>Aksi</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {loans.filter(loan => loan.name.toLowerCase().includes(searchTerm.toLowerCase())).map((loan, index) => (
-                            <TableRow key={index}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>{loan.name}</TableCell>
-                                <TableCell>{loan.bookId}</TableCell>
-                                <TableCell>
-                                    <Typography color={loan.status === 'Telat' ? 'error' : 'success'}>
-                                        {loan.status}
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>{loan.borrowDate}</TableCell>
-                                <TableCell>{loan.returnDate}</TableCell>
-                                <TableCell>
-                                    <Button variant='contained' color='success'>Selesai</Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+
+            <OrderTable>
+                <thead>
+                    <OrderTableRow>
+                        <OrderTableHeader>ID</OrderTableHeader>
+                        <OrderTableHeader>Judul</OrderTableHeader>
+                        <OrderTableHeader>Status</OrderTableHeader>
+                        <OrderTableHeader>Tanggal Peminjaman</OrderTableHeader>
+                        <OrderTableHeader>Tanggal Pengambilan</OrderTableHeader>
+                    </OrderTableRow>
+                </thead>
+                <tbody>
+                    {filteredLoans.map((loan) => (
+                        <OrderTableRow key={loan.id}>
+                            <OrderTableCell>{loan.id}</OrderTableCell>
+                            <OrderTableCell>{loan.title}</OrderTableCell>
+                            <OrderTableCell style={{ color: loan.status === 'Dipesan' ? 'green' : 'red' }}>{loan.status}</OrderTableCell>
+                            <OrderTableCell>{loan.borrowDate}</OrderTableCell>
+                            <OrderTableCell>{loan.returnDate}</OrderTableCell>
+                        </OrderTableRow>
+                    ))}
+                </tbody>
+            </OrderTable>
         </Container>
     );
 };

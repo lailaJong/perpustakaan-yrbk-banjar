@@ -93,9 +93,11 @@ const Authors = () => {
                         ),
                     }}
                 />
-                <AddButton variant="contained" onClick={handleAdd} startIcon={<AddIcon />}>
-                    Tambah Rak
-                </AddButton>
+                <Box marginLeft="16px">
+                    <AddButton variant="contained" onClick={handleAdd} startIcon={<AddIcon />}>
+                        Tambah Penulis
+                    </AddButton>
+                </Box>
             </Box>
             <Table>
                 <TableHead>

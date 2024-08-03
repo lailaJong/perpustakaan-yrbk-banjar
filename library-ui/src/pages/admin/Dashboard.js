@@ -42,13 +42,13 @@ const Dashboard = () => {
                     <StatCard title='Total Koleksi' count={stats.totalCollection} detailLink='/admin/collection' />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title='Total Pemustaka' count={stats.totalMembers} detailLink='#' />
+                    <StatCard title='Total Pemustaka' count={stats.totalMembers} detailLink='/admin/users' />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title='Total Transaksi Peminjaman' count={stats.totalLoanTransactions} detailLink='#' />
+                    <StatCard title='Total Transaksi Peminjaman' count={stats.totalLoanTransactions} detailLink='/admin/borrowing-transaction-list' />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
-                    <StatCard title='Total Buku Telat Kembali' count={stats.totalOverdueBooks} detailLink='#' />
+                    <StatCard title='Total Buku Telat Kembali' count={stats.totalOverdueBooks} detailLink='/admin/late-return-list' />
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Paper>

@@ -1,4 +1,4 @@
-// src/pages/UserBeranda.js
+// src/pages/UserDashboard.js
 import React, { useState, useEffect } from 'react';
 import api from '../../utility/api';
 import { Container, Grid, Paper, Typography } from '@mui/material';
@@ -29,7 +29,7 @@ const UserDashboard = () => {
             <Typography variant='h4' gutterBottom>
                 Keanggotaan Online
             </Typography>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} style={{ display: 'flex', flexWrap: 'wrap', width: '100%' }}>
                 <Grid item xs={12} md={6} lg={3}>
                     <StatCard title='Status Anggota' count={stats.status || 'N/A'} subInfo={`Sejak ${stats.membershipStartDate || 'N/A'}`} detailLink='#' />
                 </Grid>

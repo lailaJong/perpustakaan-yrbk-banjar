@@ -93,9 +93,11 @@ const Categories = () => {
                         ),
                     }}
                 />
-                <AddButton variant="contained" onClick={handleAdd} startIcon={<AddIcon />}>
-                    Tambah Rak
-                </AddButton>
+                <Box marginLeft="16px">
+                    <AddButton variant="contained" onClick={handleAdd} startIcon={<AddIcon />}>
+                        Tambah Kategori
+                    </AddButton>
+                </Box>
             </Box>
             <Table>
                 <TableHead>

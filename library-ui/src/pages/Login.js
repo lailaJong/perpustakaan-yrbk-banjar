@@ -4,6 +4,7 @@ import axios from 'axios';
 import { TextField, Button, Typography, Box, Grid, Link } from '@mui/material';
 import { styled } from '@mui/system';
 import backgroundImage from '../assets/backgroud-website.jpg';
+import TitleBanner from '../components/TitleBanner';
 
 const baseUrl = 'http://localhost:3001';
 
@@ -24,16 +25,6 @@ const LoginBox = styled('div')({
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     maxWidth: '400px',
     width: '100%'
-});
-
-const Title = styled(Typography)({
-    position: 'absolute',
-    top: '16px',
-    left: '16px',
-    fontWeight: 'bold',
-    fontSize: '24px',
-    color: 'white',
-    zIndex: 10
 });
 
 const Login = ({ setToken, setLoading }) => {
@@ -70,7 +61,7 @@ const Login = ({ setToken, setLoading }) => {
 
     return (
         <Background>
-            <Title>RUANG BACA KOMUNITAS</Title>
+            <TitleBanner title={'RUANG BACA KOMUNITAS'} />
             <LoginBox>
                 <Typography variant='h4' gutterBottom>
                     Login Keanggotaan

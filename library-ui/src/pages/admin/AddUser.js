@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { styled } from '@mui/system';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import id from 'date-fns/locale/id';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import backgroundImage from '../assets/backgroud-website.jpg';
-import TitleBanner from '../components/TitleBanner';
-
-const Background = styled('div')({
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    height: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-});
 
 const SignUpBox = styled('div')({
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -27,7 +15,7 @@ const SignUpBox = styled('div')({
     width: '100%'
 });
 
-const SignUp = () => {
+const AddUser = () => {
     const [formData, setFormData] = useState({
         namaLengkap: '',
         username: '',
@@ -87,8 +75,7 @@ const SignUp = () => {
     };
 
     return (
-        <Background>
-            <TitleBanner title={'RUANG BACA KOMUNITAS'} />
+        <Container maxWidth='lg'>
             <SignUpBox>
                 <Typography variant='h4' gutterBottom>
                     Formulir Pendaftaran Anggota
@@ -209,13 +196,13 @@ const SignUp = () => {
                     >
                         Daftar
                     </Button>
-                    <Button variant='contained' color='secondary' onClick={() => navigate('/login')}>
+                    <Button variant='contained' color='secondary' onClick={() => navigate('/admin/users')}>
                         Batal
                     </Button>
                 </Box>
             </SignUpBox>
-        </Background>
+        </Container>
     );
 };
 
-export default SignUp;
+export default AddUser;

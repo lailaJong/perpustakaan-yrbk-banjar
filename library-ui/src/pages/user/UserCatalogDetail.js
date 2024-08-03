@@ -3,6 +3,7 @@ import { Container, Paper, Typography, Button, Box, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../utility/api';
+import defaultAvatar from '../../assets/rabbit-mammal-animals.png';
 
 const BookImage = styled('img')({
     width: '150px',
@@ -14,15 +15,6 @@ const BookImage = styled('img')({
 const DetailItem = styled(Typography)({
     marginBottom: '8px',
 });
-
-const Header = styled(Box)(({ theme }) => ({
-    backgroundColor: theme.backgrounds.header,
-    fontFamily: 'Kanit, sans-serif',
-    padding: '16px',
-    marginBottom: '24px',
-    borderRadius: '4px',
-    boxShadow: theme.shadows[1],
-}));
 
 const UserCatalogDetail = () => {
     const navigate = useNavigate();
@@ -57,18 +49,13 @@ const UserCatalogDetail = () => {
 
     return (
         <Container maxWidth="lg">
-            <Header>
-                <Typography variant="h4" gutterBottom>
-                    Katalog Online
-                </Typography>
-            </Header>
             <Box component={Paper} p={4} mt={4} boxShadow={3}>
                 <Typography variant="h4" gutterBottom>
                     Katalog Buku
                 </Typography>
                 <Grid container spacing={3}>
                     <Grid item xs={4}>
-                        <BookImage src={book.imageUrl || 'placeholder-image-url'} alt={book.title} />
+                        <BookImage src={book.imageUrl || defaultAvatar} alt={book.title} />
                     </Grid>
                     <Grid item xs={8}>
                         <Typography variant="h4" color="primary" gutterBottom>
@@ -96,11 +83,11 @@ const UserCatalogDetail = () => {
                         Sinopsis
                     </Typography>
                     <Typography variant="body1" whiteSpace="pre-wrap">
-                        {book.synopsis || 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+                        {book.synopsis || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
                     </Typography>
                 </Box>
                 <Box mt={3} display="flex" justifyContent="space-between" width="100%">
-                    <Button variant="contained" size="large" sx={{ mt: 2 }}>
+                    <Button variant="contained" size="large" sx={{ mt: 2 }} onClick={() => navigate(-1)}>
                         <Typography variant="button">Back</Typography>
                     </Button>
                     <Button variant="contained" color="secondary" size="large" sx={{ mt: 2 }} onClick={() => { navigate('/user/catalog') }}>

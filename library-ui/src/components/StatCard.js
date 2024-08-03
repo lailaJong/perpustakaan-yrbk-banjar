@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Link } from '@mui/material';
 const StatCard = ({ title, count, subInfo, detailLink }) => {
     return (
         <Card>
-            <CardContent>
+            <CardContent sx={{height: 'auto', minHeight: '180px'}}>
                 <Typography variant='h6'>{title}</Typography>
                 <Typography variant='h4'>{count}</Typography>
                 <Typography variant='subtitle1'>{subInfo}</Typography>
