@@ -2,6 +2,7 @@ package tugasakhir.library.utils.validation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import tugasakhir.library.config.properties.ApplicationProperties;
 import tugasakhir.library.model.entity.ScoreDetail;
 import tugasakhir.library.repository.BorrowingDetailRepository;
@@ -18,6 +19,7 @@ import java.util.Date;
  */
 
 @Slf4j
+@Component
 public class BenefitValidation {
     @Autowired
     private MemberRepository memberRepository;
@@ -34,21 +36,19 @@ public class BenefitValidation {
     private ApplicationProperties applicationProperties;
 
     public int getTotalTime(String userId){
-        int totalTime = 0;
         String scoreId = memberRepository.getScoreId(userId);
         ScoreDetail scoreDetail = scoreDetailRepository.getScoreDetailById(scoreId);
         int benefitTime = scoreDetail.getExtraBorrowTime();
-        totalTime = applicationProperties.getRegularTime() + benefitTime;
+        int totalTime = applicationProperties.getRegularTime() + benefitTime;
         log.info(String.valueOf(totalTime));
         return totalTime;
     }
 
     public int getTotalQuota(String userId){
-        int totalQuota = 0;
         String scoreId = memberRepository.getScoreId(userId);
         ScoreDetail scoreDetail = scoreDetailRepository.getScoreDetailById(scoreId);
         int benefitQuota = scoreDetail.getExtraBooksQuota();
-        totalQuota = applicationProperties.getRegularQuota() + benefitQuota;
+        int totalQuota = applicationProperties.getRegularQuota() + benefitQuota;
         log.info(String.valueOf(totalQuota));
         return totalQuota;
     }

@@ -1,5 +1,7 @@
 package tugasakhir.library.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import tugasakhir.library.model.dto.UserMember;
 import tugasakhir.library.model.entity.Member;
 import tugasakhir.library.model.entity.User;
 import tugasakhir.library.model.request.member.MemberRq;
-import tugasakhir.library.model.request.member.UpdateMemberRq;
 import tugasakhir.library.model.request.user.UserRq;
 import tugasakhir.library.model.request.usermember.UpdateUserMemberRq;
 import tugasakhir.library.model.request.usermember.UserMemberRq;
@@ -19,6 +20,8 @@ import tugasakhir.library.usecase.MemberUsecase;
 import tugasakhir.library.usecase.UserMemberUsecase;
 import tugasakhir.library.usecase.UserUsecase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -44,7 +47,7 @@ public class UserMemberController {
     //pendaftaran anggota
     @PostMapping("/create")
     ResponseEntity<Object> createUserAndMember(@RequestHeader(value = "request-id", required = false) String requestId,
-                                               @RequestBody @Valid UserMemberRq userMemberRq) {
+                                               @RequestBody @Valid UserMemberRq userMemberRq) throws ParseException {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         log.info("[REQUEST RECEIVED - ADD NEW USER AND MEMBER][{}][PAYLOAD: {}]", requestId, userMemberRq);
 
@@ -61,16 +64,20 @@ public class UserMemberController {
                     .body(userResponseInfo.getBody());
         }
 
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        mapper.setDateFormat(dateFormat);
         // Create Member
         MemberRq memberRq = new MemberRq();
         memberRq.setName(userMemberRq.getName());
         memberRq.setGender(userMemberRq.getGender());
         memberRq.setPhoneNumber(userMemberRq.getPhoneNumber());
         memberRq.setPlaceOfBirth(userMemberRq.getPlaceOfBirth());
-        memberRq.setDateOfBirth(userMemberRq.getDateOfBirth());
+        memberRq.setDateOfBirth(dateFormat.parse(userMemberRq.getDateOfBirth()));
         memberRq.setAddress(userMemberRq.getAddress());
         memberRq.setPoint(10);
-        memberRq.setRegristrationDate(new Date());
+        memberRq.setRegistrationDate(new Date());
 
         ResponseInfo<Member> memberResponseInfo = memberUsecase.addNewMember(userRq, memberRq);
 

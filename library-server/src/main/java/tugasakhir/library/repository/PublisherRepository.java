@@ -15,7 +15,10 @@ import tugasakhir.library.model.entity.Publisher;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -106,7 +109,7 @@ public class PublisherRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_PUBLISHER(), new PublisherRepository.PublisherRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -118,13 +121,46 @@ public class PublisherRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_PUBLISHER_BY_NAME(), paramSource, new PublisherRowMapper());
         } catch (Exception e) {
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
+        }
+    }
+
+    public boolean existsByPublisherName(String publisherName) {
+        try{
+            log.info("[CHECK PUBLISHER NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_PUBLISHER_NAME(), publisherName);
+            Map<String, Object> params = new HashMap<>();
+            params.put("publisherName", publisherName);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_PUBLISHER_NAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existsByPublisherId(String publisherId) {
+        try{
+            log.info("[CHECK PUBLISHER NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_PUBLISHER_ID(), publisherId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("publisherId", publisherId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_PUBLISHER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 
     public String generatePublisherId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_PUBLISHER(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("PUB%03d", suffix);
+        try {
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_PUBLISHER(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("PUB%03d", suffix);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }

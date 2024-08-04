@@ -83,8 +83,7 @@ public class MemberStatusRepository {
             SqlParameterSource paramSource = new MapSqlParameterSource("status", status);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_STATUS_BY_STATUS(), paramSource, new MemberStatusRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 

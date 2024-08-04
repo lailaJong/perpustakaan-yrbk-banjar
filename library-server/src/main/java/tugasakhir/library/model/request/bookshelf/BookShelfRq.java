@@ -12,12 +12,9 @@ import tugasakhir.library.utils.validation.BookShelfCode;
 @Accessors(chain = true)
 @Schema
 public class BookShelfRq {
-    @Nullable
-    @JsonProperty("bookshelf_id")
-    private String bookShelfId;
-
     @JsonProperty("bookshelf_code")
     @NotBlank(message = "Bookshelf code is mandatory")
+    @Schema(example = "String")
     @BookShelfCode
     private String bookShelfCode;
 }

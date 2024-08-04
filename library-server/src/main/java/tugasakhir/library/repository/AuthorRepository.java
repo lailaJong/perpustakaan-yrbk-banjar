@@ -15,7 +15,10 @@ import tugasakhir.library.model.entity.Author;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -95,11 +98,11 @@ public class AuthorRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_AUTHOR(), new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
-    // Get an author by name
+    // Get all author by name
     public List<Author> getAllAuthorsByName(String authorName) {
         try {
             authorName = "%".concat(authorName).concat("%");
@@ -108,7 +111,7 @@ public class AuthorRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_AUTHORS_BY_NAME(), paramSource, new AuthorRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -124,9 +127,42 @@ public class AuthorRepository {
     }
 
     public String generateAuthorId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_AUTHOR(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("AUT%03d", suffix);
+        try {
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_AUTHOR(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("AUT%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean existsByAuthorName(String authorName) {
+        try{
+            log.info("[CHECK AUTHOR NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_AUTHOR_NAME(), authorName);
+            Map<String, Object> params = new HashMap<>();
+            params.put("authorName", authorName);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_AUTHOR_NAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existsByAuthorId(String authorId) {
+        try{
+            log.info("[CHECK AUTHOR ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_USER_ID(), authorId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("authorId", authorId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_USER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
     }
 }
 

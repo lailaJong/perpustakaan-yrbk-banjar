@@ -1,8 +1,10 @@
 package tugasakhir.library.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.data.relational.core.mapping.Column;
 
 import java.util.Date;
 
@@ -23,9 +25,11 @@ public class Member {
     private String gender;
     private String phoneNumber;
     private String placeOfBirth;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
     private String address;
     private int point;
-    private Date regristrationDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date registrationDate;
 }
 

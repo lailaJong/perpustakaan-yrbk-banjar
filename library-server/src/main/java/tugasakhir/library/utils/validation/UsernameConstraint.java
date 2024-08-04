@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UsernameConstraint {
-    String message() default "Username tidak tersedia";
+    String message() default "username is already exist";
 
     Class<?>[] groups() default {};
 

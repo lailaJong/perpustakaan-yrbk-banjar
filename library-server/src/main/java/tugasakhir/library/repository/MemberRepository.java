@@ -17,8 +17,7 @@ import tugasakhir.library.model.entity.Member;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Putri Mele
@@ -51,7 +50,7 @@ public class MemberRepository {
             member.setDateOfBirth(rs.getDate("date_of_birth"));
             member.setAddress(rs.getString("address"));
             member.setPoint(rs.getInt("point"));
-            member.setRegristrationDate(rs.getDate("registration_date"));
+            member.setRegistrationDate(rs.getDate("registration_date"));
             return member;
         }
     }
@@ -79,11 +78,11 @@ public class MemberRepository {
     // Add a member
     public void addMember(Member member) {
         try{
-            log.info("[ADD MEMBER][{}]", applicationProperties.getINSERT_MEMBER());
+            log.info("[ADD MEMBER][{}][{}]", applicationProperties.getINSERT_MEMBER(), member);
             SqlParameterSource paramSource = new BeanPropertySqlParameterSource(member);
             jdbcTemplate.update(applicationProperties.getINSERT_MEMBER(), paramSource);
         }catch (Exception e){
-            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -94,17 +93,6 @@ public class MemberRepository {
             SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_BY_ID(), paramSource, new MemberRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
-        }
-    }
-
-    public List<Member> getMembersByStatusId(String statusId) {
-        try {
-            log.info("[GET MEMBER BY STATUS ID][{}][{}]", statusId, applicationProperties.getGET_MEMBER_BY_STATUS_ID());
-            SqlParameterSource paramSource = new MapSqlParameterSource("statusId", statusId);
-            return jdbcTemplate.query(applicationProperties.getGET_MEMBER_BY_STATUS_ID(), paramSource, new MemberRowMapper());
-        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }
@@ -122,14 +110,13 @@ public class MemberRepository {
     }
 
 
-    public Member getMemberByName(String memberName) {
+    public Member getMemberByName(String memberName) throws RuntimeException {
         try{
             log.info("[GET MEMBER BY NAME][{}][{}]", memberName, applicationProperties.getGET_MEMBER_BY_NAME());
             SqlParameterSource paramSource = new MapSqlParameterSource("memberName", memberName);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_BY_NAME(), paramSource, new MemberRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -145,14 +132,14 @@ public class MemberRepository {
 
     }
 
-    // Delete a member
-    public void deleteMember(String memberId) {
+    // Get all members
+    public List<ListMember> getAllMemberNames() {
         try{
-            log.info("[DELETE MEMBER BY ID][{}][{}]", memberId, applicationProperties.getDELETE_MEMBER_BY_ID());
-            SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
-            jdbcTemplate.update(applicationProperties.getDELETE_MEMBER_BY_ID(), paramSource);
+            log.info("[GET ALL MEMBER NAMES][{}]", applicationProperties.getGET_ALL_MEMBER_NAMES());
+            return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER_NAMES(), new MemberNamesRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
+            return Collections.emptyList();
         }
     }
 
@@ -163,18 +150,7 @@ public class MemberRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER(), new MemberRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
-        }
-    }
-
-    // Get all members
-    public List<ListMember> getAllMemberNames() {
-        try{
-            log.info("[GET ALL MEMBER NAMES][{}]", applicationProperties.getGET_ALL_MEMBER_NAMES());
-            return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER_NAMES(), new MemberNamesRowMapper());
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -187,19 +163,18 @@ public class MemberRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_MEMBER_BY_NAME(), paramSource, new MemberRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
-    public String generateMemberId() {
+    public String generateMemberId() throws RuntimeException {
         try{
             log.info("[GENERATE MEMBER ID][{}]", applicationProperties.getGET_COUNT_ALL_MEMBER());
             int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_MEMBER(), (SqlParameterSource) null, Integer.class);
             int suffix = count + 1;
             return String.format("MBR%03d", suffix);
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -224,18 +199,6 @@ public class MemberRepository {
         }
     }
 
-    //get point
-    public int getMemberPoint(String userId) {
-        try{
-            log.info("[GET MEMBER POINT][{}]", applicationProperties.getGET_MEMBER_POINT());
-            SqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
-            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_POINT(), parameterSource, Integer.class);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return 0;
-        }
-    }
-
     //get scoreId
     public String getScoreId(String userId) {
         try{
@@ -247,4 +210,66 @@ public class MemberRepository {
             return null;
         }
     }
+
+    public boolean existsByMemberName(String name) {
+        try{
+            log.info("[CHECK MEMBER NAME IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_MEMBER_NAME(), name);
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", name);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_MEMBER_NAME(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existByMemberId(String memberId) {
+        try{
+            log.info("[CHECK MEMBER ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_MEMBER_ID(), memberId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("memberId", memberId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_MEMBER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    //get point
+//    public int getMemberPoint(String userId) {
+//        try{
+//            log.info("[GET MEMBER POINT][{}]", applicationProperties.getGET_MEMBER_POINT());
+//            SqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
+//            return jdbcTemplate.queryForObject(applicationProperties.getGET_MEMBER_POINT(), parameterSource, Integer.class);
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//            return 0;
+//        }
+//    }
+
+    // Delete a member
+//    public void deleteMember(String memberId) {
+//        try{
+//            log.info("[DELETE MEMBER BY ID][{}][{}]", memberId, applicationProperties.getDELETE_MEMBER_BY_ID());
+//            SqlParameterSource paramSource = new MapSqlParameterSource("memberId", memberId);
+//            jdbcTemplate.update(applicationProperties.getDELETE_MEMBER_BY_ID(), paramSource);
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//        }
+//    }
+
+//    public List<Member> getMembersByStatusId(String statusId) {
+//        try {
+//            log.info("[GET MEMBER BY STATUS ID][{}][{}]", statusId, applicationProperties.getGET_MEMBER_BY_STATUS_ID());
+//            SqlParameterSource paramSource = new MapSqlParameterSource("statusId", statusId);
+//            return jdbcTemplate.query(applicationProperties.getGET_MEMBER_BY_STATUS_ID(), paramSource, new MemberRowMapper());
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            return Collections.emptyList();
+//        }
+//    }
 }

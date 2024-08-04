@@ -12,96 +12,55 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Schema
-//public class BookRq {
-//
-//    @JsonProperty("book_id")
-//    private String bookId;
-//
-//    @JsonProperty("book_title")
-//    @NotBlank(message = "Book title is mandatory")
-//    private String bookTitle;
-//
-//    @JsonProperty("category_id")
-//    @NotBlank(message = "Category ID is mandatory")
-//    private String categoryId;
-//
-//    @JsonProperty("publisher_id")
-//    @NotBlank(message = "Publisher ID is mandatory")
-//    private String publisherId;
-//
-//    @JsonProperty("author_id")
-//    @NotBlank(message = "Author ID is mandatory")
-//    private String authorId;
-//
-//    @JsonProperty("bookshelf_Id")
-//    @NotBlank(message = "Bookshelf ID is mandatory")
-//    private String bookShelfId;
-//
-//    @JsonProperty("language")
-//    @NotBlank(message = "Language is mandatory")
-//    private String language;
-//
-//    @JsonProperty("isbn")
-//    @NotBlank(message = "ISBN is mandatory")
-//    @Pattern(regexp = "^(97(8|9))?\\d{9}(\\d|X)$", message = "ISBN format is invalid")
-//    private String isbn;
-//
-//    @JsonProperty("number_of_pages")
-//    @Min(value = 1, message = "Number of pages must be at least 1")
-//    private int numberOfPages;
-//
-//    @JsonProperty("publication_year")
-//    @NotBlank(message = "Publication year is mandatory")
-//    @Pattern(regexp = "^\\d{4}$", message = "Publication year must be a valid year")
-//    private String publicationYear;
-//
-//    @JsonProperty("synopsis")
-//    @NotBlank(message = "Synopsis is mandatory")
-//    private String synopsis;
-//}
 public class BookRq {
-
-    @JsonProperty("book_id")
-    private String bookId;
 
     @JsonProperty("book_title")
     @NotBlank(message = "Book title is mandatory")
+    @Schema(example = "String")
     private String bookTitle;
 
     @JsonProperty("category_name")
     @NotBlank(message = "Category Name is mandatory")
+    @Schema(example = "String")
     private String categoryName;
 
     @JsonProperty("publisher_name")
     @NotBlank(message = "Publisher Name is mandatory")
+    @Schema(example = "String")
     private String publisherName;
 
     @JsonProperty("author_name")
     @NotBlank(message = "Author Name is mandatory")
+    @Schema(example = "String")
     private String authorName;
 
     @JsonProperty("bookshelf_code")
     @NotBlank(message = "Bookshelf Code is mandatory")
+    @Schema(example = "String")
     private String bookShelfCode;
 
     @JsonProperty("language")
     @NotBlank(message = "Language is mandatory")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Language must contain only alphabetic characters and spaces")
+    @Schema(example = "String")
     private String language;
 
     @JsonProperty("isbn")
     @NotBlank(message = "ISBN is mandatory")
     @Pattern(regexp = "^(97(8|9))?\\d{9}(\\d|X)$", message = "ISBN format is invalid")
+    @Schema(example = "97XXXXXX")
     private String isbn;
 
     @JsonProperty("number_of_pages")
     @Min(value = 1, message = "Number of pages must be at least 1")
     @Max(value = 1500, message = "Number of pages must be at most 1500")
+    @Schema(example = "100")
     private int numberOfPages;
 
     @JsonProperty("publication_year")
     @NotBlank(message = "Publication year is mandatory")
     @Pattern(regexp = "^\\d{4}$", message = "Publication year must be a valid year")
+    @Schema(example = "Year")
     private String publicationYear;
 
     @JsonProperty("synopsis")
@@ -111,6 +70,7 @@ public class BookRq {
     @JsonProperty("stock")
     @Min(value = 1, message = "Stock must be at least 1")
     @Max(value = 1000, message = "Stock must be at most 1000")
+    @Schema(example = "1")
     private int stock;
 }
 

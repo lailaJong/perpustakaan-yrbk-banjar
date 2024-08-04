@@ -1,5 +1,6 @@
 package tugasakhir.library.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -20,7 +21,9 @@ public class UserMember {
     private String gender;
     private String phoneNumber;
     private String placeOfBirth;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
     private String address;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date registrationDate;
 }

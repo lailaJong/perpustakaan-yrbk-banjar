@@ -23,23 +23,28 @@ public class PublisherController {
     private PublisherUsecase publisherUsecase;
 
     @GetMapping("/all")
-    ResponseEntity<Object> getAllPublishers(@RequestHeader(value = "request-id", required = false) String requestId) {
+    ResponseEntity<Object> getAllPublishers(@RequestHeader(value = "request-id", required = false) String requestId,
+                                            @RequestParam(value = "publisherName", required = false) String publisherName) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Publisher>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL PUBLISHERS][{}]", requestId);
-        responseInfo = publisherUsecase.getAllPublishers();
+        log.info("[REQUEST RECEIVED - GET ALL PUBLISHERS][{}][{}]", requestId, publisherName);
+        if (publisherName == null) {
+            responseInfo = publisherUsecase.getAllPublishers();
+        } else {
+            responseInfo = publisherUsecase.getAllPublishersByName(publisherName);
+        }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
     }
 
-    @GetMapping("/name")
-    ResponseEntity<Object> getAllPublisherByName(@RequestHeader(value = "request-id", required = false) String requestId,
-                                                 @RequestParam(value = "publisherName") String publisherName) {
+    @GetMapping("/id")
+    ResponseEntity<Object> getPublisherById(@RequestHeader(value = "request-id", required = false) String requestId,
+                                            @RequestParam(value = "publisherId") String publisherId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Publisher>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL PUBLISHERS BY NAME][{}][{}]", publisherName, requestId);
-        responseInfo = publisherUsecase.getAllPublishersByName(publisherName);
+        ResponseInfo<Publisher> responseInfo;
+        log.info("[REQUEST RECEIVED - GET PUBLISHER BY ID][{}][{}]", publisherId, requestId);
+        responseInfo = publisherUsecase.getPublisherById(publisherId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
@@ -51,18 +56,6 @@ public class PublisherController {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         log.info("[REQUEST RECEIVED - ADD NEW PUBLISHER][{}][PAYLOAD: {}]", requestId, publisherRq);
         ResponseInfo<Publisher> responseInfo = publisherUsecase.addNewPublisher(publisherRq);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    @GetMapping("/id")
-    ResponseEntity<Object> getPublisherById(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "publisherId") String publisherId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Publisher> responseInfo;
-        log.info("[REQUEST RECEIVED - GET PUBLISHER BY ID][{}][{}]", publisherId, requestId);
-        responseInfo = publisherUsecase.getPublisherById(publisherId);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

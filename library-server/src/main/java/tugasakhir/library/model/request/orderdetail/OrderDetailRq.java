@@ -1,5 +1,6 @@
 package tugasakhir.library.model.request.orderdetail;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -13,24 +14,15 @@ import java.util.Date;
 @Accessors(chain = true)
 @Schema
 public class OrderDetailRq {
-    @JsonProperty("order_id")
-    private String orderId;
 
     @JsonProperty("user_id")
     @NotBlank(message = "User ID is mandatory")
+    @Schema(example = "String")
     private String userId;
 
     @JsonProperty("book_id")
     @NotBlank(message = "Book ID is mandatory")
+    @Schema(example = "String")
     private String bookId;
-
-    @JsonProperty("order_date")
-    private Date orderDate;
-
-    @JsonProperty("taking_date")
-    private Date takingDate;
-
-    @JsonProperty("status")
-    private String status;
 }
 

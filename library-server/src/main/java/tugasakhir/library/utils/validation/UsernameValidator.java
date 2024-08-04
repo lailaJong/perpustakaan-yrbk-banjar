@@ -18,9 +18,6 @@ public class UsernameValidator implements ConstraintValidator<UsernameConstraint
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext context) {
-        if (username == null || username.isEmpty()) {
-            return true; // Biarkan @NotBlank menangani kasus ini
-        }
         return !userRepository.existsByUsername(username);
     }
 }

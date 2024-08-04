@@ -23,23 +23,16 @@ public class BookShelfController {
     private BookShelfUsecase bookShelfUsecase;
 
     @GetMapping("/all")
-    ResponseEntity<Object> getAllBookShelves(@RequestHeader(value = "request-id", required = false) String requestId) {
+    ResponseEntity<Object> getAllBookShelves(@RequestHeader(value = "request-id", required = false) String requestId,
+                                             @RequestParam(value = "code", required = false) String code) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BookShelf>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOK SHELF][{}]", requestId);
-        responseInfo = bookShelfUsecase.getAllBookShelves();
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    @GetMapping("/code")
-    ResponseEntity<Object> getBookShelfByCode(@RequestHeader(value = "request-id", required = false) String requestId,
-                                            @RequestParam(value = "code") String code) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BookShelf>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET BOOK SHELF BY CODE][{}][{}]", code, requestId);
-        responseInfo = bookShelfUsecase.getBookShelfByCode(code);
+        log.info("[REQUEST RECEIVED - GET ALL BOOK SHELF][{}][{}]", requestId, code);
+        if (code == null) {
+            responseInfo = bookShelfUsecase.getAllBookShelves();
+        } else {
+            responseInfo = bookShelfUsecase.getBookShelfByCode(code);
+        }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

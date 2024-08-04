@@ -24,18 +24,18 @@ public class OrderDetailController {
     @Autowired
     private OrderDetailUsecase orderDetailUsecase;
 
-    @GetMapping("/all")
-    ResponseEntity<Object> getAllOrderDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Order>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS][{}]", requestId);
-        responseInfo = orderDetailUsecase.getAllOrderDetails();
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
+//    @GetMapping("/all")
+//    ResponseEntity<Object> getAllOrderDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<List<Order>> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET ALL ORDER DETAILS][{}]", requestId);
+//        responseInfo = orderDetailUsecase.getAllOrderDetails();
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
 
-    @GetMapping("/allOrder")
+    @GetMapping("/officer/all")
     ResponseEntity<Object> getAllOrderDetailsOfficer(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<OrderDetailOfficer>> responseInfo;
@@ -46,7 +46,19 @@ public class OrderDetailController {
                 .body(responseInfo.getBody());
     }
 
-    @GetMapping("/all/userId")
+    @GetMapping("/id")
+    ResponseEntity<Object> getOrderDetailById(@RequestHeader(value = "request-id", required = false) String requestId,
+                                              @RequestParam(value = "orderId") String orderId) {
+        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+        ResponseInfo<Order> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ORDER DETAIL BY ID][{}][{}]", orderId, requestId);
+        responseInfo = orderDetailUsecase.getOrderDetailById(orderId);
+        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+                .headers(responseInfo.getHttpHeaders())
+                .body(responseInfo.getBody());
+    }
+
+    @GetMapping("/user/all/userId")
     ResponseEntity<Object> getAllOrderDetailsByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
                                                       @RequestParam(value = "userId") String userId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -59,7 +71,7 @@ public class OrderDetailController {
     }
 
 
-    @GetMapping("/all/userId/bookTitle")
+    @GetMapping("/user/all/userId/bookTitle")
     ResponseEntity<Object> getAllOrderDetailsByUserIdAndBookTitle(@RequestHeader(value = "request-id", required = false) String requestId,
                                                                   @RequestParam(value = "userId") String userId,
                                                                   @RequestParam(value = "bookTitle") String bookTitle) {
@@ -72,22 +84,10 @@ public class OrderDetailController {
                 .body(responseInfo.getBody());
     }
 
-    @GetMapping("/id")
-    ResponseEntity<Object> getOrderDetailById(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "orderId") String orderId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<Order> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ORDER DETAIL BY ID][{}][{}]", orderId, requestId);
-        responseInfo = orderDetailUsecase.getOrderDetailById(orderId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
     //get count order detail by user id for jumlah koleksi dipesan in dashboard member
-    @GetMapping("/count/id")
+    @GetMapping("/user/count/id")
     ResponseEntity<Object> getCountOrderDetailByUserId(@RequestHeader(value = "request-id", required = false) String requestId,
-                                              @RequestParam(value = "userId") String userId) {
+                                                       @RequestParam(value = "userId") String userId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<Integer> responseInfo;
         log.info("[REQUEST RECEIVED - GET COUNT ORDER DETAIL BY USER ID][{}][{}]", userId, requestId);

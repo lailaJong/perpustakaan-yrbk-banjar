@@ -26,37 +26,41 @@ public class BookController {
     private BookUsecase bookUsecase;
 
     //get all books
-    @GetMapping("/all")
-    ResponseEntity<Object> getAllBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
+//    @GetMapping("/all")
+//    ResponseEntity<Object> getAllBooks(@RequestHeader(value = "request-id", required = false) String requestId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<List<Book>> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
+//        responseInfo = bookUsecase.getAllBooks();
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
+
+    //get all books detail
+    @GetMapping("/all/details")
+    ResponseEntity<Object> getAllBooksDetails(@RequestHeader(value = "request-id", required = false) String requestId,
+                                              @RequestParam(value = "bookTitle", required = false) String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Book>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
-        responseInfo = bookUsecase.getAllBooks();
+        ResponseInfo<List<BookDetail>> responseInfo;
+        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}][{}]", requestId, bookTitle);
+        if (bookTitle == null){
+            responseInfo = bookUsecase.getAllBooksDetail();
+        } else {
+            responseInfo = bookUsecase. getBookByTitle(bookTitle);
+        }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
     }
 
     //get all book titles
-    @GetMapping("/allTitle")
+    @GetMapping("/listTitle")
     ResponseEntity<Object> getAllBookTitle(@RequestHeader(value = "request-id", required = false) String requestId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<ListBook>> responseInfo;
         log.info("[REQUEST RECEIVED - GET ALL BOOK NAMES][{}]", requestId);
         responseInfo = bookUsecase.getAllBookTitles();
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-
-    //get all books detail
-    @GetMapping("/all/details")
-    ResponseEntity<Object> getAllBooksDetails(@RequestHeader(value = "request-id", required = false) String requestId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BookDetail>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOKS][{}]", requestId);
-        responseInfo = bookUsecase.getAllBooksDetail();
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
@@ -86,7 +90,7 @@ public class BookController {
     }
 
     //get book by book id
-    @GetMapping("/id")
+    @GetMapping("/details/id")
     ResponseEntity<Object> getBookById(@RequestHeader(value = "request-id", required = false) String requestId,
                                        @RequestParam(value = "bookId") String bookId) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
@@ -99,17 +103,17 @@ public class BookController {
     }
 
     //get all books by book title
-    @GetMapping("/title")
-    ResponseEntity<Object> getAllBooksByTitle(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "bookTitle") String bookTitle) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<BookDetail>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BOOKS BY TITLE][{}][{}]", bookTitle, requestId);
-        responseInfo = bookUsecase. getBookByTitle(bookTitle);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
+//    @GetMapping("/title")
+//    ResponseEntity<Object> getAllBooksByTitle(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                       @RequestParam(value = "bookTitle") String bookTitle) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        ResponseInfo<List<BookDetail>> responseInfo;
+//        log.info("[REQUEST RECEIVED - GET ALL BOOKS BY TITLE][{}][{}]", bookTitle, requestId);
+//        responseInfo = bookUsecase. getBookByTitle(bookTitle);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
 
     @PostMapping("/create")
     ResponseEntity<Object> createBooks(@RequestHeader(value = "request-id", required = false) String requestId,
@@ -133,15 +137,15 @@ public class BookController {
                 .body(responseInfo.getBody());
     }
 
-    @DeleteMapping("/delete")
-    ResponseEntity<Object> deleteBooks(@RequestHeader(value = "request-id", required = false) String requestId,
-                                       @RequestParam(value = "bookId") String bookId) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        log.info("[REQUEST RECEIVED - DELETE BOOK][{}][BOOK ID: {}]", requestId, bookId);
-        ResponseInfo<Object> responseInfo = bookUsecase.deleteBook(bookId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
+//    @DeleteMapping("/delete")
+//    ResponseEntity<Object> deleteBooks(@RequestHeader(value = "request-id", required = false) String requestId,
+//                                       @RequestParam(value = "bookId") String bookId) {
+//        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
+//        log.info("[REQUEST RECEIVED - DELETE BOOK][{}][BOOK ID: {}]", requestId, bookId);
+//        ResponseInfo<Object> responseInfo = bookUsecase.deleteBook(bookId);
+//        return ResponseEntity.status(responseInfo.getHttpStatusCode())
+//                .headers(responseInfo.getHttpHeaders())
+//                .body(responseInfo.getBody());
+//    }
 
 }

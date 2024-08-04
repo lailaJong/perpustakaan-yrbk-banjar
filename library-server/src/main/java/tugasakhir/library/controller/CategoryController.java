@@ -22,12 +22,17 @@ public class CategoryController {
     @Autowired
     private CategoryUsecase categoryUsecase;
 
-    @GetMapping("/all")
-    ResponseEntity<Object> getAllCategories(@RequestHeader(value = "request-id", required = false) String requestId) {
+    @GetMapping("/all/name")
+    ResponseEntity<Object> getAllCategories(@RequestHeader(value = "request-id", required = false) String requestId,
+                                            @RequestParam(value = "categoryName", required = false) String categoryName) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<Category>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL CATEGORIES][{}]", requestId);
-        responseInfo = categoryUsecase.getAllCategories();
+        log.info("[REQUEST RECEIVED - GET ALL CATEGORIES][{}][{}]", requestId, categoryName);
+        if (categoryName == null){
+            responseInfo = categoryUsecase.getAllCategories();
+        } else {
+            responseInfo = categoryUsecase.getCategoryByName(categoryName);
+        }
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());
@@ -40,18 +45,6 @@ public class CategoryController {
         ResponseInfo<Category> responseInfo;
         log.info("[REQUEST RECEIVED - GET CATEGORY BY ID][{}][{}]", categoryId, requestId);
         responseInfo = categoryUsecase.getCategoryById(categoryId);
-        return ResponseEntity.status(responseInfo.getHttpStatusCode())
-                .headers(responseInfo.getHttpHeaders())
-                .body(responseInfo.getBody());
-    }
-
-    @GetMapping("/name")
-    ResponseEntity<Object> getCategoryByName(@RequestHeader(value = "request-id", required = false) String requestId,
-                                           @RequestParam(value = "categoryName") String categoryName) {
-        if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
-        ResponseInfo<List<Category>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET CATEGORY BY NAME][{}][{}]", categoryName, requestId);
-        responseInfo = categoryUsecase.getCategoryByName(categoryName);
         return ResponseEntity.status(responseInfo.getHttpStatusCode())
                 .headers(responseInfo.getHttpHeaders())
                 .body(responseInfo.getBody());

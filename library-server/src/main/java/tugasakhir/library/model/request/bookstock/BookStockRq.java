@@ -13,9 +13,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Schema
 public class BookStockRq {
-    @Nullable
-    @JsonProperty("book_stock_id")
-    private String bookStockId;
 
     @JsonProperty("book_id")
     @NotBlank(message = "Book ID is mandatory")

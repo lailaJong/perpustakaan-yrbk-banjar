@@ -25,12 +25,26 @@ public class AuthorUsecase {
         try {
             List<Author> authors;
             authors = authorRepository.getAllAuthors();
-            authors.addAll(authorRepository.getAllAuthors());
             responseInfo.setSuccess(authors);
             log.info("[{}][SUCCESS GET ALL AUTHOR][DATA SIZE: {}]", getClass().getSimpleName(), authors.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
+        }
+        return responseInfo;
+    }
+
+    public ResponseInfo<List<Author>> getAllAuthorsByName(String authorName) {
+        ResponseInfo<List<Author>> responseInfo = new ResponseInfo<>();
+
+        try {
+            List <Author> author;
+            author = authorRepository.getAllAuthorsByName(authorName);
+            responseInfo.setSuccess(author);
+            log.info("[{}][SUCCESS GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
+        } catch (Exception ex) {
+            log.info("[{}][FAILED GET AUTHORS BY NAME][{}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorName, ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -45,22 +59,7 @@ public class AuthorUsecase {
             log.info("[{}][SUCCESS GET AUTHOR][ID: {}]", getClass().getSimpleName(), authorId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET AUTHOR][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorId, ex);
-            responseInfo.setCommonException(ex);
-        }
-        return responseInfo;
-    }
-
-    public ResponseInfo<List<Author>> getAuthorsByName(String authorName) {
-        ResponseInfo<List<Author>> responseInfo = new ResponseInfo<>();
-
-        try {
-            List <Author> author;
-            author = authorRepository.getAllAuthorsByName(authorName);
-            responseInfo.setSuccess(author);
-            log.info("[{}][SUCCESS GET AUTHORS BY NAME][{}]", getClass().getSimpleName(), authorName);
-        } catch (Exception ex) {
-            log.info("[{}][FAILED GET AUTHORS BY NAME][{}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), authorName, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -69,15 +68,21 @@ public class AuthorUsecase {
         ResponseInfo<Author> responseInfo = new ResponseInfo<>();
 
         try {
-            Author author;
-            authorRq.setAuthorId(authorRepository.generateAuthorId());
-            author = AuthorsMapperImpl.toAuthor(authorRq);
-            authorRepository.addAuthor(author);
-            responseInfo.setSuccess(author);
-            log.info("[{}][SUCCESS ADD NEW AUTHOR]", getClass().getSimpleName());
+            boolean isExist = authorRepository.existsByAuthorName(authorRq.getAuthorName());
+            if (!isExist){
+                Author author;
+                String authorId = authorRepository.generateAuthorId();
+                author = AuthorsMapperImpl.toAuthor(authorRq, authorId);
+                authorRepository.addAuthor(author);
+                responseInfo.setSuccess(author);
+                log.info("[{}][SUCCESS ADD NEW AUTHOR]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(authorRq.getAuthorName() + " is already exist");
+                log.info("[{}][FAILED ADD NEW AUTHOR]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -86,19 +91,21 @@ public class AuthorUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            Author author = authorRepository.getAuthorById(updateAuthorRq.getAuthorId());
-            if (author != null) {
+            boolean isExist = authorRepository.existsByAuthorId(updateAuthorRq.getAuthorId());
+            if (isExist){
+                Author author = authorRepository.getAuthorById(updateAuthorRq.getAuthorId());
                 AuthorsMapperImpl.updateAuthorFromUpdateAuthorRq(updateAuthorRq, author);
                 authorRepository.updateAuthor(author);
 
                 responseInfo.setSuccess();
+                log.info("[{}][SUCCESS UPDATE AUTHOR]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException();
+                responseInfo.setBussinessError(updateAuthorRq.getAuthorId() + " is not exist");
+                log.info("[{}][FAILED UPDATE AUTHOR]", getClass().getSimpleName());
             }
-            log.info("[{}][SUCCESS UPDATE AUTHOR]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -108,12 +115,18 @@ public class AuthorUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            authorRepository.deleteAuthor(authorId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE AUTHOR][{}]", getClass().getSimpleName(), authorId);
+            boolean isExist = authorRepository.existsByAuthorId(authorId);
+            if (isExist){
+                authorRepository.deleteAuthor(authorId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE AUTHOR][{}]", getClass().getSimpleName(), authorId);
+            } else {
+                responseInfo.setBussinessError(authorId + " is not exist");
+                log.info("[{}][FAILED DELETE AUTHOR]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE AUTHOR][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

@@ -16,7 +16,8 @@ import tugasakhir.library.model.entity.BookStock;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
+import java.util.Collections;
 
 /**
  * @author Putri Mele
@@ -131,7 +132,7 @@ public class BookStockRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS(), new BookStockDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -143,13 +144,46 @@ public class BookStockRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_BOOK_STOCK_DETAILS_BY_BOOK_TITLE(), paramSource, new BookStockDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
     public String generateBookStockId() {
+        try {
         int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_BOOK_STOCK(), (SqlParameterSource) null, Integer.class);
         int suffix = count + 1;
         return String.format("STK%03d", suffix);
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean existsByBookStockId(String bookStockId) {
+        try{
+            log.info("[CHECK BOOK STOCK ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_BOOK_STOCK_ID(), bookStockId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("bookStockId", bookStockId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_BOOK_STOCK_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean existsByBookId(String bookId) {
+        try{
+            log.info("[CHECK BOOK ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_STOCK_BOOK_ID(), bookId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("bookId", bookId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_STOCK_BOOK_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
     }
 }

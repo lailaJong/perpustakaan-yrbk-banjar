@@ -25,12 +25,11 @@ public class BookShelfUsecase {
         try {
             List<BookShelf> bookShelves;
             bookShelves = bookShelfRepository.getAllBookShelves();
-            bookShelves.addAll(bookShelfRepository.getAllBookShelves());
             responseInfo.setSuccess(bookShelves);
             log.info("[{}][SUCCESS GET ALL BOOK SHELVES][DATA SIZE: {}]", getClass().getSimpleName(), bookShelves.size());
         } catch (Exception ex) {
             log.info("[{}][FAILED GET ALL BOOK SHELVES][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -39,13 +38,13 @@ public class BookShelfUsecase {
         ResponseInfo<List<BookShelf>> responseInfo = new ResponseInfo<>();
 
         try {
-            List <BookShelf> bookShelf;
-            bookShelf = bookShelfRepository.getAllBookShelfByCode(code);
-            responseInfo.setSuccess(bookShelf);
-            log.info("[{}][SUCCESS GET BOOK SHELF][CODE: {}]", getClass().getSimpleName(), code);
+            List <BookShelf> bookShelves;
+            bookShelves = bookShelfRepository.getAllBookShelfByCode(code);
+            responseInfo.setSuccess(bookShelves);
+            log.info("[{}][SUCCESS GET ALL BOOK SHELF][CODE: {}]", getClass().getSimpleName(), code);
         } catch (Exception ex) {
-            log.info("[{}][FAILED GET BOOK SHELF][CODE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), code, ex);
-            responseInfo.setCommonException(ex);
+            log.info("[{}][FAILED GET ALL BOOK SHELF][CODE: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), code, ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -60,7 +59,7 @@ public class BookShelfUsecase {
             log.info("[{}][SUCCESS GET BOOK SHELF][ID: {}]", getClass().getSimpleName(), bookShelfId);
         } catch (Exception ex) {
             log.info("[{}][FAILED GET BOOK SHELF][ID: {}][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), bookShelfId, ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -70,14 +69,20 @@ public class BookShelfUsecase {
 
         try {
             BookShelf bookShelf;
-            bookShelfRq.setBookShelfId(bookShelfRepository.generateBookShelfId());
-            bookShelf = BookShelfMapperImpl.toBookShelf(bookShelfRq);
-            bookShelfRepository.addBookShelf(bookShelf);
-            responseInfo.setSuccess(bookShelf);
-            log.info("[{}][SUCCESS ADD NEW BOOK SHELF]", getClass().getSimpleName());
+            boolean isExist = bookShelfRepository.existsByBookShelfCode(bookShelfRq.getBookShelfCode());
+            if (!isExist){
+                String bookShelfId = bookShelfRepository.generateBookShelfId();
+                bookShelf = BookShelfMapperImpl.toBookShelf(bookShelfRq, bookShelfId);
+                bookShelfRepository.addBookShelf(bookShelf);
+                responseInfo.setSuccess(bookShelf);
+                log.info("[{}][SUCCESS ADD NEW BOOK SHELF]", getClass().getSimpleName());
+            } else {
+                responseInfo.setBussinessError(bookShelfRq.getBookShelfCode() + " is already exist");
+                log.info("[{}][FAILED ADD NEW BOOK SHELF]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -86,19 +91,21 @@ public class BookShelfUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            BookShelf bookShelf = bookShelfRepository.getBookShelfById(updateBookShelfRq.getBookShelfId());
-            if (bookShelf != null) {
+            boolean isExist = bookShelfRepository.existsByBookShelfId(updateBookShelfRq.getBookShelfId());
+            if (isExist) {
+                BookShelf bookShelf = bookShelfRepository.getBookShelfById(updateBookShelfRq.getBookShelfId());
                 BookShelfMapperImpl.updateBookShelfFromUpdateBookShelfRq(updateBookShelfRq, bookShelf);
                 bookShelfRepository.updateBookShelf(bookShelf);
 
                 responseInfo.setSuccess();
+                log.info("[{}][SUCCESS UPDATE BOOK SHELF]", getClass().getSimpleName());
             } else {
-                throw new NotFoundException();
+                responseInfo.setBussinessError(updateBookShelfRq.getBookShelfId() + " is not exist");
+                log.info("[{}][FAILED UPDATE BOOK SHELF]", getClass().getSimpleName());
             }
-            log.info("[{}][SUCCESS UPDATE BOOK SHELF]", getClass().getSimpleName());
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }
@@ -108,12 +115,18 @@ public class BookShelfUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
 
         try {
-            bookShelfRepository.deleteBookShelf(bookShelfId);
-            responseInfo.setSuccess();
-            log.info("[{}][SUCCESS DELETE BOOK SHELF][{}]", getClass().getSimpleName(), bookShelfId);
+            boolean isExist = bookShelfRepository.existsByBookShelfId(bookShelfId);
+            if (isExist) {
+                bookShelfRepository.deleteBookShelf(bookShelfId);
+                responseInfo.setSuccess();
+                log.info("[{}][SUCCESS DELETE BOOK SHELF][{}]", getClass().getSimpleName(), bookShelfId);
+            } else {
+                responseInfo.setBussinessError(bookShelfId + " is not exist");
+                log.info("[{}][FAILED DELETE BOOK SHELF]", getClass().getSimpleName());
+            }
         } catch (Exception ex) {
             log.info("[{}][FAILED DELETE BOOK SHELF][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
-            responseInfo.setCommonException(ex);
+            responseInfo.handleException(ex);
         }
         return responseInfo;
     }

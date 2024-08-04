@@ -66,14 +66,13 @@ public class RoleRepository {
         }
     }
 
-    public Role getRoleByName(String roleName) {
+    public Role getRoleByName(String roleName) throws RuntimeException {
         try{
-            log.info("[GET ROLE BY ID][{}][{}}]", roleName, applicationProperties.getGET_ROLE_BY_NAME());
+            log.info("[GET ROLE BY ID][{}][{}}]", applicationProperties.getGET_ROLE_BY_NAME(), roleName);
             SqlParameterSource paramSource = new MapSqlParameterSource("roleName", roleName);
             return jdbcTemplate.queryForObject(applicationProperties.getGET_ROLE_BY_NAME(), paramSource, new RoleRepository.RoleRowMapper());
         }catch (Exception e){
-            log.error(e.getMessage());
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 

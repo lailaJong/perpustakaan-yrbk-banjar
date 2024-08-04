@@ -11,13 +11,13 @@ import tugasakhir.library.model.request.usermember.UpdateUserMemberRq;
  */
 public class UserMapperImpl{
 
-    public static User toUser(UserRq userRq) {
+    public static User toUser(UserRq userRq, String userId, String roleId) {
         if (userRq == null) {
             return null;
         }
         User user = new User();
-        user.setUserId(userRq.getUserId());
-        user.setRoleId(userRq.getRoleId());
+        user.setUserId(userId);
+        user.setRoleId(roleId);
         user.setUsername(userRq.getUsername());
         user.setPassword(userRq.getPassword());
         return user;

@@ -17,7 +17,8 @@ import tugasakhir.library.model.entity.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
+import java.util.Collections;
 
 /**
  * @author Putri Mele
@@ -136,7 +137,7 @@ public class OrderDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAIL(), new OrderRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -150,7 +151,7 @@ public class OrderDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID(), parameterSource, new OrderDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -178,13 +179,32 @@ public class OrderDetailRepository {
             return jdbcTemplate.query(applicationProperties.getGET_ALL_ORDER_DETAILS_BY_USER_ID_AND_BOOK_TITLE(), parameterSource, new OrderDetailRowMapper());
         }catch (Exception e){
             log.error(e.getMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 
     public String generateOrderDetailId() {
-        int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_ORDER_DETAIL(), (SqlParameterSource) null, Integer.class);
-        int suffix = count + 1;
-        return String.format("ORD%03d", suffix);
+        try{
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_COUNT_ALL_ORDER_DETAIL(), (SqlParameterSource) null, Integer.class);
+            int suffix = count + 1;
+            return String.format("ORD%03d", suffix);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean existsByOrderId(String orderId) {
+        try{
+            log.info("[CHECK ORDER ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_ORDER_ID(), orderId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("orderId", orderId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_ORDER_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
+        }
     }
 }

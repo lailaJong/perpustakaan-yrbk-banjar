@@ -1,11 +1,9 @@
 package tugasakhir.library.model.request.member;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,17 +13,6 @@ import java.util.Date;
 @Accessors(chain = true)
 @Schema
 public class MemberRq {
-    @JsonProperty("member_id")
-    private String memberId;
-
-    @JsonProperty("user_id")
-    private String userId;
-
-    @JsonProperty("member_status_id")
-    private String memberStatusId;
-
-    @JsonProperty("score_detail_id")
-    private String scoreDetailId;
 
     @JsonProperty("name")
     @NotBlank(message = "Name is mandatory")
@@ -48,7 +35,9 @@ public class MemberRq {
     private String placeOfBirth;
 
     @JsonProperty("date_of_birth")
-    @NotBlank(message = "Date Of Birth is mandatory")
+    @NotNull(message = "Date Of Birth is mandatory")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Schema(example = "22-04-2000")
     private Date dateOfBirth;
 
     @JsonProperty("address")
@@ -60,7 +49,10 @@ public class MemberRq {
     @Max(value = 1000, message = "Point must not exceed 1000")
     private int point;
 
-    @JsonProperty("regristrationDate")
-    private Date regristrationDate;
+    @JsonProperty("registration_date")
+    @NotNull(message = "Date Of Birth is mandatory")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Schema(example = "22-04-2000")
+    private Date registrationDate;
 }
 
