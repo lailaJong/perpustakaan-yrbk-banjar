@@ -168,8 +168,6 @@ public class OrderDetailUsecase {
             Order orderDetail = orderDetailRepository.getOrderDetailById(updateOrderDetailRq.getOrderId());
                 if (updateOrderDetailRq.getStatus().equalsIgnoreCase(applicationProperties.getCancelledStatus())){
                     //tambahkan stok buku by book id
-                    boolean isStockExist = bookStockRepository.existsByBookId(updateOrderDetailRq.getBookId());
-                    if (isStockExist) {
                         BookStock bookStock = bookStockRepository.getBookStockByBookId(updateOrderDetailRq.getBookId());
                         UpdateBookStockRq updateBookStockRq = null;
                         updateBookStockRq.setBookStockId(bookStock.getBookStockId());
@@ -177,10 +175,6 @@ public class OrderDetailUsecase {
                         updateBookStockRq.setStock((bookStock.getStock()+1));
                         BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
                         bookStockRepository.updateBookStock(bookStock);
-                    } else {
-                        responseInfo.setBussinessError("Data of the book stock is not found");
-                        log.info("[{}][FAILED DELETE ORDER DETAIL]", getClass().getSimpleName());
-                    }
                 }else {
                         //tambahkan borrowing detail
                         Borrowing borrowingDetail;
@@ -198,7 +192,7 @@ public class OrderDetailUsecase {
                 OrderDetailMapperImpl.updateOrderDetailFromUpdateOrderDetailRq(updateOrderDetailRq, orderDetail);
                 orderDetailRepository.updateOrderDetail(orderDetail);
 
-                responseInfo.setSuccess("Order is not found");
+                responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE ORDER DETAIL]", getClass().getSimpleName());
             } else {
                 responseInfo.setBussinessError(updateOrderDetailRq.getOrderId() + " is not found!");

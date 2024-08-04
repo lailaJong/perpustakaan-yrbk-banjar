@@ -20,7 +20,9 @@ import tugasakhir.library.model.entity.Borrowing;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Putri Mele
@@ -371,6 +373,20 @@ public class BorrowingDetailRepository {
         }catch (Exception e){
             log.error(e.getMessage());
             return 0;
+        }
+    }
+
+    public boolean existsByBorrowingId(String borrowingId) {
+        try{
+            log.info("[CHECK BORROWING ID IS EXIST OR NOT][{}][{}]", applicationProperties.getGET_EXIST_BORROWING_ID(), borrowingId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("borrowingId", borrowingId);
+            int count = jdbcTemplate.queryForObject(applicationProperties.getGET_EXIST_BORROWING_ID(), params, Integer.class);
+            log.info("[COUNT: {}]", count);
+            return count > 0;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return false;
         }
     }
 }

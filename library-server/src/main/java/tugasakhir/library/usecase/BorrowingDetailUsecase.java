@@ -268,7 +268,8 @@ public class BorrowingDetailUsecase {
             //tambahkan validasi check sisa quota
             boolean isQuotasAvailable = false;
             isQuotasAvailable = benefitValidation.isQuotasAvailable(borrowingDetailRq.getUserId());
-            if (isQuotasAvailable){
+            BookStock bookStock = bookStockRepository.getBookStockByBookId(borrowingDetailRq.getBookId());
+            if (isQuotasAvailable && bookStock != null){
                 Borrowing borrowingDetail;
                 borrowingDetailRq.setBorrowingId(borrowingDetailRepository.generateBorrowingDetailId());
                 borrowingDetailRq.setBorrowingDate(new Date());
@@ -279,22 +280,22 @@ public class BorrowingDetailUsecase {
                 responseInfo.setSuccess(borrowingDetail);
                 log.info("[{}][SUCCESS ADD NEW BORROWING DETAIL]", getClass().getSimpleName());
                 //kurangi stok buku by book id
-                BookStock bookStock = bookStockRepository.getBookStockByBookId(borrowingDetail.getBookId());
-                if (bookStock != null) {
-                    log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
-                    UpdateBookStockRq updateBookStockRq = null;
-                    updateBookStockRq.setBookStockId(bookStock.getBookStockId());
-                    updateBookStockRq.setBookId(bookStock.getBookId());
-                    updateBookStockRq.setStock((bookStock.getStock()-1));
-                    BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
-                    bookStockRepository.updateBookStock(bookStock);
-                    log.info("[SUCCESS UPDATE BOOK STOCK][STOCK: {}]", bookStock.getStock()-1);
-                } else {
-                    throw new NotFoundException("Data of the book stock is not found");
-                }
+                log.info("AVAILABLE TO ORDER: {} STOCK", bookStock.getStock());
+                UpdateBookStockRq updateBookStockRq = null;
+                updateBookStockRq.setBookStockId(bookStock.getBookStockId());
+                updateBookStockRq.setBookId(bookStock.getBookId());
+                updateBookStockRq.setStock((bookStock.getStock()-1));
+                BookStockMapperImpl.updateBookStockFromUpdateBookStockRq(updateBookStockRq, bookStock);
+                bookStockRepository.updateBookStock(bookStock);
+                log.info("[SUCCESS UPDATE BOOK STOCK][STOCK: {}]", bookStock.getStock()-1);
             } else {
-                responseInfo.setBussinessError("Quota is not available, remaining quota is 0!");
-                log.info("[{}][FAILED ADD NEW BORROWING DETAIL]", getClass().getSimpleName());
+                if (!isQuotasAvailable){
+                    responseInfo.setBussinessError("Quota is not available, remaining quota is 0!");
+                    log.info("[{}][FAILED ADD NEW ORDER DETAIL]", getClass().getSimpleName());
+                } else {
+                    responseInfo.setBussinessError("Data of the book stock is not found!");
+                    log.info("[{}][FAILED ADD NEW ORDER DETAIL]", getClass().getSimpleName());
+                }
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED ADD NEW BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);
@@ -307,13 +308,14 @@ public class BorrowingDetailUsecase {
         ResponseInfo<Object> responseInfo = new ResponseInfo<>();
         int finalPoint = 0;
         try {
+            boolean isExist = borrowingDetailRepository.existsByBorrowingId(updateBorrowingDetailRq.getBorrowingId());
+            if (isExist){
             Borrowing borrowingDetail = borrowingDetailRepository.getBorrowingDetailById(updateBorrowingDetailRq.getBorrowingId());
             updateBorrowingDetailRq.setActualReturnDate(new Date());
             Member member = memberRepository.getMemberByUserId(updateBorrowingDetailRq.getUserId());
             BookStock bookStock = bookStockRepository.getBookStockByBookId(updateBorrowingDetailRq.getBookId());
             int previousPoint = member.getPoint();
             int finalStock = bookStock.getStock();
-            if (borrowingDetail != null) {
                 if (updateBorrowingDetailRq.getStatus().equalsIgnoreCase(applicationProperties.getReturnedStatus())){
                     if (updateBorrowingDetailRq.getActualReturnDate().after(updateBorrowingDetailRq.getReturnDate())){
                         //late case
@@ -348,7 +350,8 @@ public class BorrowingDetailUsecase {
                 responseInfo.setSuccess();
                 log.info("[{}][SUCCESS UPDATE BORROWING DETAIL][POINT: {}][STOCK: {}]", getClass().getSimpleName(), finalPoint, finalStock);
             } else {
-                throw new NotFoundException("BORROWING DATA IS NOT FOUND");
+                responseInfo.setBussinessError(updateBorrowingDetailRq.getBorrowingId() + " is not found!");
+                log.info("[{}][FAILED UPDATE BORROWING DETAIL]", getClass().getSimpleName());
             }
         } catch (Exception ex) {
             log.info("[{}][FAILED UPDATE BORROWING DETAIL][CAUSE: {}]", getClass().getSimpleName(), ex.getClass().getSimpleName(), ex);

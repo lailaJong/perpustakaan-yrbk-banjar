@@ -149,6 +149,7 @@ public class ApplicationProperties {
     private String GET_COUNT_ALL_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail";
     private String GET_COUNT_ALL_BORROWING_DETAIL_DIPINJAM = "SELECT COUNT(*) FROM borrowing_detail where status = :borrowedStatus";
     private String GET_COUNT_ALL_LATE_BORROWING_DETAIL = "SELECT COUNT(*) FROM borrowing_detail WHERE return_date < CURRENT_DATE";
+    private String GET_EXIST_BORROWING_ID = "SELECT COUNT(*) FROM borrowing_detail WHERE borrowing_id = :borrowingId";
     //CATEGORY
     private String INSERT_CATEGORY = "INSERT INTO category (category_id, category_name) VALUES (:categoryId, :categoryName)";
     private String GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE category_id = :categoryId";

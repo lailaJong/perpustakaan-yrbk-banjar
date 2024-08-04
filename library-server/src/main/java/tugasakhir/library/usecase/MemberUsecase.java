@@ -167,7 +167,9 @@ public class MemberUsecase {
             boolean isExist = memberRepository.existByMemberId(updateMemberStatusRq.getMemberId());
             if (isExist) {
                 Member member = memberRepository.getMemberById(updateMemberStatusRq.getMemberId());
-                if (memberStatusRepository.getMemberStatusById(member.getMemberStatusId()).getStatus().equalsIgnoreCase("DEACTIVE")){
+                String memberStatus = memberStatusRepository.getMemberStatusById(member.getMemberStatusId()).getStatus();
+                log.info("[MEMBER STATUS : {}]", memberStatus);
+                if (memberStatus.equalsIgnoreCase("DEACTIVE")){
                     member.setPoint(0);
                     member.setScoreDetailId(ScoreDetailMapperImpl.getScoreDetailId(0));
                 }

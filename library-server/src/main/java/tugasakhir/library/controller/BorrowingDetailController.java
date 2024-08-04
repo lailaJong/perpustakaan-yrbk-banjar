@@ -33,7 +33,7 @@ public class BorrowingDetailController {
                                                           @RequestParam(value = "bookTitle", required = false) String bookTitle) {
         if (requestId == null || requestId.isEmpty()) requestId = UUID.randomUUID().toString();
         ResponseInfo<List<BorrowingDetail>> responseInfo;
-        log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS BY USER ID][{}][{}]", userId, requestId);
+        log.info("[REQUEST RECEIVED - GET ALL BORROWING DETAILS BY USER ID][{}][{}][{}]", userId, requestId, bookTitle);
         if (bookTitle == null){
             responseInfo = borrowingDetailUsecase.getAllBorrowingDetailsByUserId(userId);
         } else {
